@@ -36,13 +36,13 @@ clear-all:
 	docker system prune -a -f --volumes
 
 install:
-	 
 	sudo mkdir -p backend/vendor backend/node_modules
 	sudo chown -R $(USER):$(USER) .
 	sudo find . -type d -exec chmod 755 {} \;
 	sudo find . -type f -exec chmod 644 {} \;
 	sudo chmod -R 755 backend/node_modules/
 	sudo chmod 755 backend/public/
+	
 bash-dev:
 	docker compose -f compose.dev.yaml exec workspace bash
 

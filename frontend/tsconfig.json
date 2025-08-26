@@ -1,0 +1,27 @@
+{
+  "compilerOptions": {
+    "target": "ESNext",
+    "module": "ESNext",
+    "noImplicitAny": false,
+    "strictNullChecks": true,
+    "useUnknownInCatchVariables": false,
+    "strict": true,                     // Включает строгую проверку типов (обязательно!)
+    "jsx": "preserve",                  // Для .vue файлов
+    "moduleResolution": "node",         // Для работы с node_modules
+    "esModuleInterop": true,           // Для совместимости с CommonJS
+    "skipLibCheck": true,              // Ускоряет компиляцию (пропускает проверку типов в node_modules)
+    "forceConsistentCasingInFileNames": true,
+    "baseUrl": ".",                    // Для абсолютных путей (например, '@/')
+    "paths": {
+      "@/*": ["src/*"]                  // Алиас для импортов
+    },
+    "types": ["vite/client"]           // Для поддержки Vite (если используете)
+  },
+  "include": [
+    "src/**/*.ts",
+    "src/**/*.d.ts",
+    "src/**/*.tsx",
+    "src/**/*.vue"
+  ],
+  "exclude": ["node_modules", "dist"]  // Что игнорировать
+}
