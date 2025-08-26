@@ -1,16 +1,18 @@
-# Стадия сборки
-FROM node as build-stage
-WORKDIR /app
-COPY package*.json ./
-RUN npm install
-COPY . .
-RUN npm run build
+FROM node
 
-# Стадия production
-FROM nginx:stable-alpine as production-stage
-# Копируем собранные статические файлы из стадии сборки
-COPY --from=build-stage /app/dist /usr/share/nginx/html
-# Копируем наш конфиг Nginx
-COPY nginx.conf /etc/nginx/conf.d/default.conf
-EXPOSE 80
-CMD ["nginx", "-g", "daemon off;"]
+WORKDIR /var/www
+
+# Копируем package.json и package-lock.json
+COPY ./frontend/package*.json ./
+
+# Устанавливаем зависимости
+RUN npm install
+
+# Копируем весь код фронтенда
+COPY ./frontend/ .
+
+# Expose порт Vite
+EXPOSE 5173
+
+# Запускаем dev server с хостом 0.0.0.0 для доступа извне
+CMD ["npm", "run", "dev", "--", "--host", "0.0.0.0"]

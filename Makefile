@@ -1,4 +1,4 @@
-.PHONY: start stop logs renew clean clean-all rebuild
+.PHONY: build-dev up-dev down-dev clear-all
 
 build-pro:
 	docker compose -f compose.prod.yaml build
@@ -21,6 +21,11 @@ up-dev:
 	docker compose -f compose.dev.yaml up -d
 down-dev:
 	sudo docker compose -f compose.dev.yaml down
+rebuild-dev:
+	sudo docker compose -f compose.dev.yaml down
+	sudo docker compose -f compose.dev.yaml build --no-cache
+	sudo docker compose -f compose.dev.yaml up -d
+
 
 clear-all:
 	docker stop $$(docker ps -aq) 2>/dev/null || true
@@ -30,14 +35,14 @@ clear-all:
 	docker network prune -f
 	docker system prune -a -f --volumes
 
-make install:
-	sudo cp .env.example .env
-	sudo mkdir -p vendor node_modules
+install:
+	 
+	sudo mkdir -p backend/vendor backend/node_modules
 	sudo chown -R $(USER):$(USER) .
 	sudo find . -type d -exec chmod 755 {} \;
 	sudo find . -type f -exec chmod 644 {} \;
-	sudo chmod -R 755 node_modules/
-	sudo chmod 755 public/
+	sudo chmod -R 755 backend/node_modules/
+	sudo chmod 755 backend/public/
 bash-dev:
 	docker compose -f compose.dev.yaml exec workspace bash
 
