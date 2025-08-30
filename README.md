@@ -14,3 +14,10 @@
 
 back : localhost:8080
 front : localhost:5173
+
+
+//Как использовать дамп :
+в compose.dev.yaml контейнер postress :
+- 1 /var/db1/db_backup.dump:/tmp/db1/db_backup.dump:ro
+- Изменить расположение дампа.
+- 2 docker exec -i vue-postgres-1 pg_restore -U laravel -d app -Fc /tmp/db1/db_backup.dump

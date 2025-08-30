@@ -50,7 +50,11 @@ const login = async () => {
         <label for="password" class="block pb-2">Password</label>
         <InputText type="text" v-model="form.password"  variant="filled"  class="w-full"/>
       </div>
-
+      <Button asChild  >
+        <RouterLink to="register"  variant="link" class="text-green-600 underline" >
+            Registration
+        </RouterLink>
+      </Button>
       <Button @click="login" rounded
       :severity="isLoading ? 'secondary' : 'primary'"
       :disabled="isLoading"

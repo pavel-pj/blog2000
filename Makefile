@@ -15,17 +15,26 @@ clear-pro:
 	docker system prune -f
 	sudo systemctl restart docker
 
+
+
 build-dev:
 	docker compose -f compose.dev.yaml build
 up-dev:
 	docker compose -f compose.dev.yaml up -d
 down-dev:
-	sudo docker compose -f compose.dev.yaml down
+	sudo docker compose -f compose.dev.yaml down -v
 rebuild-dev:
 	sudo docker compose -f compose.dev.yaml down
 	sudo docker compose -f compose.dev.yaml build --no-cache
 	sudo docker compose -f compose.dev.yaml up -d
+	
+bash-dev:
+	docker compose -f compose.dev.yaml exec workspace bash
 
+pgsql-dev:
+	docker exec -it  vue-postgres-1 psql -U laravel -d app	
+pgsql-dev-log:	
+	docker compose -f compose.dev.yaml logs postgres
 
 clear-all:
 	docker stop $$(docker ps -aq) 2>/dev/null || true
@@ -42,7 +51,5 @@ install:
 	sudo find . -type f -exec chmod 644 {} \;
 	sudo chmod -R 755 backend/node_modules/
 	sudo chmod 755 backend/public/
-	
-bash-dev:
-	docker compose -f compose.dev.yaml exec workspace bash
+ 
 
