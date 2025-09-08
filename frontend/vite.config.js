@@ -49,11 +49,12 @@ export default defineConfig({
     }
   },
  
-  build: {
-    rollupOptions: {
-      input: '/src/main.ts' // Убедитесь, что указан .ts файл
-    }
-  },
+//  build: {
+//    rollupOptions: {
+//      input: '/src/main.ts' // Убедитесь, что указан .ts файл
+//    }
+//  },
+
   resolve: {
     alias: {
       '@': resolve(__dirname, './src'),

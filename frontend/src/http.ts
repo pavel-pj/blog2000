@@ -4,7 +4,9 @@ import type { InternalAxiosRequestConfig } from 'axios';
 
 
 const http = axios.create({
-  baseURL: 'http://localhost:8080/api/',
+  //baseURL: 'http://localhost:8080/api/',
+  //baseURL: '/api/',
+  baseURL: import.meta.env.VITE_API_URL, // Используем переменную окружения
   headers: {
     'Content-Type': 'application/json',
     'Accept': 'application/json',

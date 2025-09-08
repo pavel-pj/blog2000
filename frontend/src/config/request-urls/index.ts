@@ -1,5 +1,5 @@
-export const baseUrl = 'http://localhost:8080/api';
-
+//export const baseUrl = 'http://localhost:8080/api';
+export const baseUrl = import.meta.env.VITE_API_URL
 //catalog
 export function catalogURL() {
   return `${baseUrl}/catalogs`;

@@ -1,4 +1,4 @@
-.PHONY: build-dev up-dev down-dev clear-all
+.PHONY: build-dev up-dev down-dev clear-all bash-pro clear-cache
 
 build-pro:
 	docker compose -f compose.prod.yaml build
@@ -14,7 +14,10 @@ clear-pro:
 	docker compose -f compose.prod.yaml down --remove-orphans
 	docker system prune -f
 	sudo systemctl restart docker
-
+bash-pro:
+	docker compose -f compose.prod.yaml exec php-fpm bash
+php-log:
+	docker compose -f compose.dev.yaml logs php-fpm
 
 
 build-dev:
@@ -35,6 +38,25 @@ pgsql-dev:
 	docker exec -it  vue-postgres-1 psql -U laravel -d app	
 pgsql-dev-log:	
 	docker compose -f compose.dev.yaml logs postgres
+
+clear-cache:
+	# Останавливаем все контейнеры (игнорируем ошибки если нет контейнеров)
+	-docker stop $$(docker ps -aq)
+	# Удаляем все контейнеры
+	-docker rm $$(docker ps -aq)
+	# Удаляем все volumes (игнорируем ошибки)
+	-docker volume rm $$(docker volume ls -q) 2>/dev/null || true
+	# Удаляем кастомные сети
+	-docker network rm $$(docker network ls -q --filter type=custom) 2>/dev/null || true
+	# Очищаем builder cache
+	docker builder prune -f
+	# Очищаем system
+	docker system prune -f
+	# Удаляем папку dist 
+#	rm -rf frontend/dist
+
+front:
+	cd frontend && npm run build
 
 clear-all:
 	docker stop $$(docker ps -aq) 2>/dev/null || true
