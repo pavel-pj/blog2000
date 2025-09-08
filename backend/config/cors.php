@@ -33,6 +33,8 @@ return [
         'supports_credentials' => true, // если используете куки/сессии
         */
 
+ 
+
     'paths' => ['api/*', 'sanctum/csrf-cookie', 'login', 'logout'],
 
     'allowed_methods' => explode(',', env('CORS_ALLOWED_METHODS', '*')),

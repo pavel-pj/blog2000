@@ -16,6 +16,8 @@ services:
       # Добавьте эти volumes для SSL сертификатов
       - /etc/letsencrypt:/etc/letsencrypt:ro
       - /var/lib/letsencrypt:/var/lib/letsencrypt:ro
+      - php-fpm-public:/var/www/public:ro
+      - ./frontend/dist:/var/www/vue:ro
     networks:
       - laravel-production
     ports:
@@ -43,6 +45,7 @@ services:
       # Добавьте эти volumes для SSL сертификатов
       - /etc/letsencrypt:/etc/letsencrypt:ro
       - /var/lib/letsencrypt:/var/lib/letsencrypt:ro
+      - php-fpm-public:/var/www/public
     env_file:
       - .env
     networks:
@@ -63,8 +66,8 @@ services:
     image: postgres:16
     restart: unless-stopped
     user: postgres
-    ports:
-      - "${POSTGRES_PORT:-5434}:5432"
+    #ports:
+    #  - "${POSTGRES_PORT:-5434}:5432"
     environment:
       - POSTGRES_DB=${POSTGRES_DATABASE:-app}
       - POSTGRES_USER=${POSTGRES_USERNAME:-laravel}
@@ -85,21 +88,21 @@ services:
       timeout: 5s
       retries: 5
 
-  redis:
-    image: redis:alpine
-    restart: unless-stopped  # Automatically restart unless the service is explicitly stopped
-    networks:
-      - laravel-production
+#  redis:
+#    image: redis:alpine
+#    restart: unless-stopped  # Automatically restart unless the service is explicitly stopped
+#    networks:
+#      - laravel-production
     # Health check for Redis
     # -----------------------------------------------------------
     # Checks if Redis is responding to the 'PING' command.
     # This ensures that the service is not only running but also operational.
     # -----------------------------------------------------------
-    healthcheck:
-      test: ["CMD", "redis-cli", "ping"]
-      interval: 10s
-      timeout: 5s
-      retries: 3
+#    healthcheck:
+#      test: ["CMD", "redis-cli", "ping"]
+#      interval: 10s
+#      timeout: 5s
+#      retries: 3
 
 networks:
   # Attach the service to the 'laravel' network.
@@ -113,3 +116,4 @@ volumes:
   postgres-data-production:
   laravel-storage-production:
   laravel-public-assets:
+  php-fpm-public:

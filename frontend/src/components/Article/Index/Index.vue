@@ -114,7 +114,6 @@ const itemsBreadCrumbs =computed(()=>{
 <BreadCrumbs :items="itemsBreadCrumbs" />
 <Button @click="create" label="Primary" rounded style="display:block">Create </Button>
 
-
   <PageSpiner :my="margYspiner"  :isSpiner="isPageSpiner"  />
  <div class="card pt-6 " v-if="catalog" >
         <DataTable stripedRows
