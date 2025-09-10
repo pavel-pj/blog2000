@@ -11,6 +11,18 @@
 Добавить пользователя в группу юзер при необходимости.
 Laravel - в worskpsace
 
+# В директории проекта на хосте:
+sudo chmod -R 775 backend/storage/
+sudo chmod -R 775 backend/bootstrap/cache/
+
+# Зайдите в контейнер php-fpm под root
+docker compose -f compose.dev.yaml exec -u root php-fpm bash
+
+# Внутри контейнера:
+chown -R www:www /var/www/storage/
+chmod -R 775 /var/www/storage/
+chmod -R 775 /var/www/bootstrap/cache/
+
 нуждно войти в контейнер под roote
 docker compose -f compose.dev.yaml exec -u root workspace bash
 # Внутри контейнера:ВНИМАТЕЛЬНО!!!!!
@@ -18,12 +30,8 @@ composer install --optimize-autoloader --no-interaction --no-progress
 # Внутри контейнера:
 chown -R www:www /var/www/vendor
 chmod -R 775 /var/www/vendor
-
-- make install
-- make bash-dev
-  -> composer install
-  -> php artisan key:generate
-  -> php artisan migrate
+php artisan key:generate
+php artisan migrate
 
 back : localhost:8080
 front : localhost:5173
