@@ -30,7 +30,7 @@ const buttonTitle = computed(()=>{
 
 const router = useRouter();
 const authStore = useAuthStore();
-
+const apiUrl = computed(() => import.meta.env.VITE_API_URL);
 interface Data {
   email:string,
   password:string,

@@ -25,11 +25,11 @@ build-dev:
 up-dev:
 	docker compose -f compose.dev.yaml up -d
 down-dev:
-	sudo docker compose -f compose.dev.yaml down -v
+	 docker compose -f compose.dev.yaml down -v
 rebuild-dev:
-	sudo docker compose -f compose.dev.yaml down
-	sudo docker compose -f compose.dev.yaml build --no-cache
-	sudo docker compose -f compose.dev.yaml up -d
+	 docker compose -f compose.dev.yaml down
+	 docker compose -f compose.dev.yaml build --no-cache
+	 docker compose -f compose.dev.yaml up -d
 	
 bash-dev:
 	docker compose -f compose.dev.yaml exec workspace bash
@@ -67,11 +67,11 @@ clear-all:
 	docker system prune -a -f --volumes
 
 install:
-	sudo mkdir -p backend/vendor backend/node_modules
-	sudo chown -R $(USER):$(USER) .
-	sudo find . -type d -exec chmod 755 {} \;
-	sudo find . -type f -exec chmod 644 {} \;
-	sudo chmod -R 755 backend/node_modules/
-	sudo chmod 755 backend/public/
+	 mkdir -p backend/vendor backend/node_modules
+	 chown -R $(USER):$(USER) .
+	 find . -type d -exec chmod 755 {} \;
+	 find . -type f -exec chmod 644 {} \;
+	 chmod -R 755 backend/node_modules/
+	 chmod 755 backend/public/
  
 

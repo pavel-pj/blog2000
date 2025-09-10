@@ -6,6 +6,19 @@
 - cp ./frontend/.env.example ./frontend/.env
 - make build-dev
 - make up-dev
+
+НУЖНО УСТАНАВИЛВАТЬ команды под юзером, не под sudo.
+Добавить пользователя в группу юзер при необходимости.
+Laravel - в worskpsace
+
+нуждно войти в контейнер под roote
+docker compose -f compose.dev.yaml exec -u root workspace bash
+# Внутри контейнера:ВНИМАТЕЛЬНО!!!!!
+composer install --optimize-autoloader --no-interaction --no-progress
+# Внутри контейнера:
+chown -R www:www /var/www/vendor
+chmod -R 775 /var/www/vendor
+
 - make install
 - make bash-dev
   -> composer install

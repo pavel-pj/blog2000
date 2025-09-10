@@ -63,8 +63,9 @@ services:
       - /var/www/node_modules  # Изолируем node_modules
     networks:
       - laravel-development
-    environment:
-      - VITE_API_URL=http://localhost:8080  # URL для API запросов
+    #environment:
+      #- VITE_API_URL=http://localhost:8080  # URL для API запросов
+      #- VITE_API_URL=${VITE_API_URL}
     depends_on:
       - web  # Ждем пока backend запустится
 
@@ -106,7 +107,7 @@ services:
       - POSTGRES_PASSWORD=secret
     volumes:
       - postgres-data-development:/var/lib/postgresql/data
-      - /var/db1/db_backup.dump:/tmp/db1/db_backup.dump:ro
+     # - /var/db1/db_backup.dump:/tmp/db1/db_backup.dump:ro
       #- ./var/databases/vue100/:/tmp/db_data:ro
       #- ./docker/backend/development/database/init-db.sh:/docker-entrypoint-initdb.d/init-db.sh:ro
     networks:
