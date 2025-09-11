@@ -34,10 +34,10 @@ frontend/.env
 frontend/.env.local
 frontend/.env.*.local
 
-backend/vendor/*
-!backend/vendor/.gitkeep
- 
 
+# Vendor directory - РАБОЧИЙ ВАРИАНТ
+backend/vendor/**/*
+!backend/vendor/.gitkeep
 
 backend/.phpunit.cache
 backend/node_modules
