@@ -6,27 +6,11 @@
 Добавить пользователя в группу юзер при необходимости.
 Laravel - в worskpsace - exe
 
-- make first-up-dev
+- make first-up-dev (первичный запуск можно запустить повторно при ошибке);
 
-
-
-нуждно войти в контейнер под roote
---------------------------------------docker compose -f compose.dev.yaml exec -u root workspace bash
-# Внутри контейнера:ВНИМАТЕЛЬНО!!!!!
----------------------------composer install --optimize-autoloader --no-interaction --no-progress
-# Внутри контейнера:
-----------------chown -R www:www /var/www/vendor
-----------------chmod -R 775 /var/www/vendor
------------------php artisan key:generate
---------------------php artisan migrate
-
-# Зайдите в контейнер php-fpm под root
-------------------------------------docker compose -f compose.dev.yaml exec -u root php-fpm bash
-
-# Внутри контейнера:
-------------------------------------chown -R www:www /var/www/storage/
-------------------------------------chmod -R 775 /var/www/storage/
-------------------------------------chmod -R 775 /var/www/bootstrap/cache/
+- make down-dev - выключить конейнеры
+- make up-dev - запустить контейнеры
+ 
 
 back : localhost:8080
 front : localhost:5173

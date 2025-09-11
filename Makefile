@@ -85,8 +85,9 @@ first-up-dev:
 	docker compose -f compose.dev.yaml exec -u root workspace chmod -R 775 /var/www/vendor 
 	docker compose -f compose.dev.yaml exec -u root workspace php artisan key:generate 
 	docker compose -f compose.dev.yaml exec -u root workspace php artisan migrate 
+	docker compose -f compose.dev.yaml up -d
 	docker compose -f compose.dev.yaml exec -u root php-fpm chown -R www:www /var/www/storage/ 
 	docker compose -f compose.dev.yaml exec -u root php-fpm chmod -R 775 /var/www/storage/
 	docker compose -f compose.dev.yaml exec -u root php-fpm chmod -R 775 /var/www/bootstrap/cache/
-	docker compose -f compose.dev.yaml up -d
+ 
 
