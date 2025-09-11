@@ -9,9 +9,6 @@
 Добавить пользователя в группу юзер при необходимости.
 Laravel - в worskpsace
 
-- СОЗДАТЬ ПАПКУ vendor в backend
-
-
 # В директории проекта на хосте:
 sudo chmod -R 775 backend/storage/
 sudo chmod -R 775 backend/bootstrap/cache/
