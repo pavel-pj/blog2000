@@ -35,6 +35,10 @@ frontend/.env.local
 frontend/.env.*.local
 
 
+backend/vendor/
+!backend/vendor/.gitkeep
+backend/vendor/*
+
 
 backend/.phpunit.cache
 backend/node_modules
@@ -43,8 +47,7 @@ backend/public/hot
 backend/public/storage
 backend/storage/*.key
 backend/storage/pail
-backend/vendor/*
-!backend/vendor/.gitkeep
+
 backend/.env
 backend/.env.backup
 backend/.env.production
