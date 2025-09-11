@@ -6,7 +6,7 @@
 Добавить пользователя в группу юзер при необходимости.
 Laravel - в worskpsace - exe
 
-- prepare-dev:
+- make prepare-dev:
 - make up-dev
 
 нуждно войти в контейнер под roote
