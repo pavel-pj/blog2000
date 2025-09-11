@@ -24,9 +24,13 @@ front : localhost:5173
 
 
 # PRODUCTION 
+- 0. cp frontend/.env.prod.example frontend/.env
 - 1. cd frontend
+  2. npm install
 - 2. npm run build
-- 3. cp ./backend/.env.prod.example ./backend/.env 
+  2. cp docker/backend/nginx/nginx.example.conf docker/backend/nginx/nginx.conf
+   изенить в файле nginx.conf domen.com на реальный домен ( без http/https)
+- 3. cp backend/.env.prod.example backend/.env 
   - изменить site на реальный домен:
   - ВНИМАТЕЛЬНО - не добавлять и не убирать https://
   - APP_URL=https://site
@@ -36,6 +40,8 @@ front : localhost:5173
 - 4. cd backend
 - 5. composer install
 - 6. php artisan key:generate
+  
+  
 
 - Настроить ssl отдельно - через sertbot.
 - Необходимо запустить тестовый index.html на требуемом домене, черех nginx-host 
