@@ -6,26 +6,27 @@
 Добавить пользователя в группу юзер при необходимости.
 Laravel - в worskpsace - exe
 
-- make prepare-dev:
-- make up-dev
+- make first-up-dev
+
+
 
 нуждно войти в контейнер под roote
-docker compose -f compose.dev.yaml exec -u root workspace bash
+--------------------------------------docker compose -f compose.dev.yaml exec -u root workspace bash
 # Внутри контейнера:ВНИМАТЕЛЬНО!!!!!
-composer install --optimize-autoloader --no-interaction --no-progress
+---------------------------composer install --optimize-autoloader --no-interaction --no-progress
 # Внутри контейнера:
-chown -R www:www /var/www/vendor
-chmod -R 775 /var/www/vendor
-php artisan key:generate
-php artisan migrate
+----------------chown -R www:www /var/www/vendor
+----------------chmod -R 775 /var/www/vendor
+-----------------php artisan key:generate
+--------------------php artisan migrate
 
 # Зайдите в контейнер php-fpm под root
-docker compose -f compose.dev.yaml exec -u root php-fpm bash
+------------------------------------docker compose -f compose.dev.yaml exec -u root php-fpm bash
 
 # Внутри контейнера:
-chown -R www:www /var/www/storage/
-chmod -R 775 /var/www/storage/
-chmod -R 775 /var/www/bootstrap/cache/
+------------------------------------chown -R www:www /var/www/storage/
+------------------------------------chmod -R 775 /var/www/storage/
+------------------------------------chmod -R 775 /var/www/bootstrap/cache/
 
 back : localhost:8080
 front : localhost:5173

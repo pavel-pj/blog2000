@@ -74,11 +74,19 @@ install:
 	 chmod -R 755 backend/node_modules/
 	 chmod 755 backend/public/
 
-prepare-dev:
+first-up-dev:
 	sudo cp backend/.env.dev.example backend/.env 
 	sudo cp frontend/.env.dev.example frontend/.env 
 	sudo chmod -R 775 backend/storage/ 
 	sudo chmod -R 775 backend/bootstrap/cache/ 
-	 
- 
+	docker compose -f compose.dev.yaml up -d
+	docker compose -f compose.dev.yaml exec -u root workspace composer install --optimize-autoloader --no-interaction --no-progress
+	docker compose -f compose.dev.yaml exec -u root workspace chown -R www:www /var/www/vendor 
+	docker compose -f compose.dev.yaml exec -u root workspace chmod -R 775 /var/www/vendor 
+	docker compose -f compose.dev.yaml exec -u root workspace php artisan key:generate 
+	docker compose -f compose.dev.yaml exec -u root workspace php artisan migrate 
+	docker compose -f compose.dev.yaml exec -u root php-fpm chown -R www:www /var/www/storage/ 
+	docker compose -f compose.dev.yaml exec -u root php-fpm chmod -R 775 /var/www/storage/
+	docker compose -f compose.dev.yaml exec -u root php-fpm chmod -R 775 /var/www/bootstrap/cache/
+	docker compose -f compose.dev.yaml up -d
 
