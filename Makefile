@@ -25,7 +25,7 @@ build-dev:
 up-dev:
 	docker compose -f compose.dev.yaml up -d
 down-dev:
-	 docker compose -f compose.dev.yaml down -v
+	 docker compose -f compose.dev.yaml down
 rebuild-dev:
 	 docker compose -f compose.dev.yaml down
 	 docker compose -f compose.dev.yaml build --no-cache
