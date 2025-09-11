@@ -7,7 +7,7 @@
 
 НУЖНО УСТАНАВИЛВАТЬ команды под юзером, не под sudo.
 Добавить пользователя в группу юзер при необходимости.
-Laravel - в worskpsace
+Laravel - в worskpsace - exe
 
 # В директории проекта на хосте:
 sudo chmod -R 775 backend/storage/
