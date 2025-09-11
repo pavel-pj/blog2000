@@ -2,18 +2,11 @@
 
 # Запустить DEV
 
-- cp backend/.env.dev.example backend/.env
-- cp frontend/.env.dev.example frontend/.env
-
 НУЖНО УСТАНАВИЛВАТЬ команды под юзером, не под sudo.
 Добавить пользователя в группу юзер при необходимости.
 Laravel - в worskpsace - exe
 
-# В директории проекта на хосте:
-sudo chmod -R 775 backend/storage/
-sudo chmod -R 775 backend/bootstrap/cache/
-
-- make build-dev
+- prepare-dev:
 - make up-dev
 
 нуждно войти в контейнер под roote

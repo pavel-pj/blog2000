@@ -73,5 +73,12 @@ install:
 	 find . -type f -exec chmod 644 {} \;
 	 chmod -R 755 backend/node_modules/
 	 chmod 755 backend/public/
+
+prepare-dev:
+	sudo cp backend/.env.dev.example backend/.env 
+	sudo cp frontend/.env.dev.example frontend/.env 
+	sudo chmod -R 775 backend/storage/ 
+	sudo chmod -R 775 backend/bootstrap/cache/ 
+	 
  
 
