@@ -12,7 +12,7 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('articles', function (Blueprint $table) {
-            $table->id();
+            $table->uuid('id')->primary();
             $table->string('name',255);
             $table->string('title',255);
             $table->mediumText('html_content');
@@ -21,9 +21,9 @@ return new class extends Migration
             $table->timestamps();
 
             // Внешний ключ на эту же таблицу
-            $table->foreign('catalog_id')
-                ->references('id')
-                ->on('catalogs');
+            //$table->foreign('catalog_id')
+            //    ->references('id')
+            //    ->on('catalogs');
         });
     }
 

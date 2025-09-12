@@ -107,10 +107,9 @@ const itemsBreadCrumbs =computed(()=>{
 </script>
 <template>
 
-HELLO
+
 <BreadCrumbs :items="itemsBreadCrumbs" />
 <Button @click="create" label="Primary" rounded style="display:block">Create </Button>
-
 
   <PageSpiner :my="margYspiner"  :isSpiner="isPageSpiner"  />
 

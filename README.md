@@ -10,6 +10,10 @@ Laravel - в worskpsace - exe
 
 - make down-dev - выключить конейнеры
 - make up-dev - запустить контейнеры
+
+
+- установка дополнительных пакетов через root контейнера workspace : 
+  docker compose -f compose.dev.yaml exec -u root workspace composer  require spatie/laravel-permission
  
 
 back : localhost:8080
