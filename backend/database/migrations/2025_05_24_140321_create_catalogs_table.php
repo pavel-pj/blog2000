@@ -12,15 +12,15 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('catalogs', function (Blueprint $table) {
-            $table->id();
+            $table->uuid('id')->primary();
             $table->string('name',255);
-            $table->unsignedBigInteger('parent_id')->nullable();
+            //$table->unsignedBigInteger('parent_id')->nullable();
             $table->timestamps();
 
             // Внешний ключ на эту же таблицу
-            $table->foreign('parent_id')
-                ->references('id')
-                ->on('catalogs');
+           // $table->foreign('parent_id')
+           //     ->references('id')
+           //    ->on('catalogs');
 
         });
     }

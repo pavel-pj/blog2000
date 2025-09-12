@@ -8,6 +8,7 @@ use App\Services\CatalogService;
 use App\Http\Requests\CatalogCreateRequest;
 use App\Http\Requests\CatalogUpdateRequest;
 use Illuminate\Http\JsonResponse;
+use Illuminate\Support\Facades\Log;
 
 class CatalogController extends Controller
 {
@@ -41,9 +42,9 @@ class CatalogController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(CatalogCreateRequest $request): JsonResponse
+    public function store(CatalogCreateRequest $request)//: JsonResponse
     {
-
+   
         $validated = $request->validated();
         try {
             return response()->json($this->service->store($validated), 201);

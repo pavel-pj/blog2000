@@ -41,8 +41,8 @@ class ArticleCreateRequest extends FormRequest
             'name' => 'string|required|max:255',
             'title' => 'string|required|max:255',
             'slug' => 'string|required|max:255|unique:articles,slug',
-            'html_content' => 'string|nullable',
-            'catalog_id' => 'required|numeric| exists:catalogs,id',
+            //'html_content' => 'string|nullable',
+            'catalog_id' => 'required|string',
         ];
     }
 }

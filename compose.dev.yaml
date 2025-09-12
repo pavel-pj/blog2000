@@ -36,6 +36,11 @@ services:
     env_file:
       # Load the environment variables from the Laravel application
       - .env
+    environment:  # ← ДОБАВЬТЕ ЭТОТ БЛОК
+    - APP_DEBUG=true
+    - APP_ENV=local
+    - LOG_CHANNEL=stderr
+    - LOG_LEVEL=debug  
     user: "${UID:-1000}:${GID:-1000}"
     volumes:
       # Mount the application code for live updates
@@ -91,6 +96,11 @@ services:
     stdin_open: true  # Keeps standard input open for 'docker exec'
     env_file:
       - .env
+    environment:  # ← ДОБАВЬТЕ ЭТОТ БЛОК
+      - APP_DEBUG=true
+      - APP_ENV=local
+      - LOG_CHANNEL=stderr
+      - LOG_LEVEL=debug  
     volumes:
       - ./backend:/var/www
     networks:

@@ -56,7 +56,7 @@ class CatalogUpdateRequest extends FormRequest
                         }
                     )
             ],
-            'parent_id' => 'string|nullable|exists:catalogs,id'
+ 
         ];
     }
 }

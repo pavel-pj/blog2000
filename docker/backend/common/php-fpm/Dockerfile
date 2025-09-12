@@ -129,6 +129,8 @@ ARG XDEBUG_IDE_KEY=DOCKER
 ARG XDEBUG_LOG=/dev/stdout
 ARG XDEBUG_LOG_LEVEL=0
 
+
+
 USER root
 
 # Configure Xdebug if enabled
@@ -142,6 +144,11 @@ RUN if [ "${XDEBUG_ENABLED}" = "true" ]; then \
     echo "xdebug.client_host=${XDEBUG_HOST}" >> /usr/local/etc/php/conf.d/docker-php-ext-xdebug.ini ; \
     echo "xdebug.start_with_request=yes" >> /usr/local/etc/php/conf.d/docker-php-ext-xdebug.ini ; \
 fi
+
+#Настройка error_log
+RUN echo "error_log = /proc/self/fd/2" >> /usr/local/etc/php/conf.d/error-log.ini && \
+    echo "log_errors = On" >> /usr/local/etc/php/conf.d/error-log.ini && \
+    echo "error_reporting = E_ALL" >> /usr/local/etc/php/conf.d/error-log.ini
 
 # Add ARGs for syncing permissions
 ARG UID=1000

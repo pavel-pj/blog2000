@@ -1,4 +1,4 @@
-.PHONY: build-dev up-dev down-dev clear-all bash-pro clear-cache
+.PHONY: build-dev up-dev down-dev clear-all bash-pro clear-cache lint
 
 build-pro:
 	docker compose -f compose.prod.yaml build
@@ -16,14 +16,36 @@ clear-pro:
 	sudo systemctl restart docker
 bash-pro:
 	docker compose -f compose.prod.yaml exec php-fpm bash
-php-log:
-	docker compose -f compose.dev.yaml logs php-fpm
 
+
+
+
+
+
+### DEVELOPMENT
+
+logs:
+	docker compose -f compose.dev.yaml logs php-fpm
+lint:
+	docker compose -f compose.dev.yaml exec -u root workspace bash -c "composer lintfix"
 
 build-dev:
 	docker compose -f compose.dev.yaml build
 up-dev:
+	sudo chmod -R 775 backend/storage/   
+	sudo chmod -R 775 backend/bootstrap/cache/ 
 	docker compose -f compose.dev.yaml up -d
+	docker compose -f compose.dev.yaml exec -u root workspace composer install --optimize-autoloader --no-interaction --no-progress 
+	docker compose -f compose.dev.yaml exec -u root workspace chown -R www:www /var/www/vendor 
+	docker compose -f compose.dev.yaml exec -u root workspace chmod -R 775 /var/www/vendor 
+	docker compose -f compose.dev.yaml exec -u root workspace php artisan key:generate 
+	docker compose -f compose.dev.yaml exec -u root workspace php artisan migrate 
+	docker compose -f compose.dev.yaml up -d 
+	docker compose -f compose.dev.yaml exec -u root php-fpm chown -R www:www /var/www/storage/ 
+	docker compose -f compose.dev.yaml exec -u root php-fpm chmod -R 775 /var/www/storage/ 
+	docker compose -f compose.dev.yaml exec -u root php-fpm chmod -R 775 /var/www/bootstrap/cache/ 
+
+
 down-dev:
 	 docker compose -f compose.dev.yaml down
 rebuild-dev:
@@ -66,13 +88,13 @@ clear-all:
 	docker network prune -f
 	docker system prune -a -f --volumes
 
-install:
-	 mkdir -p backend/vendor backend/node_modules
-	 chown -R $(USER):$(USER) .
-	 find . -type d -exec chmod 755 {} \;
-	 find . -type f -exec chmod 644 {} \;
-	 chmod -R 755 backend/node_modules/
-	 chmod 755 backend/public/
+#install:
+#	 mkdir -p backend/vendor backend/node_modules
+#	 chown -R $(USER):$(USER) .
+#	 find . -type d -exec chmod 755 {} \;
+#	 find . -type f -exec chmod 644 {} \;
+#	 chmod -R 755 backend/node_modules/
+#	 chmod 755 backend/public/
 
 first-up-dev:
 	sudo cp backend/.env.dev.example backend/.env 
