@@ -40,7 +40,7 @@ class CatalogCreateRequest extends FormRequest
     {
         return [
             'name' => 'string|required| unique:catalogs,name',
-            'parent_id' => 'string|nullable|exists:catalogs,id'
+
         ];
     }
 }

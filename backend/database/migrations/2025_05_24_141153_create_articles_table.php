@@ -15,9 +15,9 @@ return new class extends Migration
             $table->uuid('id')->primary();
             $table->string('name',255);
             $table->string('title',255);
-            $table->mediumText('html_content');
+            $table->mediumText('html_content')->nullable();
             $table->string('slug')->unique();
-            $table->unsignedBigInteger('catalog_id');
+            $table->uuid('catalog_id');
             $table->timestamps();
 
             // Внешний ключ на эту же таблицу

@@ -13,9 +13,9 @@ return new class extends Migration
     public function up(): void
     {
          $user = User::create([
-            'email' => 'voroshilow_pavel@mail.ru',
+            'email' => 'admin@m.ru',
             'name' => 'admin',
-            'password' => Hash::make('Beatles1987$'),
+            'password' => Hash::make('123456'),
         ]);
          
     }

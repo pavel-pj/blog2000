@@ -14,7 +14,7 @@ return new class extends Migration
         Schema::create('catalogs', function (Blueprint $table) {
             $table->uuid('id')->primary();
             $table->string('name',255);
-            $table->unsignedBigInteger('parent_id')->nullable();
+            //$table->unsignedBigInteger('parent_id')->nullable();
             $table->timestamps();
 
             // Внешний ключ на эту же таблицу

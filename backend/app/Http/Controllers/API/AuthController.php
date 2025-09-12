@@ -17,15 +17,15 @@ class AuthController extends Controller
     {
 
         $validated = $request->validated();
-      
+
         $user = User::create([
 
             'email' => $validated['email'],
             'password' => Hash::make($validated['password']),
              ]);
-        
+
         $token = $user->createToken('MyAppToken')->plainTextToken;
-             
+
         return response()->json(
             [
             'success' => true,
@@ -33,18 +33,17 @@ class AuthController extends Controller
             'token' => $token,
             'user' => $user,
             ]
-        ); 
-       
-
+        );
     }
 
     // User Login API
     public function login(Request $request)
     {
+        
         if (!Auth::attempt($request->only('email', 'password'))) {
             return response()->json(['error' => 'Unauthorized'], 401);
         }
-
+         
         $user = Auth::user();
         $token = $user->createToken('MyAppToken')->plainTextToken;
 
@@ -68,17 +67,7 @@ class AuthController extends Controller
             ]
         );
     }
-
-    public function abba(Request $request)
-    {
-        return response()->json(
-            [
-            'success' => true,
-            'user' => $request->user(),
-            ]
-        );
-    }
-
+ 
     public function logout(Request $request)
     {
         $request->user()->tokens()->delete();

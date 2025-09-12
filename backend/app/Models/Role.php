@@ -8,7 +8,6 @@ use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 
-
 /**
  * Class Role
  *
@@ -33,16 +32,16 @@ class Role extends \Spatie\Permission\Models\Role
     protected $keyType = 'string';
 
     protected $fillable = [
-		'name',
+        'name',
         'nameRu',
-		'guard_name',
-    
-	];
+        'guard_name',
+
+    ];
 
     protected static function boot()
     {
         parent::boot();
-        
+
         static::creating(function ($model) {
             if (empty($model->{$model->getKeyName()})) {
                 $model->{$model->getKeyName()} = Str::uuid()->toString();

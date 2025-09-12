@@ -40,14 +40,18 @@ class ArticleController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(ArticleCreateRequest $request): JsonResponse
+    public function store(ArticleCreateRequest $request)//: JsonResponse
     {
 
-        $validated = $request->validated();
-
+              
+        error_log('DEBUG: ARTICLE - ' . json_encode($request, JSON_PRETTY_PRINT));
+      
         try {
+            $validated = $request->validated();
+             error_log('DEBUG: ARTICLE after VALIDATION');  
             return response()->json($this->service->store($validated), 201);
         } catch (\Exception $e) {
+            error_log($e->getMessage());
             return response()->error($e->getMessage(), 500);
         }
     }

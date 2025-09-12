@@ -48,7 +48,7 @@ const {
   name:string,
   title:string
   slug: string
-  catalog_id: number
+  catalog_id: string
 }>();
 
 
@@ -179,10 +179,9 @@ const schema = toTypedSchema(
       .max(255, '"title" is too long')
       .regex(/^[a-z0-9-]+$/, 'Should have only latin letters and "-", no spaces'),
 
-    catalog_id: z.number({
-      required_error: 'Check a category',
-      invalid_type_error: 'Requires to check a catalog'
-    }).min(1, 'Requires to check a catalog')
+    catalog_id: z.string()
+      .min(1, '"name" is required')
+      .max(255, '"name" is too long')
 
   })
 
