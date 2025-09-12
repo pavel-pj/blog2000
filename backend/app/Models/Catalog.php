@@ -25,6 +25,7 @@ class Catalog extends Model
         'name',
         'parent_id'
     ];
+    
 /*     
     public function parent():BelongsTo {
         return $this->belongsTo(Catalog::class,'parent_id');
