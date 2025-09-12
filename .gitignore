@@ -64,3 +64,6 @@ backend/.vscode
 backend/.zed
 backend/.osp
 
+backups/
+
+
