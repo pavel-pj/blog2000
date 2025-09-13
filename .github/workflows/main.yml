@@ -30,48 +30,25 @@ jobs:
       working-directory: ./backend
       run: composer install --prefer-dist --no-progress --no-interaction
 
-    - name: Create .env.testing
+    - name: Create .env file
       working-directory: ./backend
       run: |
-        cp .env.dev.example .env.testing
-        echo "APP_ENV=testing" >> .env.testing
-        echo "APP_DEBUG=true" >> .env.testing
-        echo "APP_KEY=base64:$(openssl rand -base64 32)" >> .env.testing
-        echo "DB_CONNECTION=pgsql" >> .env.testing
-        echo "DB_HOST=localhost" >> .env.testing
-        echo "DB_PORT=5432" >> .env.testing
-        echo "DB_DATABASE=app_test" >> .env.testing
-        echo "DB_USERNAME=laravel" >> .env.testing
-        echo "DB_PASSWORD=secret" >> .env.testing
-        echo "CACHE_DRIVER=array" >> .env.testing
-        echo "SESSION_DRIVER=array" >> .env.testing
-        echo "QUEUE_CONNECTION=sync" >> .env.testing
-        echo "MAIL_MAILER=array" >> .env.testing
-
-    - name: Copy .env.testing to .env
-      working-directory: ./backend
-      run: cp .env.testing .env
+        cp .env.dev.example .env
+        echo "APP_KEY=base64:$(openssl rand -base64 32)" >> .env
 
     - name: Generate application key
       working-directory: ./backend
       run: php artisan key:generate
 
-    - name: Wait for PostgreSQL to be ready
-      run: |
-        echo "Waiting for PostgreSQL..."
-        for i in {1..30}; do
-          if nc -z localhost 5432; then
-            echo "PostgreSQL is ready!"
-            break
-          fi
-          echo "Waiting for PostgreSQL... attempt $i"
-          sleep 2
-        done
-
-    - name: Run database migrations
-      working-directory: ./backend
-      run: php artisan migrate --env=testing --force
+    - name: Wait for PostgreSQL
+      run: sleep 15
 
     - name: Run tests
       working-directory: ./backend
+      env:
+        DB_TEST_HOST: localhost
+        DB_TEST_PORT: 5432
+        DB_TEST_DATABASE: app_test
+        DB_TEST_USERNAME: laravel
+        DB_TEST_PASSWORD: secret
       run: ./vendor/bin/phpunit
