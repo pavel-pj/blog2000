@@ -26,18 +26,34 @@ jobs:
         php-version: '8.3'
         extensions: pgsql, mbstring, xml, curl, dom, fileinfo, intl, json, zip
 
-    - name: Setup environment
-      working-directory: ./backend
-      run: |
-        cp .env.testing .env
-        php artisan key:generate
-
     - name: Install dependencies
       working-directory: ./backend
       run: composer install --prefer-dist --no-progress --no-interaction
 
-    - name: Wait for PostgreSQL
+    - name: Setup environment
       working-directory: ./backend
+      run: |
+        cp .env.dev.example .env.testing
+        echo "APP_ENV=testing" >> .env.testing
+        echo "APP_DEBUG=true" >> .env.testing
+        echo "APP_KEY=base64:$(openssl rand -base64 32)" >> .env.testing
+        echo "DB_CONNECTION=pgsql" >> .env.testing
+        echo "DB_HOST=localhost" >> .env.testing
+        echo "DB_PORT=5432" >> .env.testing
+        echo "DB_DATABASE=app_test" >> .env.testing
+        echo "DB_USERNAME=laravel" >> .env.testing
+        echo "DB_PASSWORD=secret" >> .env.testing
+        echo "CACHE_DRIVER=array" >> .env.testing
+        echo "SESSION_DRIVER=array" >> .env.testing
+        echo "QUEUE_CONNECTION=sync" >> .env.testing
+        echo "MAIL_MAILER=array" >> .env.testing
+        cp .env.testing .env
+
+    - name: Generate key
+      working-directory: ./backend
+      run: php artisan key:generate
+
+    - name: Wait for PostgreSQL
       run: sleep 10
 
     - name: Run tests
