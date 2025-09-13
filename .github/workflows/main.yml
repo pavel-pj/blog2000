@@ -42,12 +42,12 @@ jobs:
         echo "APP_KEY=base64:$(openssl rand -base64 32)" >> .env
         echo "APP_ENV=testing" >> .env
         
-        # Для тестового соединения
-        echo "DB_TEST_HOST=localhost" >> .env
+        # Правильное имя хоста для GitHub Actions сервисов
+        echo "DB_TEST_HOST=postgres" >> .env
         echo "DB_TEST_PORT=5432" >> .env
         
-        # Для основного соединения (чтобы избежать ошибок)
-        echo "DB_HOST=localhost" >> .env
+        # Также для основного соединения
+        echo "DB_HOST=postgres" >> .env
         echo "DB_PORT=5432" >> .env
         echo "DB_DATABASE=app_test" >> .env
 
@@ -59,7 +59,12 @@ jobs:
       working-directory: ./backend
       run: php artisan key:generate
 
-    - name: Run migrations with testing connection
+    - name: Wait for PostgreSQL to be ready
+      run: |
+        echo "Waiting for PostgreSQL to be ready..."
+        timeout 30s bash -c 'until docker exec $(docker ps -q -f name=postgres) pg_isready -U laravel -d app_test; do sleep 2; done'
+
+    - name: Run migrations
       working-directory: ./backend
       run: php artisan migrate --database=testing --force
 

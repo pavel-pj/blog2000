@@ -105,7 +105,9 @@ const send = async () => {
                      toggleMask :feedback="false" />
           </div>
       </div>
-      <span>afsefaesf</span>
+      <router-link
+      class="text-green-700"
+      :to="{ name: 'register' }">Registration</router-link>
 
       <Button type="button" :label="buttonTitle"  :loading="isLoading"
               class="bg-blue-500 hover:bg-blue-600 text-white" @click="send" />
