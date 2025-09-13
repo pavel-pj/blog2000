@@ -14,7 +14,7 @@ jobs:
       postgres:
         image: postgres:16
         env:
-          POSTGRES_DB: app_test
+          POSTGRES_DB: app_test  # Автоматически создается
           POSTGRES_USER: laravel
           POSTGRES_PASSWORD: secret
         options: >-
@@ -22,8 +22,6 @@ jobs:
           --health-interval 10s
           --health-timeout 5s
           --health-retries 5
-        ports:
-          - 5432:5432
 
     steps:
     - name: Checkout code
@@ -42,8 +40,6 @@ jobs:
       run: |
         cp .env.dev.example .env
         echo "APP_KEY=base64:$(openssl rand -base64 32)" >> .env
-        
-        # Test database configuration
         echo "DB_TEST_HOST=localhost" >> .env
         echo "DB_TEST_PORT=5432" >> .env
 
@@ -55,16 +51,8 @@ jobs:
       working-directory: ./backend
       run: php artisan key:generate
 
-    - name: Create test database
+    - name: Run migrations and tests
+      working-directory: ./backend
       run: |
-        # Указываем пароль через переменную окружения
-        PGPASSWORD=secret psql -h localhost -U laravel -d postgres -c "CREATE DATABASE app_test;"
-        PGPASSWORD=secret psql -h localhost -U laravel -d postgres -c "GRANT ALL PRIVILEGES ON DATABASE app_test TO laravel;"
-
-    - name: Run migrations
-      working-directory: ./backend
-      run: php artisan migrate --force
-
-    - name: Run tests
-      working-directory: ./backend
-      run: php artisan test --stop-on-failure
+        php artisan migrate --force
+        php artisan test --stop-on-failure
