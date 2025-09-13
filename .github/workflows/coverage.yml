@@ -85,22 +85,24 @@ jobs:
         retention-days: 7
 
     - name: Update README with coverage badge
+      env:
+        GH_TOKEN: ${{ secrets.PAT }}
       run: |
-        # Обновляем README с новым бейджем
-        BADGE_MARKDOWN="[![Test Coverage](https://img.shields.io/badge/coverage-$COVERAGE_PERCENT%25-blue)]($GITHUB_SERVER_URL/$GITHUB_REPOSITORY/actions/runs/$GITHUB_RUN_ID)"
+        COVERAGE_PERCENT=$(grep -o 'line-rate="[0-9.]*"' ./backend/coverage.xml | head -1 | cut -d'"' -f2)
+        COVERAGE_PERCENT=$(echo "scale=0; $COVERAGE_PERCENT * 100" | bc)
         
-        # Создаем или обновляем раздел с coverage в README
+        # Обновляем README
+        BADGE_MARKDOWN="[![Test Coverage](https://img.shields.io/badge/coverage-${COVERAGE_PERCENT}%25-blue)](https://github.com/$GITHUB_REPOSITORY/actions)"
+        
         if grep -q "## Test Coverage" README.md; then
-          # Обновляем существующий бейдж
-          sed -i "s|!\\[Test Coverage\\].*|![Test Coverage](https://img.shields.io/badge/coverage-$COVERAGE_PERCENT%25-blue)|" README.md
+          sed -i "s|!\\[Test Coverage\\].*|${BADGE_MARKDOWN}|" README.md
         else
-          # Добавляем новый раздел
-          echo -e "\n## Test Coverage\n\n$BADGE_MARKDOWN\n" >> README.md
+          echo -e "\n## Test Coverage\n\n${BADGE_MARKDOWN}\n" >> README.md
         fi
 
-        # Коммитим изменения
-        git config --global user.name "GitHub Actions"
-        git config --global user.email "actions@github.com"
+        git config --global user.name "github-actions"
+        git config --global user.email "github-actions@github.com"
+        git remote set-url origin https://x-access-token:${GH_TOKEN}@github.com/$GITHUB_REPOSITORY.git
         git add README.md
-        git commit -m "Update test coverage badge: $COVERAGE_PERCENT%" || echo "No changes to commit"
+        git commit -m "Update test coverage: ${COVERAGE_PERCENT}%"
         git push
