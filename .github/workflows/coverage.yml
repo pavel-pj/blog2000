@@ -1,0 +1,95 @@
+name: Laravel Tests
+
+on: [push, pull_request]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+
+    services:
+      postgres:
+        image: postgres:16
+        env:
+          POSTGRES_DB: app_test
+          POSTGRES_USER: laravel
+          POSTGRES_PASSWORD: secret
+        ports:
+          - 5432:5432
+        options: --health-cmd pg_isready --health-interval 10s --health-timeout 5s --health-retries 5
+
+    steps:
+    - uses: actions/checkout@v4
+
+    - name: Setup PHP
+      uses: shivammathur/setup-php@v2
+      with:
+        php-version: '8.3'
+        extensions: pgsql, mbstring, xml, curl, dom, fileinfo, intl, json, zip, pcov
+        coverage: pcov
+        tools: composer
+
+    - name: Install dependencies
+      working-directory: ./backend
+      run: composer install --prefer-dist --no-progress --no-interaction
+
+    - name: Create .env file
+      working-directory: ./backend
+      run: |
+        cp .env.dev.example .env
+        echo "APP_KEY=base64:$(openssl rand -base64 32)" >> .env
+
+    - name: Generate application key
+      working-directory: ./backend
+      run: php artisan key:generate
+
+    - name: Wait for PostgreSQL
+      run: sleep 10
+
+    - name: Run tests with coverage
+      working-directory: ./backend
+      env:
+        DB_TEST_HOST: localhost
+        DB_TEST_PORT: 5432
+        DB_TEST_DATABASE: app_test
+        DB_TEST_USERNAME: laravel
+        DB_TEST_PASSWORD: secret
+      run: |
+        # Генерируем clover отчет для Codecov
+        ./vendor/bin/phpunit --coverage-clover=coverage.xml
+        # Генерируем HTML отчет для просмотра
+        ./vendor/bin/phpunit --coverage-html=storage/coverage
+
+    - name: Upload coverage to Codecov
+      uses: codecov/codecov-action@v3
+      with:
+        file: ./backend/coverage.xml
+        flags: phpunit
+        name: PHPUnit Coverage
+
+    - name: Upload coverage report artifact
+      uses: actions/upload-artifact@v4
+      with:
+        name: coverage-report
+        path: ./backend/storage/coverage/
+        retention-days: 7
+
+    - name: Extract coverage percentage
+      id: coverage
+      working-directory: ./backend
+      run: |
+        # Извлекаем процент покрытия из XML
+        COVERAGE_PERCENT=$(grep -o 'line-rate="[0-9.]*"' coverage.xml | head -1 | cut -d'"' -f2)
+        COVERAGE_PERCENT=$(echo "scale=2; $COVERAGE_PERCENT * 100" | bc)
+        echo "COVERAGE_PERCENT=${COVERAGE_PERCENT}%" >> $GITHUB_OUTPUT
+        echo "Coverage: ${COVERAGE_PERCENT}%"
+
+    - name: Create coverage badge
+      uses: schneegans/dynamic-badges-action@v1.6.0
+      with:
+        auth: ${{ secrets.GITHUB_TOKEN }}
+        gistID: YOUR_GIST_ID  # Замените на ID вашего gist
+        filename: coverage.json
+        label: Coverage
+        message: ${{ steps.coverage.outputs.COVERAGE_PERCENT }}
+        color: green
+        namedLogo: codecov
