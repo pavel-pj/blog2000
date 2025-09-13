@@ -30,13 +30,6 @@
         <env name="QUEUE_CONNECTION" value="sync"/>
         <env name="SESSION_DRIVER" value="array"/>
         <env name="TELESCOPE_ENABLED" value="false"/>
-
-        <!-- Добавьте эти настройки для подключения к PostgreSQL -->
-        <env name="DB_TEST_CONNECTION" value="pgsql"/>
-        <env name="DB_TEST_HOST" value="localhost"/>
-        <env name="DB_TEST_PORT" value="5432"/>
-        <env name="DB_TEST_DATABASE" value="app_test"/>
-        <env name="DB_TEST_USERNAME" value="laravel"/>
-        <env name="DB_TEST_PASSWORD" value="secret"/>
+ 
     </php>
 </phpunit>
