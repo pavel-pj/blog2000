@@ -1,13 +1,9 @@
 name: Laravel Tests
 
-on:
-  push:
-    branches: [main, develop]
-  pull_request:
-    branches: [main, develop]
+on: [push, pull_request]
 
 jobs:
-  laravel-tests:
+  test:
     runs-on: ubuntu-latest
 
     services:
@@ -17,57 +13,36 @@ jobs:
           POSTGRES_DB: app_test
           POSTGRES_USER: laravel
           POSTGRES_PASSWORD: secret
-        options: >-
-          --health-cmd pg_isready
-          --health-interval 10s
-          --health-timeout 5s
-          --health-retries 5
+        ports:
+          - 5432:5432
 
     steps:
-    - name: Checkout code
-      uses: actions/checkout@v4
+    - uses: actions/checkout@v4
 
     - name: Setup PHP
       uses: shivammathur/setup-php@v2
       with:
         php-version: '8.3'
-        extensions: pgsql, mbstring, xml, curl, dom, fileinfo, intl, json, zip, gd
-        coverage: none
-        tools: composer
+        extensions: pgsql, mbstring, xml, curl, dom, fileinfo, intl, json, zip
 
-    - name: Prepare environment
+    - name: Setup environment
       working-directory: ./backend
       run: |
         cp .env.dev.example .env
         echo "APP_KEY=base64:$(openssl rand -base64 32)" >> .env
-        echo "APP_ENV=testing" >> .env
-        
-        # Правильное имя хоста для GitHub Actions сервисов
-        echo "DB_TEST_HOST=postgres" >> .env
+        echo "DB_TEST_HOST=localhost" >> .env
         echo "DB_TEST_PORT=5432" >> .env
-        
-        # Также для основного соединения
-        echo "DB_HOST=postgres" >> .env
-        echo "DB_PORT=5432" >> .env
-        echo "DB_DATABASE=app_test" >> .env
 
     - name: Install dependencies
       working-directory: ./backend
-      run: composer install --prefer-dist --no-progress --no-interaction --optimize-autoloader
+      run: composer install --prefer-dist --no-progress --no-interaction
 
-    - name: Generate application key
+    - name: Run tests directly with PHPUnit
       working-directory: ./backend
-      run: php artisan key:generate
-
-    - name: Wait for PostgreSQL to be ready
+      env:
+        DB_TEST_HOST: localhost
+        DB_TEST_PORT: 5432
       run: |
-        echo "Waiting for PostgreSQL to be ready..."
-        timeout 30s bash -c 'until docker exec $(docker ps -q -f name=postgres) pg_isready -U laravel -d app_test; do sleep 2; done'
-
-    - name: Run migrations
-      working-directory: ./backend
-      run: php artisan migrate --database=testing --force
-
-    - name: Run tests
-      working-directory: ./backend
-      run: php artisan test --stop-on-failure
+        php artisan key:generate
+        sleep 5
+        ./vendor/bin/phpunit

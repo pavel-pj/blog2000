@@ -16,9 +16,14 @@ export const useAuthStore = defineStore('auth', ()=> {
     password_confirm?:string,
   }
 
+  interface RoleData {
+    [key:string] : string[]
+  }
+
   interface AuthResponse {
     token:string,
     user: User,
+    roles: RoleData,
   }
 
   const user : Ref<User | null > = ref(null);
@@ -36,6 +41,7 @@ export const useAuthStore = defineStore('auth', ()=> {
       // 3. Сохраняем токен и пользователя
       token.value = data.token;
       user.value = data.user;
+      
       localStorage.setItem('auth_token', data.token);
 
       return data;
@@ -45,13 +51,11 @@ export const useAuthStore = defineStore('auth', ()=> {
     }
   }
   const  login = async (formData: LoginFormData): Promise<AuthResponse>=> {
-    console.log("ПРОБУЕМ auth.login")
+     
     try {
-      console.log("auth.login")
-      // 1. Запрашиваем CSRF-куки (если нужно)
-      const v = await http.get('/sanctum/csrf-cookie');
-      console.log('SCSRF-TOKEN : ')
-      console.log(v)
+      
+      await http.get('/sanctum/csrf-cookie');
+      
       // 2. Отправляем логин/пароль
       const {data} = await http.post('/login', formData);
 
@@ -62,7 +66,7 @@ export const useAuthStore = defineStore('auth', ()=> {
 
       return data;
     } catch (error) {
-      console.error('Login failed:', error.response?.data || error.message);
+       
       throw error;
     }
   }

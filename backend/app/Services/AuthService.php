@@ -28,5 +28,29 @@ class AuthService
          ];
 
     }
+
+    public function login (array $validated): Array
+    {
+
+        if (!Auth::attempt([
+            'email'=> $validated['email'],
+            'password' => $validated['password'],
+         ])) {
+           // $request->only('email', 'password'))) {
+            return response()->json(['error' => 'Unauthorized'], 401);
+        }
+
+        $user = Auth::user();
+        $token = $user->createToken('MyAppToken')->plainTextToken;
+
+        return response()->json(
+            [
+            'success' => true,
+            'message' => 'Login successful.',
+            'token' => $token,
+            'user' => $user,
+            ]
+        );
+    }
     
 }

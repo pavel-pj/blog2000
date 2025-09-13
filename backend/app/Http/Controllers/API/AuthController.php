@@ -8,6 +8,7 @@ use App\Models\User;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use App\Http\Requests\UserCreateRequest;
+use App\Http\Requests\UserLoginRequest;
 use Validator;
 use Illuminate\Http\JsonResponse;
 use App\Services\AuthService;
@@ -36,24 +37,17 @@ class AuthController extends Controller
     }
  
     // User Login API
-    public function login(Request $request)
+    public function login(UserLoginRequest $request)
     {
 
-        if (!Auth::attempt($request->only('email', 'password'))) {
-            return response()->json(['error' => 'Unauthorized'], 401);
+        $validated = $request->validated();
+
+        try {
+            return response()->json($this->service->login($validated), 200);
+        } catch (\Exception $e) {
+            return response()->json($e->getMessage(), 404);
         }
-
-        $user = Auth::user();
-        $token = $user->createToken('MyAppToken')->plainTextToken;
-
-        return response()->json(
-            [
-            'success' => true,
-            'message' => 'Login successful.',
-            'token' => $token,
-            'user' => $user,
-            ]
-        );
+ 
     }
 
     // User Profile API (Protected)
