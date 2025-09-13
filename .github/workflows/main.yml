@@ -14,7 +14,7 @@ jobs:
       postgres:
         image: postgres:16
         env:
-          POSTGRES_DB: app_test  # Автоматически создается
+          POSTGRES_DB: app_test
           POSTGRES_USER: laravel
           POSTGRES_PASSWORD: secret
         options: >-
@@ -40,8 +40,16 @@ jobs:
       run: |
         cp .env.dev.example .env
         echo "APP_KEY=base64:$(openssl rand -base64 32)" >> .env
+        echo "APP_ENV=testing" >> .env
+        
+        # Для тестового соединения
         echo "DB_TEST_HOST=localhost" >> .env
         echo "DB_TEST_PORT=5432" >> .env
+        
+        # Для основного соединения (чтобы избежать ошибок)
+        echo "DB_HOST=localhost" >> .env
+        echo "DB_PORT=5432" >> .env
+        echo "DB_DATABASE=app_test" >> .env
 
     - name: Install dependencies
       working-directory: ./backend
@@ -51,8 +59,10 @@ jobs:
       working-directory: ./backend
       run: php artisan key:generate
 
-    - name: Run migrations and tests
+    - name: Run migrations with testing connection
       working-directory: ./backend
-      run: |
-        php artisan migrate --force
-        php artisan test --stop-on-failure
+      run: php artisan migrate --database=testing --force
+
+    - name: Run tests
+      working-directory: ./backend
+      run: php artisan test --stop-on-failure
