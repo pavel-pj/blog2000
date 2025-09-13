@@ -29,19 +29,15 @@ jobs:
     - name: Setup environment
       working-directory: ./backend
       run: |
-        cp .env.dev.example .env
-        echo "APP_KEY=base64:$(openssl rand -base64 32)" >> .env
-        echo "DB_HOST=localhost" >> .env
-        echo "DB_PORT=5432" >> .env
-        echo "DB_DATABASE=app_test" >> .env
-        echo "DB_USERNAME=laravel" >> .env
-        echo "DB_PASSWORD=secret" >> .env
+        cp .env.testing .env
+        php artisan key:generate
 
     - name: Install dependencies
       working-directory: ./backend
       run: composer install --prefer-dist --no-progress --no-interaction
 
     - name: Wait for PostgreSQL
+      working-directory: ./backend
       run: sleep 10
 
     - name: Run tests
