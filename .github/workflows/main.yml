@@ -1,6 +1,10 @@
 name: Laravel Tests
 
-on: [push, pull_request]
+on:
+  push:
+    branches: [main, develop]
+  pull_request:
+    branches: [main, develop]
 
 jobs:
   laravel-tests:
@@ -18,36 +22,65 @@ jobs:
           --health-interval 10s
           --health-timeout 5s
           --health-retries 5
+        ports:
+          - 5432:5432
 
     steps:
-    - uses: actions/checkout@v4
+    - name: Checkout code
+      uses: actions/checkout@v4
 
     - name: Setup PHP
       uses: shivammathur/setup-php@v2
       with:
         php-version: '8.4'
-        extensions: pgsql, mbstring, xml, curl, dom, fileinfo, intl, json, zip
-        coverage: none
+        extensions: pgsql, mbstring, xml, curl, dom, fileinfo, intl, json, zip, gd
+        coverage: pcov
+        tools: composer
 
-    - name: Copy .env
+    - name: Copy environment file
+      working-directory: ./backend
       run: |
-        cp .env.dev.example .env.test
-        echo "APP_ENV=testing" >> .env.test
-        echo "DB_CONNECTION=pgsql" >> .env.test
-        echo "DB_HOST=postgres" >> .env.test
-        echo "DB_PORT=5432" >> .env.test
-        echo "DB_DATABASE=app_test" >> .env.test
-        echo "DB_USERNAME=laravel" >> .env.test
-        echo "DB_PASSWORD=secret" >> .env.test
+        cp .env.dev.example .env
+        echo "APP_KEY=base64:$(openssl rand -base64 32)" >> .env
+        echo "APP_URL=http://localhost" >> .env
+        
+        # Database configuration for testing
+        echo "DB_TEST_CONNECTION=pgsql" >> .env
+        echo "DB_TEST_HOST=localhost" >> .env
+        echo "DB_TEST_PORT=5432" >> .env
+        echo "DB_TEST_DATABASE=app_test" >> .env
+        echo "DB_TEST_USERNAME=laravel" >> .env
+        echo "DB_TEST_PASSWORD=secret" >> .env
 
     - name: Install dependencies
-      run: composer install --prefer-dist --no-progress --no-interaction
+      working-directory: ./backend
+      run: composer install --prefer-dist --no-progress --no-interaction --optimize-autoloader
 
-    - name: Generate key
-      run: php artisan key:generate --env=testing
+    - name: Generate application key
+      working-directory: ./backend
+      run: php artisan key:generate
+
+    - name: Create test database
+      run: |
+        psql -h localhost -U laravel -d postgres -c "CREATE DATABASE app_test;"
+        psql -h localhost -U laravel -d postgres -c "GRANT ALL PRIVILEGES ON DATABASE app_test TO laravel;"
 
     - name: Run migrations
-      run: php artisan migrate --env=testing --force
+      working-directory: ./backend
+      run: php artisan migrate --force
 
-    - name: Execute tests
-      run: php artisan test --env=testing
+    - name: Run tests
+      working-directory: ./backend
+      run: php artisan test --stop-on-failure
+
+    - name: Run tests with coverage
+      working-directory: ./backend
+      run: php artisan test --coverage-clover=coverage.xml
+
+    - name: Upload coverage to Codecov
+      uses: codecov/codecov-action@v3
+      with:
+        file: ./backend/coverage.xml
+        flags: laravel-tests
+        name: Laravel Code Coverage
+        fail_ci_if_error: false
