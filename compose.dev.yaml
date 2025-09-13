@@ -115,9 +115,12 @@ services:
       - POSTGRES_DB=app
       - POSTGRES_USER=laravel
       - POSTGRES_PASSWORD=secret
+      - POSTGRES_MULTIPLE_DATABASES=app,app_test  # Добавляем тестовую БД
     volumes:
       - postgres-data-development:/var/lib/postgresql/data
       - /var/databases/blog/backup_20250913_114733.sql:/tmp/db1/db_backup.sql:ro
+      - ./docker/backend/development/database/init-multiple-databases.sh:/docker-entrypoint-initdb.d/init-multiple-databases.sh:ro
+      - ./docker/backend/development/database/restore-databases.sh:/docker-entrypoint-initdb.d/restore-databases.sh:ro
     networks:
       - laravel-development
 

@@ -6,15 +6,36 @@
 Добавить пользователя в группу юзер при необходимости.
 Laravel - в worskpsace - exe
 
+А) Если заново запускать
+ 
 - make first-up-dev (первичный запуск можно запустить повторно при ошибке);
+ 
+Б) Если есть дамп : 
+  раскоментировать три строки в compose postgres :
+#- /var/databases/blog/backup_20250913_114733.sql:/tmp/db1/db_backup.sql:ro
+#- ./docker/backend/development/database/init-multiple-databases.sh:/docker-entrypoint-initdb.d/init-multiple-databases.sh:ro
+#- ./docker/backend/development/database/restore-databases.sh:/docker-entrypoint-initdb.d/restore-databases.sh:ro
 
+/var/databases/blog/backup_20250913_114733.sql - путь на ХОСТЕ к дампу дб ( см ниже)
+
+ 1) сначала запустить постгрес.
+  make up-postgres
+ 2) все отальное 
+  make up-dev 
+
+- Команды для работы : 
 - make down-dev - выключить конейнеры
 - make up-dev - запустить контейнеры
+ 
 
 
 - установка дополнительных пакетов через root контейнера workspace : 
   docker compose -f compose.dev.yaml exec -u root workspace composer  require spatie/laravel-permission
- 
+- Команды для работы : 
+- make down-dev - выключить конейнеры
+- make up-dev - запустить контейнеры
+
+
 - front : localhost:5173 
 - back : localhost:8080
 
@@ -27,15 +48,17 @@ docker compose -f compose.prod.yaml exec postgres pg_dump -U laravel -d app --cl
 - Можно оставить по этому адресу, или переместить в другой.
 - поменять расположение в compose.dev.yaml : 
 - /var/databases/backup_20250913_111642.sql:/tmp/db1/db_backup.sql:ro
+
+- во время запуска создается БД из дампа + из дампа тестовая база.
+- Если не нужен дамп, закомментировать три строки : 
+  - /var/databases/blog/backup_20250913_114733.sql:/tmp/db1/db_backup.sql:ro
+  - ./docker/backend/development/database/init-multiple-databases.sh:/docker-entrypoint-initdb.d/init-multiple-databases.sh:ro
+  - ./docker/backend/development/database/restore-databases.sh:/docker-entrypoint-initdb.d/restore-databases.sh:ro
  
-- 2. Восстановить бд
-  если проект запущен - стереть все volume и контейнеры:
-  - make clear-cache
-  - docker compose -f compose.dev.yaml up -d postgres
-  - подождать ~ 30 секунд
-  - docker compose -f compose.dev.yaml exec postgres psql -U laravel -d app -f /tmp/db1/db_backup.sql
-- 3. Запустить проект:
-  - make up-dev  
+## ТЕСТЫ :
+- тестовая база автоматически запускается и копируется из дампа.
+- Запустить новые миграции на тестовой базе :
+  make test-migrate
 
 
 # PRODUCTION 
@@ -56,10 +79,11 @@ docker compose -f compose.prod.yaml exec postgres pg_dump -U laravel -d app --cl
 - 5. composer install
 - 6. php artisan key:generate
   
-  
-
 - Настроить ssl отдельно - через sertbot.
-- Необходимо запустить тестовый index.html на требуемом домене, черех nginx-host 
-- установить sertbot. ВСЁ. гавлное - не менять расположение сертификатов. 
+- Необходимо запустить тестовый index.html на требуемом домене. Остановить все контейнеры на хосте.
+- запустить хостовый nginx, настроить config nginx для конкертно домена ( в любую папку,
+- главное, чтобы 80 порт домена показывал содержимое index.html) 
+- установить sertbot.ЗАПУСТИТЬ sertbot. После установки сертификатов ВЫКЛЮЧИТЬ nginx на хосте.
+-  ВСЁ. гавлное - не менять расположение сертификатов. 
 - сертификаты ssl прокидываются в docker compose volumes. 
 

@@ -97,6 +97,15 @@ return [
             'sslmode' => 'prefer',
         ],
 
+        'testing' => [
+        'driver' => env('DB_TEST_CONNECTION', 'pgsql'),
+        'host' => env('DB_TEST_HOST', 'postgres'),
+        'port' => env('DB_TEST_PORT', 5432),
+        'database' => env('DB_TEST_DATABASE', 'app_test'),
+        'username' => env('DB_TEST_USERNAME', 'laravel'),
+        'password' => env('DB_TEST_PASSWORD', 'secret'),
+         ],
+
         'sqlsrv' => [
             'driver' => 'sqlsrv',
             'url' => env('DB_URL'),

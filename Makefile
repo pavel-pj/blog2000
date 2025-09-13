@@ -31,6 +31,9 @@ lint:
 
 build-dev:
 	docker compose -f compose.dev.yaml build
+up-postgres:
+	docker compose -f compose.dev.yaml up -d postgres
+
 up-dev:
 	sudo chmod -R 775 backend/storage/   
 	sudo chmod -R 775 backend/bootstrap/cache/ 
@@ -44,18 +47,23 @@ up-dev:
 	docker compose -f compose.dev.yaml exec -u root php-fpm chown -R www:www /var/www/storage/ 
 	docker compose -f compose.dev.yaml exec -u root php-fpm chmod -R 775 /var/www/storage/ 
 	docker compose -f compose.dev.yaml exec -u root php-fpm chmod -R 775 /var/www/bootstrap/cache/ 
- 
-
 down-dev:
 	 docker compose -f compose.dev.yaml down
-
 bash-dev:
-	docker compose -f compose.dev.yaml exec workspace bash
+	docker compose -f compose.dev.yaml exec -u root workspace bash
 
 pgsql-dev:
 	docker exec -it  vue-postgres-1 psql -U laravel -d app	
 pgsql-dev-log:	
 	docker compose -f compose.dev.yaml logs postgres
+
+## ТЕСТЫ : 
+test-migrate:
+	docker compose -f compose.dev.yaml exec workspace php artisan test:migrate
+#	docker compose -f compose.dev.yaml exec workspace php artisan test:migrate --fresh
+#	docker compose -f compose.dev.yaml exec workspace php artisan db:seed --database=testing
+
+
 
 clear-cache:
 	# Останавливаем все контейнеры (игнорируем ошибки если нет контейнеров)
