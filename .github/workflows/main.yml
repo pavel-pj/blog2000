@@ -15,6 +15,7 @@ jobs:
           POSTGRES_PASSWORD: secret
         ports:
           - 5432:5432
+        options: --health-cmd pg_isready --health-interval 10s --health-timeout 5s --health-retries 5
 
     steps:
     - uses: actions/checkout@v4
@@ -30,19 +31,19 @@ jobs:
       run: |
         cp .env.dev.example .env
         echo "APP_KEY=base64:$(openssl rand -base64 32)" >> .env
-        echo "DB_TEST_HOST=localhost" >> .env
-        echo "DB_TEST_PORT=5432" >> .env
+        echo "DB_HOST=localhost" >> .env
+        echo "DB_PORT=5432" >> .env
+        echo "DB_DATABASE=app_test" >> .env
+        echo "DB_USERNAME=laravel" >> .env
+        echo "DB_PASSWORD=secret" >> .env
 
     - name: Install dependencies
       working-directory: ./backend
       run: composer install --prefer-dist --no-progress --no-interaction
 
-    - name: Run tests directly with PHPUnit
+    - name: Wait for PostgreSQL
+      run: sleep 10
+
+    - name: Run tests
       working-directory: ./backend
-      env:
-        DB_TEST_HOST: localhost
-        DB_TEST_PORT: 5432
-      run: |
-        php artisan key:generate
-        sleep 5
-        ./vendor/bin/phpunit
+      run: ./vendor/bin/phpunit

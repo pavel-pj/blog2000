@@ -47,8 +47,6 @@ class AuthService
 
         return  
             [
-            'success' => true,
-            'message' => 'Login successful.',
             'token' => $token,
             'user' => [
                 'id' => $user['id'],
@@ -58,5 +56,5 @@ class AuthService
             ];
   
     }
-    
+ 
 }

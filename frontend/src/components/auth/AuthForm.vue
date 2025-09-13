@@ -105,9 +105,14 @@ const send = async () => {
                      toggleMask :feedback="false" />
           </div>
       </div>
-      <router-link
-      class="text-green-700"
+
+      <router-link v-if="!props.isReg"
+      class="underline text-green-700 hover:no-underline"
       :to="{ name: 'register' }">Registration</router-link>
+
+      <router-link v-if="props.isReg"
+      class="underline text-green-700 hover:no-underline"
+      :to="{ name: 'login' }">Sign Up</router-link>
 
       <Button type="button" :label="buttonTitle"  :loading="isLoading"
               class="bg-blue-500 hover:bg-blue-600 text-white" @click="send" />

@@ -52,7 +52,8 @@ class AuthController extends Controller
 
     // User Profile API (Protected)
     public function profile(Request $request)
-    {
+    {   
+
         return response()->json(
             [
             'success' => true,
