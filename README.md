@@ -2,6 +2,8 @@
 
 [![Test Coverage](https://img.shields.io/badge/coverage-85%25-blue)](https://github.com/pavel-pj/blog2000/actions/)
 
+[![Test Coverage](https://img.shields.io/badge/coverage-0%25-blue)](https://github.com/pavel-pj/blog2000/actions)
+
 # 🚀 Blog Platform
  
 ## Development
