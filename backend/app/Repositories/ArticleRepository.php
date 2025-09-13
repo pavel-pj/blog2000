@@ -12,7 +12,7 @@ class ArticleRepository
     }
 
 
-    public function show(int $id)
+    public function show(string $id)
     {
 
         $item = Article::where('id', $id)->exists();

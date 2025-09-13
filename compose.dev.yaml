@@ -117,9 +117,7 @@ services:
       - POSTGRES_PASSWORD=secret
     volumes:
       - postgres-data-development:/var/lib/postgresql/data
-     # - /var/db1/db_backup.dump:/tmp/db1/db_backup.dump:ro
-      #- ./var/databases/vue100/:/tmp/db_data:ro
-      #- ./docker/backend/development/database/init-db.sh:/docker-entrypoint-initdb.d/init-db.sh:ro
+      - /var/databases/blog/backup_20250913_114733.sql:/tmp/db1/db_backup.sql:ro
     networks:
       - laravel-development
 

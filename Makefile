@@ -44,15 +44,11 @@ up-dev:
 	docker compose -f compose.dev.yaml exec -u root php-fpm chown -R www:www /var/www/storage/ 
 	docker compose -f compose.dev.yaml exec -u root php-fpm chmod -R 775 /var/www/storage/ 
 	docker compose -f compose.dev.yaml exec -u root php-fpm chmod -R 775 /var/www/bootstrap/cache/ 
-
+ 
 
 down-dev:
 	 docker compose -f compose.dev.yaml down
-rebuild-dev:
-	 docker compose -f compose.dev.yaml down
-	 docker compose -f compose.dev.yaml build --no-cache
-	 docker compose -f compose.dev.yaml up -d
-	
+
 bash-dev:
 	docker compose -f compose.dev.yaml exec workspace bash
 

@@ -13,7 +13,7 @@ return new class extends Migration
     public function up(): void
     {
          $user = User::create([
-            'email' => 'admin@m.ru',
+            'email' => 'admin@mail.ru',
             'name' => 'admin',
             'password' => Hash::make('123456'),
         ]);

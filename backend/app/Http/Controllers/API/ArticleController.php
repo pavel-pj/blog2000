@@ -44,11 +44,11 @@ class ArticleController extends Controller
     {
 
               
-        error_log('DEBUG: ARTICLE - ' . json_encode($request, JSON_PRETTY_PRINT));
+        //error_log('DEBUG: ARTICLE - ' . json_encode($request, JSON_PRETTY_PRINT));
       
         try {
             $validated = $request->validated();
-             error_log('DEBUG: ARTICLE after VALIDATION');  
+            // error_log('DEBUG: ARTICLE after VALIDATION');  
             return response()->json($this->service->store($validated), 201);
         } catch (\Exception $e) {
             error_log($e->getMessage());

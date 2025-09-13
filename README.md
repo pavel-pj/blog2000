@@ -15,16 +15,27 @@ Laravel - в worskpsace - exe
 - установка дополнительных пакетов через root контейнера workspace : 
   docker compose -f compose.dev.yaml exec -u root workspace composer  require spatie/laravel-permission
  
-
-back : localhost:8080
-front : localhost:5173
-
+- front : localhost:5173 
+- back : localhost:8080
 
 //Как использовать дамп :
 в compose.dev.yaml контейнер postress :
-- 1 /var/db1/db_backup.dump:/tmp/db1/db_backup.dump:ro
-- Изменить расположение дампа.
-- 2 docker exec -i vue-postgres-1 pg_restore -U laravel -d app -Fc /tmp/db1/db_backup.dump
+ 
+### Postgres
+- 1. Создать дамп, будет лежать папке /var/databases ( можно поменять папку)
+docker compose -f compose.prod.yaml exec postgres pg_dump -U laravel -d app --clean --if-exists --schema=public > /var/databases/backup_$(date +%Y%m%d_%H%M%S).sql 
+- Можно оставить по этому адресу, или переместить в другой.
+- поменять расположение в compose.dev.yaml : 
+- /var/databases/backup_20250913_111642.sql:/tmp/db1/db_backup.sql:ro
+ 
+- 2. Восстановить бд
+  если проект запущен - стереть все volume и контейнеры:
+  - make clear-cache
+  - docker compose -f compose.dev.yaml up -d postgres
+  - подождать ~ 30 секунд
+  - docker compose -f compose.dev.yaml exec postgres psql -U laravel -d app -f /tmp/db1/db_backup.sql
+- 3. Запустить проект:
+  - make up-dev  
 
 
 # PRODUCTION 

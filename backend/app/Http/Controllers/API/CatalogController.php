@@ -61,6 +61,8 @@ class CatalogController extends Controller
         try {
             return response()->json($this->service->show($id), 200);
         } catch (\Exception $e) {
+            error_log("ОШИБКА КОНТРОЛЕЛЕН КАТАЛОГ");
+            error_log($e->getMessage());
             return response()->error($e->getMessage(), 500);
         }
     }

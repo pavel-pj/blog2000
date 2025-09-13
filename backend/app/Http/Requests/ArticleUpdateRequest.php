@@ -46,7 +46,7 @@ class ArticleUpdateRequest extends FormRequest
                 'string',
                 'nullable',
                 'max:255',
-                 Rule::unique('articles')->ignore($this->id)
+                  Rule::unique('articles')->ignore($this->route('article'))
             ],
             'html_content' => 'string|nullable',
             'catalog_id' => 'string|nullable| exists:catalogs,id',

@@ -12,7 +12,7 @@ class CatalogRepository
         return Catalog::orderBy('created_at', 'DESC')->get();
     }
 
-    public function show(int $id)
+    public function show(string $id)
     {
 
         $item = Catalog::where('id', $id)->exists();
