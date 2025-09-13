@@ -1,5 +1,6 @@
 [![Laravel Tests](https://github.com/pavel-pj/blog2000/actions/workflows/main.yml/badge.svg)](https://github.com/pavel-pj/blog2000/actions/workflows/main.yml)
 
+[![Test Coverage](https://img.shields.io/badge/coverage-85%25-blue)](https://github.com/pavel-pj/blog2000/actions/workflows/coverage.yml))
 
 # 🚀 Blog Platform
  

@@ -1,4 +1,4 @@
-name: Laravel Tests
+name:  Tests Coverage
 
 on: [push, pull_request]
 
@@ -23,7 +23,7 @@ jobs:
     - name: Setup PHP
       uses: shivammathur/setup-php@v2
       with:
-        php-version: '8.3'
+        php-version: '8.4'
         extensions: pgsql, mbstring, xml, curl, dom, fileinfo, intl, json, zip, pcov
         coverage: pcov
         tools: composer
@@ -54,24 +54,10 @@ jobs:
         DB_TEST_USERNAME: laravel
         DB_TEST_PASSWORD: secret
       run: |
-        # Генерируем clover отчет для Codecov
+        # Генерируем clover отчет
         ./vendor/bin/phpunit --coverage-clover=coverage.xml
-        # Генерируем HTML отчет для просмотра
+        # Генерируем HTML отчет
         ./vendor/bin/phpunit --coverage-html=storage/coverage
-
-    - name: Upload coverage to Codecov
-      uses: codecov/codecov-action@v3
-      with:
-        file: ./backend/coverage.xml
-        flags: phpunit
-        name: PHPUnit Coverage
-
-    - name: Upload coverage report artifact
-      uses: actions/upload-artifact@v4
-      with:
-        name: coverage-report
-        path: ./backend/storage/coverage/
-        retention-days: 7
 
     - name: Extract coverage percentage
       id: coverage
@@ -79,17 +65,42 @@ jobs:
       run: |
         # Извлекаем процент покрытия из XML
         COVERAGE_PERCENT=$(grep -o 'line-rate="[0-9.]*"' coverage.xml | head -1 | cut -d'"' -f2)
-        COVERAGE_PERCENT=$(echo "scale=2; $COVERAGE_PERCENT * 100" | bc)
-        echo "COVERAGE_PERCENT=${COVERAGE_PERCENT}%" >> $GITHUB_OUTPUT
-        echo "Coverage: ${COVERAGE_PERCENT}%"
+        COVERAGE_PERCENT=$(echo "scale=0; $COVERAGE_PERCENT * 100" | bc)
+        echo "COVERAGE_PERCENT=$COVERAGE_PERCENT" >> $GITHUB_ENV
+        echo "Coverage: $COVERAGE_PERCENT%"
 
-    - name: Create coverage badge
-      uses: schneegans/dynamic-badges-action@v1.6.0
+    - name: Generate coverage badge
+      run: |
+        # Создаем badge с помощью Shields.io
+        BADGE_URL="https://img.shields.io/badge/test%20coverage-$COVERAGE_PERCENT%25-blue"
+        curl -s -o coverage-badge.svg "$BADGE_URL"
+
+    - name: Upload coverage report artifact
+      uses: actions/upload-artifact@v4
       with:
-        auth: ${{ secrets.GITHUB_TOKEN }}
-        gistID: YOUR_GIST_ID  # Замените на ID вашего gist
-        filename: coverage.json
-        label: Coverage
-        message: ${{ steps.coverage.outputs.COVERAGE_PERCENT }}
-        color: green
-        namedLogo: codecov
+        name: coverage-report
+        path: |
+          ./backend/storage/coverage/
+          ./coverage-badge.svg
+        retention-days: 7
+
+    - name: Update README with coverage badge
+      run: |
+        # Обновляем README с новым бейджем
+        BADGE_MARKDOWN="[![Test Coverage](https://img.shields.io/badge/coverage-$COVERAGE_PERCENT%25-blue)]($GITHUB_SERVER_URL/$GITHUB_REPOSITORY/actions/runs/$GITHUB_RUN_ID)"
+        
+        # Создаем или обновляем раздел с coverage в README
+        if grep -q "## Test Coverage" README.md; then
+          # Обновляем существующий бейдж
+          sed -i "s|!\\[Test Coverage\\].*|![Test Coverage](https://img.shields.io/badge/coverage-$COVERAGE_PERCENT%25-blue)|" README.md
+        else
+          # Добавляем новый раздел
+          echo -e "\n## Test Coverage\n\n$BADGE_MARKDOWN\n" >> README.md
+        fi
+
+        # Коммитим изменения
+        git config --global user.name "GitHub Actions"
+        git config --global user.email "actions@github.com"
+        git add README.md
+        git commit -m "Update test coverage badge: $COVERAGE_PERCENT%" || echo "No changes to commit"
+        git push
