@@ -1,16 +1,19 @@
+[![Laravel Tests](https://github.com/pavel-pj/blog2000/actions/workflows/main.yml/badge.svg)](https://github.com/pavel-pj/blog2000/actions/workflows/main.yml)
 
 
-# Запустить DEV
-
-НУЖНО УСТАНАВИЛВАТЬ команды под юзером, не под sudo.
-Добавить пользователя в группу юзер при необходимости.
-Laravel - в worskpsace - exe
-
-А) Если заново запускать
+# 🚀 Blog Platform
  
-- make first-up-dev (первичный запуск можно запустить повторно при ошибке);
+## Запуск проекта, Development
+
+* Устанавливать команды под юзером ubuntu, не под sudo.
+* добавить пользователя в группу докер и запускать docker без sudo
  
-Б) Если есть дамп : 
+
+### Новый проект
+ 
+```make first-up-dev (первичный запуск можно запустить повторно при ошибке)```
+ 
+### Уже существует дамп postges 
   раскоментировать три строки в compose postgres :
 #- /var/databases/blog/backup_20250913_114733.sql:/tmp/db1/db_backup.sql:ro
 #- ./docker/backend/development/database/init-multiple-databases.sh:/docker-entrypoint-initdb.d/init-multiple-databases.sh:ro
@@ -42,7 +45,7 @@ Laravel - в worskpsace - exe
 //Как использовать дамп :
 в compose.dev.yaml контейнер postress :
  
-### Postgres
+#### Postgres
 - 1. Создать дамп, будет лежать папке /var/databases ( можно поменять папку)
 docker compose -f compose.prod.yaml exec postgres pg_dump -U laravel -d app --clean --if-exists --schema=public > /var/databases/backup_$(date +%Y%m%d_%H%M%S).sql 
 - Можно оставить по этому адресу, или переместить в другой.
@@ -55,13 +58,13 @@ docker compose -f compose.prod.yaml exec postgres pg_dump -U laravel -d app --cl
   - ./docker/backend/development/database/init-multiple-databases.sh:/docker-entrypoint-initdb.d/init-multiple-databases.sh:ro
   - ./docker/backend/development/database/restore-databases.sh:/docker-entrypoint-initdb.d/restore-databases.sh:ro
  
-## ТЕСТЫ :
+#### ТЕСТЫ :
 - тестовая база автоматически запускается и копируется из дампа.
 - Запустить новые миграции на тестовой базе :
   make test-migrate
 
 
-# PRODUCTION 
+## Production
 - 0. cp frontend/.env.prod.example frontend/.env
 - 1. cd frontend
   2. npm install

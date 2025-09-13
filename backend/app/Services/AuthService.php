@@ -43,14 +43,20 @@ class AuthService
         $user = Auth::user();
         $token = $user->createToken('MyAppToken')->plainTextToken;
 
-        return response()->json(
+        
+
+        return  
             [
             'success' => true,
             'message' => 'Login successful.',
             'token' => $token,
-            'user' => $user,
-            ]
-        );
+            'user' => [
+                'id' => $user['id'],
+                'email'=> $user['email']
+                ],
+            'roles' => auth()->user()->getRoleNames()->toArray()
+            ];
+  
     }
     
 }

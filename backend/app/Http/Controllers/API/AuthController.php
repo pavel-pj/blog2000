@@ -8,7 +8,7 @@ use App\Models\User;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use App\Http\Requests\UserCreateRequest;
-use App\Http\Requests\UserLoginRequest;
+use App\Http\Requests\LoginRequest;
 use Validator;
 use Illuminate\Http\JsonResponse;
 use App\Services\AuthService;
@@ -37,7 +37,7 @@ class AuthController extends Controller
     }
  
     // User Login API
-    public function login(UserLoginRequest $request)
+    public function login(LoginRequest $request)
     {
 
         $validated = $request->validated();
