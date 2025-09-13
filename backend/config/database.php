@@ -105,6 +105,7 @@ return [
         'username' => env('DB_TEST_USERNAME', 'laravel'),
         'password' => env('DB_TEST_PASSWORD', 'secret'),
          ],
+ 
 
         'sqlsrv' => [
             'driver' => 'sqlsrv',
