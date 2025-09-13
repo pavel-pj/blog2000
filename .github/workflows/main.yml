@@ -31,7 +31,7 @@ jobs:
 
     - name: Copy .env
       run: |
-        cp .env.example .env.test
+        cp .env.dev.example .env.test
         echo "APP_ENV=testing" >> .env.test
         echo "DB_CONNECTION=pgsql" >> .env.test
         echo "DB_HOST=postgres" >> .env.test
