@@ -30,7 +30,7 @@ jobs:
       working-directory: ./backend
       run: composer install --prefer-dist --no-progress --no-interaction
 
-    - name: Setup environment
+    - name: Create .env.testing
       working-directory: ./backend
       run: |
         cp .env.dev.example .env.testing
@@ -47,14 +47,30 @@ jobs:
         echo "SESSION_DRIVER=array" >> .env.testing
         echo "QUEUE_CONNECTION=sync" >> .env.testing
         echo "MAIL_MAILER=array" >> .env.testing
-        cp .env.testing .env
 
-    - name: Generate key
+    - name: Copy .env.testing to .env
+      working-directory: ./backend
+      run: cp .env.testing .env
+
+    - name: Generate application key
       working-directory: ./backend
       run: php artisan key:generate
 
-    - name: Wait for PostgreSQL
-      run: sleep 10
+    - name: Wait for PostgreSQL to be ready
+      run: |
+        echo "Waiting for PostgreSQL..."
+        for i in {1..30}; do
+          if nc -z localhost 5432; then
+            echo "PostgreSQL is ready!"
+            break
+          fi
+          echo "Waiting for PostgreSQL... attempt $i"
+          sleep 2
+        done
+
+    - name: Run database migrations
+      working-directory: ./backend
+      run: php artisan migrate --env=testing --force
 
     - name: Run tests
       working-directory: ./backend
