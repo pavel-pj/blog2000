@@ -63,7 +63,10 @@ test-migrate:
 #	docker compose -f compose.dev.yaml exec workspace php artisan test:migrate --fresh
 #	docker compose -f compose.dev.yaml exec workspace php artisan db:seed --database=testing
 
-
+#test:
+#	docker compose -f compose.dev.yaml exec workspace php artisan test
+test:
+	docker compose -f compose.dev.yaml exec workspace php artisan test --coverage	
 
 clear-cache:
 	# Останавливаем все контейнеры (игнорируем ошибки если нет контейнеров)

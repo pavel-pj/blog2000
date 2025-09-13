@@ -56,7 +56,7 @@ class CatalogUpdateRequest extends FormRequest
                         }
                     )
             ],
- 
+
         ];
     }
 }

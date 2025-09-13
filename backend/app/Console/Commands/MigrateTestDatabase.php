@@ -14,7 +14,7 @@ class MigrateTestDatabase extends Command
      * @var string
      */
     protected $signature = 'test:migrate {--fresh : Drop all tables and re-run migrations}';
-    
+
 
     /**
      * The console command description.
@@ -30,7 +30,7 @@ class MigrateTestDatabase extends Command
     {
         // Переключаемся на тестовую конфигурацию
         config(['database.default' => 'testing']);
-        
+
         if ($this->option('fresh')) {
             $this->call('migrate:fresh', [
                 '--database' => 'testing',
@@ -42,7 +42,7 @@ class MigrateTestDatabase extends Command
                 '--force' => true,
             ]);
         }
-        
+
         $this->info('Test database migrated successfully!');
     }
 }

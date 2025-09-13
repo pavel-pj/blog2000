@@ -9,41 +9,40 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use App\Http\Requests\UserCreateRequest;
 use Validator;
+use Illuminate\Http\JsonResponse;
+use App\Services\AuthService;
 
 class AuthController extends Controller
 {
-    // User Registration API
-    public function register(UserCreateRequest $request)
+    protected AuthService $service;
+
+    public function __construct()
     {
+        $this->service = new AuthService();
 
-        $validated = $request->validated();
-
-        $user = User::create([
-
-            'email' => $validated['email'],
-            'password' => Hash::make($validated['password']),
-             ]);
-
-        $token = $user->createToken('MyAppToken')->plainTextToken;
-
-        return response()->json(
-            [
-            'success' => true,
-            'message' => 'User registered successfully.',
-            'token' => $token,
-            'user' => $user,
-            ]
-        );
     }
 
+
+    // User Registration API
+    public function register(UserCreateRequest $request): JsonResponse 
+    {
+        $validated = $request->validated();
+ 
+        try {
+            return response()->json($this->service->register($validated), 201);
+        } catch (\Exception $e) {
+            return response()->json($e->getMessage(), 404);
+        }
+    }
+ 
     // User Login API
     public function login(Request $request)
     {
-        
+
         if (!Auth::attempt($request->only('email', 'password'))) {
             return response()->json(['error' => 'Unauthorized'], 401);
         }
-         
+
         $user = Auth::user();
         $token = $user->createToken('MyAppToken')->plainTextToken;
 
@@ -67,7 +66,7 @@ class AuthController extends Controller
             ]
         );
     }
- 
+
     public function logout(Request $request)
     {
         $request->user()->tokens()->delete();

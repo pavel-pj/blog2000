@@ -24,18 +24,12 @@ class ArticleController extends Controller
     public function index()
     {
         try {
-            return response()->json($this->service->index(), 201);
+            return response()->json($this->service->index(), 200);
         } catch (\Exception $e) {
-            return response()->error($e->getMessage(), 500);
+            return response()->json($e->getMessage(), 404);
         }
     }
-
-    /**
-     * Show the form for creating a new resource.
-     */
-    public function create()
-    {
-    }
+ 
 
     /**
      * Store a newly created resource in storage.
@@ -43,16 +37,16 @@ class ArticleController extends Controller
     public function store(ArticleCreateRequest $request)//: JsonResponse
     {
 
-              
+
         //error_log('DEBUG: ARTICLE - ' . json_encode($request, JSON_PRETTY_PRINT));
-      
+
         try {
             $validated = $request->validated();
-            // error_log('DEBUG: ARTICLE after VALIDATION');  
+            // error_log('DEBUG: ARTICLE after VALIDATION');
             return response()->json($this->service->store($validated), 201);
         } catch (\Exception $e) {
             error_log($e->getMessage());
-            return response()->error($e->getMessage(), 500);
+            return response()->json($e->getMessage(), 404);
         }
     }
 
@@ -64,17 +58,10 @@ class ArticleController extends Controller
         try {
             return response()->json($this->service->show($id), 200);
         } catch (\Exception $e) {
-            return response()->error($e->getMessage(), 500);
+            return response()->json($e->getMessage(), 404);
         }
     }
-
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(string $id)
-    {
-        //
-    }
+ 
 
     /**
      * Update the specified resource in storage.
@@ -86,7 +73,7 @@ class ArticleController extends Controller
         try {
             return response()->json($this->service->update($validated, $id), 200);
         } catch (\Exception $e) {
-            return response()->json($e->getMessage(), 500);
+            return response()->json($e->getMessage(), 404);
         }
     }
 
@@ -100,7 +87,7 @@ class ArticleController extends Controller
             $this->service->destroy($id);
             return response()->json("Item was deleted successfully", 200);
         } catch (\Exception $e) {
-            return response()->json($e->getMessage(), 500);
+            return response()->json($e->getMessage(), 404);
         }
     }
 }

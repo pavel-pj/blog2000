@@ -25,31 +25,24 @@ class CatalogController extends Controller
     public function index(): JsonResponse
     {
         try {
-            return response()->json($this->service->index(), 201);
+            return response()->json($this->service->index(), 200);
         } catch (\Exception $e) {
-            return response()->error($e->getMessage(), 500);
+            return response()->json($e->getMessage(), 404);
         }
     }
 
-    /**
-     * Show the form for creating a new resource.
-     */
-    public function create()
-    {
-        //
-    }
-
+ 
     /**
      * Store a newly created resource in storage.
      */
     public function store(CatalogCreateRequest $request)//: JsonResponse
     {
-   
+
         $validated = $request->validated();
         try {
             return response()->json($this->service->store($validated), 201);
         } catch (\Exception $e) {
-            return response()->error($e->getMessage(), 500);
+            return response()->error($e->getMessage(), 404);
         }
     }
 
@@ -61,20 +54,12 @@ class CatalogController extends Controller
         try {
             return response()->json($this->service->show($id), 200);
         } catch (\Exception $e) {
-            error_log("ОШИБКА КОНТРОЛЕЛЕН КАТАЛОГ");
-            error_log($e->getMessage());
-            return response()->error($e->getMessage(), 500);
+            //error_log("ОШИБКА КОНТРОЛЕЛЕН КАТАЛОГ");
+            //error_log($e->getMessage());
+            return response()->json($e->getMessage(), 404);
         }
     }
-
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(string $id)
-    {
-        //
-    }
-
+ 
     /**
      * Update the specified resource in storage.
      */
@@ -84,7 +69,7 @@ class CatalogController extends Controller
         try {
             return response()->json($this->service->update($validated, $id), 200);
         } catch (\Exception $e) {
-            return response()->json($e->getMessage(), 500);
+            return response()->json($e->getMessage(), 404);
         }
     }
 
@@ -97,7 +82,7 @@ class CatalogController extends Controller
             $this->service->destroy($id);
             return response()->json("Item was deleted successfully", 200);
         } catch (\Exception $e) {
-            return response()->json($e->getMessage(), 500);
+            return response()->json($e->getMessage(), 404);
         }
     }
 }

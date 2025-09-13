@@ -16,6 +16,7 @@ class Article extends Model
  * @use HasFactory<\Database\Factories\ArticleFactory>
 */
     use HasFactory;
+
     //use HasUuids;
 
     protected $primaryKey = 'id';
@@ -43,7 +44,7 @@ class Article extends Model
  //       return $this->belongsTo(Catalog::class);
 //    }
 
-     protected static function boot()
+    protected static function boot()
     {
         parent::boot();
 

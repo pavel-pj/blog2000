@@ -1,23 +1,53 @@
-name: Deploy to Production Server
+name: Laravel Tests
 
-on:
-  push:
-    branches: [ main ]
+on: [push, pull_request]
 
 jobs:
-  deploy:
+  laravel-tests:
     runs-on: ubuntu-latest
 
-    steps:
-    - name: Checkout code
-      uses: actions/checkout@v4
+    services:
+      postgres:
+        image: postgres:16
+        env:
+          POSTGRES_DB: app_test
+          POSTGRES_USER: laravel
+          POSTGRES_PASSWORD: secret
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
 
-    - name: Deploy to server
-      uses: appleboy/ssh-action@v1.0.3
+    steps:
+    - uses: actions/checkout@v4
+
+    - name: Setup PHP
+      uses: shivammathur/setup-php@v2
       with:
-        host: ${{ secrets.SERVER_HOST }}
-        username: ${{ secrets.SERVER_USER }}
-        key: ${{ secrets.SSH_PRIVATE_KEY }}
-        script: |
-          cd /path/to/your/project
-          git pull origin main
+        php-version: '8.4'
+        extensions: pgsql, mbstring, xml, curl, dom, fileinfo, intl, json, zip
+        coverage: none
+
+    - name: Copy .env
+      run: |
+        cp .env.example .env.test
+        echo "APP_ENV=testing" >> .env.test
+        echo "DB_CONNECTION=pgsql" >> .env.test
+        echo "DB_HOST=postgres" >> .env.test
+        echo "DB_PORT=5432" >> .env.test
+        echo "DB_DATABASE=app_test" >> .env.test
+        echo "DB_USERNAME=laravel" >> .env.test
+        echo "DB_PASSWORD=secret" >> .env.test
+
+    - name: Install dependencies
+      run: composer install --prefer-dist --no-progress --no-interaction
+
+    - name: Generate key
+      run: php artisan key:generate --env=testing
+
+    - name: Run migrations
+      run: php artisan migrate --env=testing --force
+
+    - name: Execute tests
+      run: php artisan test --env=testing
