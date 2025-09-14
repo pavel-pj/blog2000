@@ -109,8 +109,6 @@ onBeforeUnmount(() => {
 
 <template>
 
-  <div class="t2" >Hello</div>
-
    <div v-if="editor" class="container " >
     <div class="control-group">
       <div class="button-group">

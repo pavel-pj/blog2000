@@ -6,6 +6,9 @@ use App\Http\Controllers\API\AuthController;
 use App\Http\Controllers\API\CatalogController;
 use App\Http\Controllers\API\ArticleController;
 use App\Http\Controllers\API\DictionaryController;
+use App\Http\Controllers\API\SubjectController;
+
+ 
 
 
 Route::post('/register', [AuthController::class, 'register'])->name('register');
@@ -20,7 +23,7 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::post('/logout', [AuthController::class, 'logout']);
     Route::resource('/catalogs',  CatalogController::class ) ;
     Route::resource('/articles',  ArticleController::class ) ;
-
+    Route::resource('/subjects',  SubjectController::class ) ;
 
     Route::get('/dictionaries', [ DictionaryController::class, 'index']);
 

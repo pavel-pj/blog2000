@@ -21,7 +21,7 @@ class ArticleController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(): JsonResponse
     {
         try {
             return response()->json($this->service->index(), 200);
@@ -34,7 +34,7 @@ class ArticleController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(ArticleCreateRequest $request)//: JsonResponse
+    public function store(ArticleCreateRequest $request): JsonResponse
     {
 
 
@@ -53,7 +53,7 @@ class ArticleController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(string $id)
+    public function show(string $id): JsonResponse
     {
         try {
             return response()->json($this->service->show($id), 200);
@@ -66,7 +66,7 @@ class ArticleController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(ArticleUpdateRequest $request, string $id)
+    public function update(ArticleUpdateRequest $request, string $id): JsonResponse
     {
 
         $validated = $request->validated();
@@ -80,7 +80,7 @@ class ArticleController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(string $id)
+    public function destroy(string $id): JsonResponse
     {
 
         try {

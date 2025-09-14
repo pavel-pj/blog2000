@@ -15,6 +15,7 @@ import { z } from 'zod';
 import { toTypedSchema } from '@vee-validate/zod';
 import Select from 'primevue/select';
 import { useDictionariesStore } from '@/store/dictionaries';
+import Editor from '@/components/Tiptap/Editor.vue';
 
 const router = useRouter();
 const route = useRoute();
@@ -48,7 +49,8 @@ const {
   name:string,
   title:string
   slug: string
-  catalog_id: string
+  catalog_id: string,
+  html_content:string,
 }>();
 
 
@@ -58,7 +60,7 @@ onMounted(async () => {
     await fetchDictionary('catalog');
   }
   if (props.isEdit) {
-    console.log('SDFSDF');
+
     await fetchItemArticle();
   }
 
@@ -69,6 +71,16 @@ const fetchItemArticle = async () => {
     await getDataRequest({ url: articleItemShowURL(itemId) });
   }
 };
+
+const html_content = ref<string>('');
+
+watch (itemData ,
+  (newValue)=> {
+    if (newValue){
+      html_content.value = props.isEdit ? newValue[0]?.html_content || '' : '';
+    }
+  }
+);
 
 
 const {
@@ -126,6 +138,28 @@ const sendData = async(data:any) => {
 };
 
 
+const updateText = async () =>{
+  isSpiner.value = true;
+  const params = {
+    html_content: html_content.value
+  };
+
+
+  const res  = await sendRequest({
+    url: updateArticleURL(itemId),
+    method: 'PATCH',
+    data: params
+  });
+
+  if (res?.isOk) {
+    await fetchItemArticle();
+    isSpiner.value = false;
+  } else {
+    isSpiner.value = false;
+  }
+};
+
+
 
 const itemName = computed(() => itemData.value?.[0]?.name || '');
 
@@ -138,11 +172,12 @@ const isPageSpiner = computed(()=>{
   return (!itemData.value && !dictionaries.value ) ? true : false;
 });
 
+/*
 const pageOptions = computed (()=>  {
 
   const title =ref<string>('Create new Article');
   if (props.isEdit) {
-    title.value = `Edit item ${itemName.value}` ;
+    title.value = 'Edit' ;
   }
 
   const buttonTitle = (props.isEdit) ? 'Update' : 'Create';
@@ -152,7 +187,7 @@ const pageOptions = computed (()=>  {
     buttonTitle
   };
 
-});
+});*/
 
 
 const itemsBreadCrumbs =computed(()=>{
@@ -188,11 +223,14 @@ const schema = toTypedSchema(
 );
 
 
+
 const initialValues = computed(() => {
   const name = props.isEdit ? itemData.value?.[0]?.name || '' : '';
   const title = props.isEdit ? itemData.value?.[0]?.title || '' : '';
   const slug = props.isEdit ? itemData.value?.[0]?.slug || '' : '';
   const catalog_id = props.isEdit ? itemData.value?.[0]?.catalog_id || '' : '';
+
+
   return {
     name,
     title,
@@ -201,6 +239,7 @@ const initialValues = computed(() => {
   };
 });
 
+
 </script>
 
 <template>
@@ -208,77 +247,101 @@ const initialValues = computed(() => {
 <BreadCrumbs :items="itemsBreadCrumbs" />
 <PageSpiner :isSpiner="isPageSpiner" />
   <div  v-if="!isPageSpiner">
-  <h1 class="text-3xl mb-12"> {{pageOptions.title}}</h1>
-  <div class="w-[700px] my-6"  >
+  <!--<h1 class="text-1xl  font-bold"> {{pageOptions.title}}</h1>-->
+  <h1 class="text-2xl  font-bold my-4">{{itemsBreadCrumbs[1].label}}</h1>
 
-   <Form @submit="sendData"
-    :validation-schema="schema"
-    :initial-values="initialValues"
-      class="flex flex-col gap-4 w-full ">
+      <div class="card">
+        <Tabs value="0">
+            <TabList>
+                <Tab value="0">Main info</Tab>
+                <Tab value="1">Text</Tab>
 
-      <div class="flex gap-2 flex-col">
-        <label for="name" class="font-medium">Name <span class="px-2 font-bold text-red-700"> * </span></label>
-        <Field name="name" v-slot="{ field, errors }" >
-          <InputText
-            v-bind="field"
-            placeholder="Name"
-            :class="{ 'p-invalid': errors.length }"
-          />
-          <Message v-if="errors.length" severity="error" size="small" variant="simple">
-            {{ errors[0] }}
-          </Message>
-        </Field>
-      </div>
-     <div class="flex gap-2 flex-col">
-        <label for="title" class="font-medium">Title <span class="px-2 font-bold text-red-700"> * </span></label>
-         <Field name="title" v-slot="{ field, errors }">
-          <InputText
-            v-bind="field"
-            placeholder="Title"
-            :class="{ 'p-invalid': errors.length }"
-          />
-          <Message v-if="errors.length" severity="error" size="small" variant="simple">
-            {{ errors[0] }}
-          </Message>
-        </Field>
-      </div>
+            </TabList>
+            <TabPanels>
+                <TabPanel value="0">
+                     <div class="w-[700px] my-6"  >
+                  <Form @submit="sendData"
+                    :validation-schema="schema"
+                    :initial-values="initialValues"
+                      class="flex flex-col gap-4 w-full ">
+                      <div class="flex gap-2 flex-col">
+                        <label for="name" class="font-medium">Name <span class="px-2 font-bold text-red-700"> * </span></label>
+                        <Field name="name" v-slot="{ field, errors }" >
+                          <InputText
+                            v-bind="field"
+                            placeholder="Name"
+                            :class="{ 'p-invalid': errors.length }"
+                          />
+                          <Message v-if="errors.length" severity="error" size="small" variant="simple">
+                            {{ errors[0] }}
+                          </Message>
+                        </Field>
+                      </div>
+                    <div class="flex gap-2 flex-col">
+                        <label for="title" class="font-medium">Title <span class="px-2 font-bold text-red-700"> * </span></label>
+                        <Field name="title" v-slot="{ field, errors }">
+                          <InputText
+                            v-bind="field"
+                            placeholder="Title"
+                            :class="{ 'p-invalid': errors.length }"
+                          />
+                          <Message v-if="errors.length" severity="error" size="small" variant="simple">
+                            {{ errors[0] }}
+                          </Message>
+                        </Field>
+                      </div>
 
-       <div class="flex gap-2 flex-col">
-        <label for="slug" class="font-medium">Slug <span class="px-2 font-bold text-red-700"> * </span></label>
-        <Field name="slug" v-slot="{ field, errors }">
-          <InputText
-            v-bind="field"
-            placeholder="Slug"
-            :class="{ 'p-invalid': errors.length }"
-          />
-          <Message v-if="errors.length" severity="error" size="small" variant="simple">
-            {{ errors[0] }}
-          </Message>
-        </Field>
-      </div>
+                      <div class="flex gap-2 flex-col">
+                        <label for="slug" class="font-medium">Slug <span class="px-2 font-bold text-red-700"> * </span></label>
+                        <Field name="slug" v-slot="{ field, errors }">
+                          <InputText
+                            v-bind="field"
+                            placeholder="Slug"
+                            :class="{ 'p-invalid': errors.length }"
+                          />
+                          <Message v-if="errors.length" severity="error" size="small" variant="simple">
+                            {{ errors[0] }}
+                          </Message>
+                        </Field>
+                      </div>
 
-    <div class="flex gap-2 flex-col">
-      <label for="catalog_od" class="font-medium">Catalog <span class="px-2 font-bold text-red-700"> * </span></label>
-     <Field name="catalog_id" v-slot="{ field, value, errors }">
-      <Select
-        :modelValue="value"
-        @update:modelValue="field.onChange"
-        :options="catalogOptions"
-        optionLabel="name"
-        optionValue="code"
-        placeholder="Выберите категорию"
-        class="w-full"
-        :class="{ 'p-invalid': errors.length }"
-      />
-      <Message v-if="errors.length" severity="error">
-        {{ errors[0] }}
-      </Message>
-      </Field>
-   </div>
+                    <div class="flex gap-2 flex-col">
+                      <label for="catalog_od" class="font-medium">Catalog <span class="px-2 font-bold text-red-700"> * </span></label>
+                    <Field name="catalog_id" v-slot="{ field, value, errors }">
+                      <Select
+                        :modelValue="value"
+                        @update:modelValue="field.onChange"
+                        :options="catalogOptions"
+                        optionLabel="name"
+                        optionValue="code"
+                        placeholder="Выберите категорию"
+                        class="w-full"
+                        :class="{ 'p-invalid': errors.length }"
+                      />
+                      <Message v-if="errors.length" severity="error">
+                        {{ errors[0] }}
+                      </Message>
+                      </Field>
+                  </div>
 
-      <Button type="submit"  label="Submit" class="custom-button"/>
-    </Form>
-  </div>
+                      <Button type="submit"  label="Submit" class="custom-button"/>
+                    </Form>
+                  </div>
+                </TabPanel>
+                <TabPanel value="1">
+
+                  <Form @submit.prevent="" >
+                     <editor v-model="html_content" />
+
+                      <Button @click="updateText" class="my-6 px-8" label="Primary" rounded>Save</Button>
+
+                  </Form>
+                </TabPanel>
+
+            </TabPanels>
+        </Tabs>
+    </div>
+
 </div>
 
 

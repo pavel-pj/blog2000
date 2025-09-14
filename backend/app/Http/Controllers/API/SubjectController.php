@@ -1,22 +1,20 @@
 <?php
 
-namespace App\Http\Controllers\API;
+namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
-use App\Services\CatalogService;
-use App\Http\Requests\CatalogCreateRequest;
-use App\Http\Requests\CatalogUpdateRequest;
+use App\Http\Requests\SubjectCreateRequest;
+use App\Http\Requests\SubjectUpdateRequest;
+use App\Services\SubjectService;
 use Illuminate\Http\JsonResponse;
-use Illuminate\Support\Facades\Log;
 
-class CatalogController extends Controller
+class SubjectController extends Controller
 {
-    protected CatalogService $service;
+    protected SubjectService $service;
 
-    public function __construct()
-    {
-        $this->service = new CatalogService();
+    public function __construct() {
+        $this->service  = new SubjectService();
     }
 
     /**
@@ -24,26 +22,27 @@ class CatalogController extends Controller
      */
     public function index(): JsonResponse
     {
-        try {
+         try {
             return response()->json($this->service->index(), 200);
         } catch (\Exception $e) {
             return response()->json($e->getMessage(), 404);
         }
     }
-
  
+
     /**
      * Store a newly created resource in storage.
      */
-    public function store(CatalogCreateRequest $request): JsonResponse
+    public function store(SubjectCreateRequest $request): JsonResponse
     {
-
         $validated = $request->validated();
+
         try {
             return response()->json($this->service->store($validated), 201);
         } catch (\Exception $e) {
-            return response()->error($e->getMessage(), 404);
+            return response()->json($e->getMessage(), 404);
         }
+    
     }
 
     /**
@@ -51,19 +50,19 @@ class CatalogController extends Controller
      */
     public function show(string $id): JsonResponse
     {
+        
         try {
-            return response()->json($this->service->show($id), 200);
+           return response()->json($this->service->show($id), 200);
         } catch (\Exception $e) {
-            //error_log("ОШИБКА КОНТРОЛЕЛЕН КАТАЛОГ");
-            //error_log($e->getMessage());
             return response()->json($e->getMessage(), 404);
         }
     }
  
+
     /**
      * Update the specified resource in storage.
      */
-    public function update(CatalogUpdateRequest $request, string $id):  JsonResponse
+    public function update(SubjectUpdateRequest $request, string $id): JsonResponse
     {
         $validated = $request->validated();
         try {
@@ -71,6 +70,7 @@ class CatalogController extends Controller
         } catch (\Exception $e) {
             return response()->json($e->getMessage(), 404);
         }
+        
     }
 
     /**

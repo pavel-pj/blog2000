@@ -157,4 +157,19 @@ class CatalogControllerTest extends TestCase
         $response->assertStatus(422);
  
     }
+
+    public function testShowThrowsExceptionForNonExistentId(): void
+    {
+        $this->actingAs($this->user);
+
+        $nonExistentId = '550e8400-e29b-41d4-a716-446655440000';
+
+        // Проверяем что исключение действительно выбрасывается
+        $this->expectException(\Exception::class);
+        $this->expectExceptionMessage('non-existent instance');
+
+        // Можно также протестировать через рефлексию напрямую репозиторий
+        $repository = new \App\Repositories\CatalogRepository();
+        $repository->show($nonExistentId);
+    }
 }

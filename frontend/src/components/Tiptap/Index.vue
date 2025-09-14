@@ -1,4 +1,9 @@
-<script >
+<script setup lang="ts">
+import { ref } from 'vue';
+import Editor from './Editor.vue';
+
+const content = ref('<p>A Vue.js wrapper component for Tiptap to use <code>v-model</code>.</p>');
+/*
 import Editor from './Editor.vue';
 
 export default {
@@ -12,6 +17,7 @@ export default {
     };
   }
 };
+*/
 
 </script>
 <template>
