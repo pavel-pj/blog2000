@@ -39,7 +39,7 @@ class CatalogCreateRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'name' => 'string|required| unique:catalogs,name',
+            'name' => 'string|required   ',
 
         ];
     }

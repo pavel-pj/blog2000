@@ -7,13 +7,14 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Contracts\Validation\Validator;
 use Illuminate\Http\Exceptions\HttpResponseException;
 use Illuminate\Http\JsonResponse;
+use App\Models\Subject;
+use Illuminate\Validation\Rule;
+ 
 
-class ArticleCreateRequest extends FormRequest
+
+class WordUpdateRequest extends FormRequest
 {
-    /**
-     * Determine if the user is authorized to make this request.
-     */
-    public function authorize(): bool
+     public function authorize(): bool
     {
         return Auth::check();
     }
@@ -38,11 +39,10 @@ class ArticleCreateRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'name' => 'string|required|max:255',
-            'title' => 'string|required|max:255',
-            'slug' => 'string|required|max:255|unique:articles,slug',
-            //'html_content' => 'string|nullable',
-            'catalog_id' => 'required|string|exists:catalogs,id',
+                'name' => 'string|required|max:255',
+                'translation' => 'string|nullable|max:500',
+                'subject_id' => 'string|nullable|exists:subjects,id',
         ];
+ 
     }
 }

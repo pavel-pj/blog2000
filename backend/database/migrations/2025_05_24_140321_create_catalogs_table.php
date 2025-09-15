@@ -14,13 +14,10 @@ return new class extends Migration
         Schema::create('catalogs', function (Blueprint $table) {
             $table->uuid('id')->primary();
             $table->string('name',255);
-            //$table->unsignedBigInteger('parent_id')->nullable();
+            $table->uuid('parent_id')->nullable();
+            $table->integer('order_column')->default(0);
             $table->timestamps();
 
-            // Внешний ключ на эту же таблицу
-           // $table->foreign('parent_id')
-           //     ->references('id')
-           //    ->on('catalogs');
 
         });
     }

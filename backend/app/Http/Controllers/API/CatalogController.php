@@ -9,6 +9,7 @@ use App\Http\Requests\CatalogCreateRequest;
 use App\Http\Requests\CatalogUpdateRequest;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\Log;
+use App\Models\Catalog;
 
 class CatalogController extends Controller
 {
@@ -42,7 +43,7 @@ class CatalogController extends Controller
         try {
             return response()->json($this->service->store($validated), 201);
         } catch (\Exception $e) {
-            return response()->error($e->getMessage(), 404);
+            return response()->json($e->getMessage(), 404);
         }
     }
 
@@ -85,4 +86,15 @@ class CatalogController extends Controller
             return response()->json($e->getMessage(), 404);
         }
     }
+     
+    public function moveUp($id)
+    {
+        $item = Catalog::findOrFail($id);
+        $item->moveOrderUp();
+        
+        return response()->json([
+            'message' => 'Item moved up successfully',
+            'new_position' => $item->order_column
+        ]);
+    } 
 }

@@ -7,7 +7,7 @@ use App\Http\Controllers\API\CatalogController;
 use App\Http\Controllers\API\ArticleController;
 use App\Http\Controllers\API\DictionaryController;
 use App\Http\Controllers\API\SubjectController;
-
+use App\Http\Controllers\API\WordController;
  
 
 
@@ -24,6 +24,7 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::resource('/catalogs',  CatalogController::class ) ;
     Route::resource('/articles',  ArticleController::class ) ;
     Route::resource('/subjects',  SubjectController::class ) ;
+    Route::resource('/words',  WordController::class ) ;
 
     Route::get('/dictionaries', [ DictionaryController::class, 'index']);
 

@@ -7,10 +7,12 @@ use Illuminate\Foundation\Testing\WithFaker;
 use Tests\TestCase;
 use App\Models\Subject;
 use App\Models\User;
+use Illuminate\Foundation\Testing\DatabaseTransactions;
 
 class SubjectControllerTest extends TestCase
 {
     use RefreshDatabase;
+   // use DatabaseTransactions; // вместо RefreshDatabase
 
     protected $user;
 

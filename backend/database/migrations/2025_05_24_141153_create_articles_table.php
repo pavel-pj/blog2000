@@ -20,6 +20,12 @@ return new class extends Migration
             $table->uuid('catalog_id');
             $table->timestamps();
 
+            // Добавляем внешний ключ
+            $table->foreign('catalog_id')
+                ->references('id')
+                ->on('catalogs');
+
+
             // Внешний ключ на эту же таблицу
             //$table->foreign('catalog_id')
             //    ->references('id')

@@ -124,6 +124,12 @@ services:
     networks:
       - laravel-development
 
+
+
+
+
+
+
 #  redis:
 #    image: redis:alpine
 #    networks:

@@ -108,7 +108,7 @@ const itemsBreadCrumbs =computed(()=>{
 
 </script>
 <template>
-{{ auth }}
+
 
 <BreadCrumbs :items="itemsBreadCrumbs" />
 <Button @click="create" label="Primary" rounded style="display:block">Create </Button>

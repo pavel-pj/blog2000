@@ -14,8 +14,13 @@ return new class extends Migration
         Schema::create('topics', function (Blueprint $table) {
             $table->uuid('id')->primary();
             $table->string('name',255);
-            $table->string('user_id');
+            $table->uuid('subject_id');
             $table->timestamps();
+
+            // Добавляем внешний ключ
+            $table->foreign('subject_id')
+                ->references('id')
+                ->on('subjects');
         });
     }
 

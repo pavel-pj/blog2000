@@ -5,9 +5,13 @@ namespace Tests\Feature;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
 use Tests\TestCase;
+use Illuminate\Foundation\Testing\DatabaseTransactions;
 
 class UserAuthTest extends TestCase
 {
+
+    use RefreshDatabase;
+   // use DatabaseTransactions; // вместо RefreshDatabase
     /**
      * A basic feature test example.
      */

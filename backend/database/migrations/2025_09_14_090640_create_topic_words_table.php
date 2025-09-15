@@ -13,8 +13,8 @@ return new class extends Migration
     {
         Schema::create('topic_words', function (Blueprint $table) {
             $table->uuid('id')->primary();
-            $table->string('topic_id');
-            $table->string('word_id');
+            $table->uuid('topic_id');
+            $table->uuid('word_id');
             $table->timestamps();
         });
     }

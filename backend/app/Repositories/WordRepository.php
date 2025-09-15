@@ -2,25 +2,26 @@
 
 namespace App\Repositories;
 
-use App\Models\Article;
+use App\Models\Word;
 
-class ArticleRepository
+class WordRepository
 {
    
     public function index()
     {
-        return Article::orderBy('created_at', 'DESC')->get();
+        return Word::orderBy('created_at', 'DESC')->get();
     }
-
+    
 
     public function show(string $id)
     {
 
-        $item = Article::where('id', $id)->exists();
+        $item = Word::where('id', $id)->exists();
         if (!$item) {
             throw new \Exception("non-existent instance");
         }
 
-        return Article::where('id', $id)->get();
-    } 
+        return Word::where('id', $id)->get();
+    }
+       
 }

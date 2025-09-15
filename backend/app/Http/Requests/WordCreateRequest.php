@@ -8,7 +8,7 @@ use Illuminate\Contracts\Validation\Validator;
 use Illuminate\Http\Exceptions\HttpResponseException;
 use Illuminate\Http\JsonResponse;
 
-class ArticleCreateRequest extends FormRequest
+class WordCreateRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -39,10 +39,8 @@ class ArticleCreateRequest extends FormRequest
     {
         return [
             'name' => 'string|required|max:255',
-            'title' => 'string|required|max:255',
-            'slug' => 'string|required|max:255|unique:articles,slug',
-            //'html_content' => 'string|nullable',
-            'catalog_id' => 'required|string|exists:catalogs,id',
+            'translation' => 'string|required|max:500',
+            'subject_id' => 'required|string|exists:subjects,id',
         ];
     }
 }

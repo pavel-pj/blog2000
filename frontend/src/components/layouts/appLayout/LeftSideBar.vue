@@ -12,13 +12,8 @@ const items = ref([
     label: 'Article',
     icon: 'pi pi-book',
     route: '/dashboard/article-index'
-  },
-
-  {
-    label: 'tiptap',
-    icon: 'pi pi-book',
-    route: '/dashboard/tiptap'
   }
+
 
 
 ]);
