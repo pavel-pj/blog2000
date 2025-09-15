@@ -43,7 +43,7 @@ class SubjectUpdateRequest extends FormRequest
         return [
             'name' => [
                 'string',
-                'nullable',
+                'nullable','min:3','max:255',
                 Rule::unique('subjects', 'name')
                     ->ignore($subjectId)
                     ->when(

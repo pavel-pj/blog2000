@@ -18,11 +18,14 @@ Route::post('/login', [AuthController::class, 'login'])
 
 
 
-Route::middleware('auth:sanctum')->group(function () {
+Route::middleware(['auth:sanctum','role:Admin'])->group(function () {
+    Route::resource('/catalogs',  CatalogController::class )  ;
+    Route::resource('/articles',  ArticleController::class ) ;
+});
+
+Route::middleware(['auth:sanctum' ])->group(function () {
     Route::get('/profile', [AuthController::class, 'profile']);
     Route::post('/logout', [AuthController::class, 'logout']);
-    Route::resource('/catalogs',  CatalogController::class ) ;
-    Route::resource('/articles',  ArticleController::class ) ;
     Route::resource('/subjects',  SubjectController::class ) ;
     Route::resource('/words',  WordController::class ) ;
 

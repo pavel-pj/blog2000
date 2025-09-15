@@ -38,8 +38,8 @@ class WordCreateRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'name' => 'string|required|max:255',
-            'translation' => 'string|required|max:500',
+            'name' => 'string|required|min:2|max:255',
+            'translation' => 'string|nullable|max:500',
             'subject_id' => 'required|string|exists:subjects,id',
         ];
     }

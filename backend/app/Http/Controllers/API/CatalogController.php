@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers\API;
 
-use App\Http\Controllers\Controller;
+use App\Http\Controllers\Controller;  
 use Illuminate\Http\Request;
 use App\Services\CatalogService;
 use App\Http\Requests\CatalogCreateRequest;
@@ -18,6 +18,7 @@ class CatalogController extends Controller
     public function __construct()
     {
         $this->service = new CatalogService();
+     
     }
 
     /**
@@ -25,6 +26,8 @@ class CatalogController extends Controller
      */
     public function index(): JsonResponse
     {
+        error_log("ТЕСТ ЛОГОВ");
+      
         try {
             return response()->json($this->service->index(), 200);
         } catch (\Exception $e) {

@@ -35,7 +35,7 @@ class SubjectCreateRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'name' => 'string|required|max:255|unique:subjects,name',
+            'name' => 'string|required|min:3|max:255|unique:subjects,name',
             'desription' => 'string|nullable|max:500',
         ];
     }

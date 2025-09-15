@@ -46,7 +46,7 @@ class CatalogUpdateRequest extends FormRequest
         return [
             'name' => [
                 'string',
-                'nullable',
+                'nullable','min:3' ,'max:255',
                 Rule::unique('catalogs', 'name')
                     ->ignore($catalogId)
                     ->when(

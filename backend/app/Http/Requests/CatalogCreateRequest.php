@@ -39,7 +39,7 @@ class CatalogCreateRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'name' => 'string|required   ',
+            'name' => 'string|required|min:3 | max:255',
 
         ];
     }

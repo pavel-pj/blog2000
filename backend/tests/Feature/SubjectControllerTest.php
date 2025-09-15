@@ -146,5 +146,49 @@ class SubjectControllerTest extends TestCase
         $response->assertStatus(404);
  
     }
+
+    public function testSubjectUpdate(): void
+    {
+        $this->actingAs($this->user);
+
+        $subject = Subject::create([
+            'name'=>"English lesson",
+            'user_id' => $this->user->id,
+        ]);
+         
+        $postData = [
+            'name' => 'NEW ARTICLE',
+            
+        ];
+        $response = $this->patchJson("/api/subjects/{$subject->id}", $postData );
+
+        $response->assertStatus(200);
+
+        // Проверяем, что данные обновились в БД
+        $this->assertDatabaseHas('subjects', [
+            'id' => $subject->id,
+            'name' => 'NEW ARTICLE' // Новое значение
+        ]); 
+    }
+
+    public function testSubjectUpdateWithValidationError()
+    {
+        $this->actingAs($this->user);
+
+        $subject = Subject::create([
+            'name'=>"English lesson",
+            'user_id' => $this->user->id,
+        ]);
+         
+
+        $postData = [
+            'name' => '11111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111',
+            
+        ];
+        $response = $this->patchJson("/api/subjects/{$subject->id}", $postData );
+        
+        // Должен вернуть 422 при ошибке валидации
+        $response->assertStatus(422);
+    }
     
 }

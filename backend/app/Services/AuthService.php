@@ -13,11 +13,14 @@ class AuthService
  
     public function register (array $validated): Array
     {
+
+
+
         $user = User::create([
             'email' => $validated['email'],
             'password' => Hash::make($validated['password']),
              ]);
-
+        $user->assignRole('Active');     
         $token = $user->createToken('MyAppToken')->plainTextToken;
 
          return [

@@ -40,7 +40,7 @@ class ArticleUpdateRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'name' => 'string|nullable|max:255',
+            'name' => 'string|nullable|min:3| max:255',
             'title' => 'string|nullable|max:255',
             'slug' => [
                 'string',

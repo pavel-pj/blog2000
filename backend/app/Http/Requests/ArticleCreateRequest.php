@@ -38,7 +38,7 @@ class ArticleCreateRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'name' => 'string|required|max:255',
+            'name' => 'string|required|min:3| max:255',
             'title' => 'string|required|max:255',
             'slug' => 'string|required|max:255|unique:articles,slug',
             //'html_content' => 'string|nullable',
