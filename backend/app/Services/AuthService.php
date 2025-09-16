@@ -20,7 +20,7 @@ class AuthService
             'email' => $validated['email'],
             'password' => Hash::make($validated['password']),
              ]);
-        $user->assignRole('Active');     
+        $user->assignRole('User');     
         $token = $user->createToken('MyAppToken')->plainTextToken;
 
          return [

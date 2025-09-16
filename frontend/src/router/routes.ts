@@ -39,60 +39,129 @@ export default [
           name: 'dashboard',
           component: () => import('@/views/dashboard/Index.vue')
         },
-        {
-          path: 'tiptap',
-          name: 'tiptap',
-          component: () => import('@/components/Tiptap/Index.vue')
-        },
+        
         
        {
-         path: 'catalog-index',
-         name: 'catalog-index',
-         component: () => import('@/components/Catalog/Index/Index.vue')
+         path: 'catalogs/index',
+         name: 'catalogs-index',
+         component: () => import('@/components/Catalog/Index/Index.vue'),
+         meta: {
+          //requiresAuth: true,
+          //middlewares: [auth],
+          allowedRoles: "Admin",
+        },
        },
        {
-         path: 'catalog-create',
-         name: 'catalog-create',
+         path: 'catalogs/create',
+         name: 'catalogs-create',
          component: () => import('@/components/Catalog/Create/Index.vue'),
          props: {
           isEdit:false
-         }
+         },
+         meta: {
+          //requiresAuth: true,
+          //middlewares: [auth],
+          allowedRoles: "Admin",
+        },
        },
        {
-         path: 'catalog/edit/:catatog_id',
-         name: 'catalog-edit',
+         path: 'catalogs/edit/:catatog_id',
+         name: 'catalogs-edit',
          component: () => import('@/components/Catalog/Create/Index.vue'),
          props: {
           isEdit:true
-         }
+         },
+         meta: {
+          //requiresAuth: true,
+          //middlewares: [auth],
+          allowedRoles: "Admin",
+        },
+       },
+       
+       {
+         path: 'articles/index',
+         name: 'articles-index',
+         component: () => import('@/components/Article/Index/Index.vue'),
+         meta: {
+          //requiresAuth: true,
+          //middlewares: [auth],
+          allowedRoles: "Admin",
+        },
        },
        {
-         path: 'catalog/test',
-         name: 'catalog-test',
-         component: () => import('@/components/Catalog/Create/Test.vue'),
-          
-       },
-       {
-         path: 'article-index',
-         name: 'article-index',
-         component: () => import('@/components/Article/Index/Index.vue')
-       },
-       {
-         path: 'article-create',
-         name: 'article-create',
+         path: 'articles/create',
+         name: 'articles-create',
          component: () => import('@/components/Article/Create/Index.vue'),
          props: {
           isEdit:false
-         }
+         },
+         meta: {
+          //requiresAuth: true,
+          //middlewares: [auth],
+          allowedRoles: "Admin",
+        },
        },
        {
-         path: 'article/edit/:article_id',
-         name: 'article-edit',
+         path: 'articles/edit/:article_id',
+         name: 'articles-edit',
          component: () => import('@/components/Article/Create/Index.vue'),
          props: {
           isEdit:true
-         }
+         },
+         meta: {
+          //requiresAuth: true,
+          //middlewares: [auth],
+          allowedRoles: "Admin",
+        },
        },
+
+        {
+         path: 'subjects/index',
+         name: 'subjects-index',
+         component: () => import('@/components/Subject/Index/Index.vue'),
+         props: {
+          isEdit:false
+         },
+         meta: {
+          //requiresAuth: true,
+          //middlewares: [auth],
+          allowedRoles: "User",
+        },
+       },
+
+        {
+         path: 'subjects/create',
+         name: 'subjects-create',
+         component: () => import('@/components/Subject/Create/Index.vue'),
+         props: {
+          isEdit:false
+         },
+         meta: {
+          //requiresAuth: true,
+          //middlewares: [auth],
+          allowedRoles: "User",
+        },
+       },
+       {
+         path: 'subjects/edit/:subject_id',
+         name: 'asubject-edit',
+         component: () => import('@/components/Subject/Create/Index.vue'),
+         props: {
+          isEdit:true
+         },
+         meta: {
+          //requiresAuth: true,
+          //middlewares: [auth],
+          allowedRoles: "User",
+        },
+       },
+
+      {
+        name: "forbidden",
+        path: "/forbidden",
+        component: () => import("@/views/error/Forbidden.vue"),
+      },
+
       ]
     }
      

@@ -3,8 +3,8 @@
 import { ref, onMounted ,computed} from 'vue';
 import {useRouter} from 'vue-router';
 import {
-  catalogsURL,
-  deleteCatalogURL
+  subjectsURL,
+  deleteSubjectURL
 } from '@/config/request-urls';
 import { useHttpRequest } from '@/utils/http-request';
 import modalSpiner from '@/components/common/spiner/ModalSpiner.vue';
@@ -15,7 +15,7 @@ import { useAuthStore } from '@/store/auth';
 
 const router = useRouter();
 
-interface CatalogItem {
+interface SubjectItem {
   id: string,
   name: string,
 
@@ -24,17 +24,18 @@ interface CatalogItem {
 const confirm = useConfirm();
 const isSpiner = ref<boolean>(false);
 const margYspiner = '24';
-const auth = useAuthStore();
+//const auth = useAuthStore();
+
 
 const {
-  data: catalog,
+  data: subject,
   sendRequest: sendData
-} = useHttpRequest<CatalogItem[]>( );
+} = useHttpRequest<SubjectItem[]>( );
 
-const tableData = ref<CatalogItem[]>([]);
+const tableData = ref<SubjectItem[]>([]);
 
 const isPageSpiner = computed (()=>{
-  const data = catalog.value || null;
+  const data = subject.value || null;
   return (!data) ? true : false;
 });
 
@@ -61,13 +62,13 @@ const deleteItem = async () =>{
   isSpiner.value = true;
 
   const res = await sendDelete({
-    url: deleteCatalogURL(dataToDelete.value?.id),
+    url: deleteSubjectURL(dataToDelete.value?.id),
     method: 'DELETE'
 
   });
 
   if (res?.isOk) {
-    await getCatalog();
+    await getSubject();
     isSpiner.value = false;
   } else {
     isSpiner.value = false;
@@ -77,11 +78,11 @@ const deleteItem = async () =>{
 
 
 onMounted(async () => {
-  await getCatalog();
+  await getSubject();
 });
 
-const getCatalog = async()=> {
-  const response = await sendData({ url: catalogsURL() });
+const getSubject = async()=> {
+  const response = await sendData({ url: subjectsURL() });
 
   if (response?.data) {
     tableData.value = Array.isArray(response.data)
@@ -103,22 +104,22 @@ const onRowSelect =(event)=>{
 const itemsBreadCrumbs =computed(()=>{
 
   return ([
-    { label: 'Catalog'   }]);
+    { label: 'Subject'   }]);
 });
 
 </script>
 <template>
 
-<BreadCrumbs :items="itemsBreadCrumbs" />
+ <BreadCrumbs :items="itemsBreadCrumbs" />
 <Button @click="create" label="Primary" rounded style="display:block">Create </Button>
 
-  <PageSpiner :my="margYspiner"  :isSpiner="isPageSpiner"  />
+ <PageSpiner :my="margYspiner"  :isSpiner="isPageSpiner"  />
 
 
- <div class="card pt-6 " v-if="catalog" >
+ <div class="card pt-6 " v-if="subject" >
         <DataTable stripedRows
         selectionMode="single" dataKey="id" :metaKeySelection="false"
-        @rowSelect="onRowSelect" :value="catalog" tableStyle="min-width: 50rem">
+        @rowSelect="onRowSelect" :value="subject" tableStyle="min-width: 50rem">
 
            <Column field="name" header="Name"></Column>
            <Column field="id" header="Id"></Column>
@@ -134,4 +135,5 @@ const itemsBreadCrumbs =computed(()=>{
         <Toast />
     </div>
   <modalSpiner :isSpiner="isSpiner" ></modalSpiner>
+
 </template>

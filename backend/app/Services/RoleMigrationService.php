@@ -18,7 +18,7 @@ class RoleMigrationService
         ]);
 
         $active = Role::create([
-            'name' => 'Active',
+            'name' => 'User',
             'guard_name' => 'web',
             'nameRu' => 'Активный пользователь'
         ]);
@@ -27,7 +27,10 @@ class RoleMigrationService
         //Роль админу.
         $userId =  User::where('email', 'admin@mail.ru')->first()->id;
         $user = User::find($userId);
-        $user->assignRole('Admin');
+        $user->assignRole('Admin','User');
+
+
+
     }
 
     public static function createPermissions()
@@ -51,7 +54,7 @@ class RoleMigrationService
     {
 
         $adminRole =  Role::firstWhere('name', 'Admin');
-        $activeRole =  Role::firstWhere('name', 'Active');
+        $iserRole =  Role::firstWhere('name', 'User');
       /*  $activeRole->givePermissionTo(['view user','edit user']);
         $AdminRole->givePermissionTo([
 

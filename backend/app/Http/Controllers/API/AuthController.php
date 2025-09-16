@@ -53,11 +53,14 @@ class AuthController extends Controller
     // User Profile API (Protected)
     public function profile(Request $request)
     {   
-
+        $user = $request->user()->makeHidden('roles');
+        //$result = ['user' => $request->user()];
+        //$result ['user'][] =  'roles' => $request->user()->roles->pluck('name')
         return response()->json(
             [
-            'success' => true,
+            //'success' => true,
             'user' => $request->user(),
+            'roles' => $request->user()->roles->pluck('name')
             ]
         );
     }

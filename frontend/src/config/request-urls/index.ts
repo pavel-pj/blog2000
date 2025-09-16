@@ -1,7 +1,7 @@
 //export const baseUrl = 'http://localhost:8080/api';
 export const baseUrl = import.meta.env.VITE_API_URL  
 //catalog
-export function catalogURL() {
+export function catalogsURL() {
   return `${baseUrl}/catalogs`;
 }
 
@@ -25,7 +25,7 @@ export function updateCatalogURL(id:string, params?: Record<string, string|numbe
 }
 
 //Article
-export function articleURL() {
+export function articlesURL() {
   return `${baseUrl}/articles`;
 }
 
@@ -37,7 +37,7 @@ export function articleItemShowURL(id: string) {
   return `${baseUrl}/articles/${id}`;
 }
 
-//Удаление раздела каталога
+//Удаление статьи
 export function deleteArticleURL(id: string) {
   return `${baseUrl}/articles/${id}`;
 }
@@ -47,6 +47,33 @@ export function updateArticleURL(id:string, params?: Record<string, string|numbe
     ...params,
   });
 }
+
+
+
+//Subjects
+export function subjectsURL() {
+  return `${baseUrl}/subjects`;
+}
+
+export function subjectCreateURL() {
+  return `${baseUrl}/subjects`;
+}
+
+export function subjectItemShowURL(id: string) {
+  return `${baseUrl}/subjects/${id}`;
+}
+
+export function deleteSubjectURL(id: string) {
+  return `${baseUrl}/subjects/${id}`;
+}
+
+export function updateSubjectURL(id:string, params?: Record<string, string|number|boolean>) {
+  return addQueryParams(`${baseUrl}/subjects/${id}`, {
+    ...params,
+  });
+}
+
+
 
 //dictionaries
 export function catalogDictionariesURL(dicntionaryType: string) {

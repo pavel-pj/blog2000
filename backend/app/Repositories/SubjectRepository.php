@@ -9,7 +9,10 @@ class SubjectRepository
 {
     public function index(): Array
     {
-        return Subject::orderBy('created_at', 'DESC')->get()->toArray();
+        
+        $user_id = auth()->user()->id;
+
+        return Subject::where ('user_id', $user_id)->orderBy('created_at', 'DESC')->get()->toArray();
     }
 
     public function show(string $id): Array

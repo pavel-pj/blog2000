@@ -28,6 +28,7 @@ export const useAuthStore = defineStore('auth', ()=> {
 
   const user : Ref<User | null > = ref(null);
   const token : Ref<string | null > = ref(localStorage.getItem('auth_token'));
+  const roles : Ref<string[]> = ref([]);
 
   // Новый метод для проверки аутентификации
   const createUser = async(formData: LoginFormData): Promise<AuthResponse> => {
@@ -41,6 +42,7 @@ export const useAuthStore = defineStore('auth', ()=> {
       // 3. Сохраняем токен и пользователя
       token.value = data.token;
       user.value = data.user;
+      roles.value = data.roles;
       
       localStorage.setItem('auth_token', data.token);
 
@@ -62,6 +64,10 @@ export const useAuthStore = defineStore('auth', ()=> {
       // 3. Сохраняем токен и пользователя
       token.value = data.token;
       user.value = data.user;
+
+      roles.value = data.roles;
+ 
+
       localStorage.setItem('auth_token', data.token);
 
       return data;
@@ -77,7 +83,9 @@ export const useAuthStore = defineStore('auth', ()=> {
       if (!token.value) return null;
 
       const { data } = await http.get('/profile');
-      user.value = data;
+      user.value = data.user;
+      roles.value = data.roles;
+     
       return data;
     } catch (error) {
       token.value = null;
@@ -99,13 +107,28 @@ export const useAuthStore = defineStore('auth', ()=> {
       throw error;
     }
   }
-
+ 
+  // Основная функция проверки права
+  const hasRole = (role: string ): boolean => {
+      
+      if (!roles.value) return false
+      // Проверка правил пользователя
+      if (roles.value.some(p => p  === role)) {
+        return true
+      }  
+      return false;
+  } 
+ 
   return {
     user,
+    roles,
     token,
     createUser,
     login,
     fetchUser,
-    logout
+    logout,
+    hasRole
+
+
   };
 });

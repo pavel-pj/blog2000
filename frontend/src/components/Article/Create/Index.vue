@@ -113,7 +113,7 @@ const sendData = async(data:any) => {
 
 
     if (res.value?.isOk) {
-      await router.push('article-index');
+      await router.push('articles-index');
 
     } else {
       isSpiner.value = false;
@@ -193,7 +193,7 @@ const pageOptions = computed (()=>  {
 const itemsBreadCrumbs =computed(()=>{
 
   return ([
-    { label: 'Articles' ,route: { name: 'article-index' }  },
+    { label: 'Articles' ,route: { name: 'articles-index' }  },
     { label: itemName.value }
   ]) ;
 });

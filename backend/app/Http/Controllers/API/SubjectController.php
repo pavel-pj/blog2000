@@ -20,8 +20,10 @@ class SubjectController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index(): JsonResponse
+    public function index()//: JsonResponse
     {
+
+         
          try {
             return response()->json($this->service->index(), 200);
         } catch (\Exception $e) {

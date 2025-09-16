@@ -2,9 +2,9 @@
 import { computed, ref,onMounted } from 'vue';
 import { useHttpRequest } from '@/utils/http-request';
 import {
-  catalogCreateURL,
-  catalogItemShowURL,
-  updateCatalogURL
+  subjectCreateURL,
+  subjectItemShowURL,
+  updateSubjectURL
 } from '@/config/request-urls';
 import {useRouter,useRoute} from 'vue-router';
 import modalSpiner from '@/components/common/spiner/ModalSpiner.vue';
@@ -38,14 +38,14 @@ const {
 
 onMounted(async () => {
   if (props.isEdit) {
-    await fetchItemCatalog();
+    await fetchItemSubject();
   }
 });
 
-const fetchItemCatalog = async () => {
+const fetchItemSubject = async () => {
 
   if (itemId) {
-    await getDataRequest({ url: catalogItemShowURL(itemId) });
+    await getDataRequest({ url: subjectItemShowURL(itemId) });
   }
 };
 
@@ -69,14 +69,14 @@ const sendData = async(data:any) => {
   if (!props.isEdit) {
 
     res.value = await sendRequest({
-      url: catalogCreateURL(),
+      url: subjectCreateURL(),
       method: 'POST',
       data: params
     });
 
 
     if (res.value?.isOk) {
-      await router.push('catalogs-index');
+      await router.push('index');
 
     } else {
       isSpiner.value = false;
@@ -84,13 +84,13 @@ const sendData = async(data:any) => {
   } else {
 
     res.value = await sendRequest({
-      url: updateCatalogURL(itemId),
+      url: updateSubjectURL(itemId),
       method: 'PATCH',
       data: params
     });
 
     if (res.value?.isOk) {
-      await fetchItemCatalog();
+      await fetchItemSubject();
       isSpiner.value = false;
     } else {
       isSpiner.value = false;
@@ -128,7 +128,7 @@ const pageOptions = computed (()=>  {
 const itemsBreadCrumbs =computed(()=>{
 
   return ([
-    { label: 'Catalog' ,route: { name: 'catalogs-index' }  },
+    { label: 'Subjects' ,route: { name: 'subjects-index' }  },
     { label: itemName.value }
   ]) ;
 });

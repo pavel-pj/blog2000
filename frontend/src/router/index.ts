@@ -1,6 +1,6 @@
 import { createRouter, createWebHistory } from 'vue-router';
 import { useAuthStore } from '@/store/auth';
-import routes from "@/js/router/routes"
+import routes from "@/router/routes";
  
  
 
@@ -33,8 +33,8 @@ router.beforeEach(async (to, from, next) => {
       if (authStore.token && authStore.user) {
 
 
-        if (to.meta.allowedPermission && !authStore.hasPermission (to.meta.allowedPermission) ) {
-            next({ name: "forbidden" });
+        if (to.meta.allowedRoles && !authStore.hasRole (to.meta.allowedRoles as string) ) {
+           next({ name: "forbidden" });
           }
 
 
@@ -49,6 +49,7 @@ router.beforeEach(async (to, from, next) => {
     } catch (error) {
       
       authStore.logout(); // Очищаем данные при ошибке
+      console.log(error)
       next({ name: 'login' });
     }
   }

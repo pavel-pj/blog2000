@@ -3,7 +3,7 @@
 import { ref, onMounted ,computed} from 'vue';
 import {useRouter} from 'vue-router';
 import {
-  articleURL,
+  articlesURL,
   deleteArticleURL
 } from '@/config/request-urls';
 import { useHttpRequest } from '@/utils/http-request';
@@ -82,7 +82,7 @@ onMounted(async () => {
 });
 
 const getArticle = async()=> {
-  const response = await sendData({ url: articleURL() });
+  const response = await sendData({ url: articlesURL() });
 
   if (response?.data) {
     tableData.value = Array.isArray(response.data)
@@ -93,12 +93,12 @@ const getArticle = async()=> {
 
 
 const create = () => {
-  router.push('article-create');
+  router.push('create');
 };
 
 const onRowSelect =(event)=>{
   console.log(event.data.id);
-  router.push(`article/edit/${event.data.id}`);
+  router.push(`edit/${event.data.id}`);
 };
 
 const itemsBreadCrumbs =computed(()=>{
