@@ -8,6 +8,7 @@ import {
 } from '@/config/request-urls';
 import { useHttpRequest } from '@/utils/http-request';
 import modalSpiner from '@/components/common/spiner/ModalSpiner.vue';
+import  SubjectCard  from '@/components/common/content/SubjectCard.vue';
 import PageSpiner from '@/components/common/spiner/PageSpiner.vue';
 import useConfirm from '@/composables/modals/Confirmer';
 import BreadCrumbs from '@/components/common/navigate/BreadCrumbs.vue';
@@ -28,14 +29,14 @@ const margYspiner = '24';
 
 
 const {
-  data: subject,
+  data: subjects,
   sendRequest: sendData
 } = useHttpRequest<SubjectItem[]>( );
 
 const tableData = ref<SubjectItem[]>([]);
 
 const isPageSpiner = computed (()=>{
-  const data = subject.value || null;
+  const data = subjects.value || null;
   return (!data) ? true : false;
 });
 
@@ -110,12 +111,21 @@ const itemsBreadCrumbs =computed(()=>{
 </script>
 <template>
 
- <BreadCrumbs :items="itemsBreadCrumbs" />
+<BreadCrumbs :items="itemsBreadCrumbs" />
 <Button @click="create" label="Primary" rounded style="display:block">Create </Button>
+<PageSpiner :my="margYspiner"  :isSpiner="isPageSpiner"  />
 
- <PageSpiner :my="margYspiner"  :isSpiner="isPageSpiner"  />
+<div class="flex flex-row flex-wrap justify-between" v-if="subjects">
+<SubjectCard v-for="(subject, index) in subjects"
+      :key="index"
+      :subject="subject"
 
 
+      > </SubjectCard>
+</div>
+
+
+<!--
  <div class="card pt-6 " v-if="subject" >
         <DataTable stripedRows
         selectionMode="single" dataKey="id" :metaKeySelection="false"
@@ -133,7 +143,8 @@ const itemsBreadCrumbs =computed(()=>{
 
         </DataTable>
         <Toast />
-    </div>
+    </div>-->
   <modalSpiner :isSpiner="isSpiner" ></modalSpiner>
+
 
 </template>

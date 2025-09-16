@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\Concerns\HasUuids;
 
 class Subject extends Model
 {
-   use HasUuids;
+    use HasUuids;
 
     protected $primaryKey = 'id';
     public $incrementing = false;

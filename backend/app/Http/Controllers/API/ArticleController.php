@@ -16,7 +16,6 @@ class ArticleController extends Controller
     public function __construct()
     {
         $this->service = new ArticleService();
- 
     }
 
     /**
@@ -30,7 +29,7 @@ class ArticleController extends Controller
             return response()->json($e->getMessage(), 404);
         }
     }
- 
+
 
     /**
      * Store a newly created resource in storage.
@@ -62,7 +61,7 @@ class ArticleController extends Controller
             return response()->json($e->getMessage(), 404);
         }
     }
- 
+
 
     /**
      * Update the specified resource in storage.

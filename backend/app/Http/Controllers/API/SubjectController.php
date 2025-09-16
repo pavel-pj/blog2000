@@ -13,7 +13,8 @@ class SubjectController extends Controller
 {
     protected SubjectService $service;
 
-    public function __construct() {
+    public function __construct()
+    {
         $this->service  = new SubjectService();
     }
 
@@ -23,14 +24,14 @@ class SubjectController extends Controller
     public function index()//: JsonResponse
     {
 
-         
-         try {
+
+        try {
             return response()->json($this->service->index(), 200);
         } catch (\Exception $e) {
             return response()->json($e->getMessage(), 404);
         }
     }
- 
+
 
     /**
      * Store a newly created resource in storage.
@@ -44,7 +45,6 @@ class SubjectController extends Controller
         } catch (\Exception $e) {
             return response()->json($e->getMessage(), 404);
         }
-    
     }
 
     /**
@@ -52,14 +52,14 @@ class SubjectController extends Controller
      */
     public function show(string $id): JsonResponse
     {
-        
+
         try {
-           return response()->json($this->service->show($id), 200);
+            return response()->json($this->service->show($id), 200);
         } catch (\Exception $e) {
             return response()->json($e->getMessage(), 404);
         }
     }
- 
+
 
     /**
      * Update the specified resource in storage.
@@ -72,7 +72,6 @@ class SubjectController extends Controller
         } catch (\Exception $e) {
             return response()->json($e->getMessage(), 404);
         }
-        
     }
 
     /**

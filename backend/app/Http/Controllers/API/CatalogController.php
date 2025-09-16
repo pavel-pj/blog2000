@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers\API;
 
-use App\Http\Controllers\Controller;  
+use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Services\CatalogService;
 use App\Http\Requests\CatalogCreateRequest;
@@ -18,7 +18,6 @@ class CatalogController extends Controller
     public function __construct()
     {
         $this->service = new CatalogService();
-     
     }
 
     /**
@@ -27,7 +26,7 @@ class CatalogController extends Controller
     public function index(): JsonResponse
     {
         error_log("ТЕСТ ЛОГОВ");
-      
+
         try {
             return response()->json($this->service->index(), 200);
         } catch (\Exception $e) {
@@ -35,7 +34,7 @@ class CatalogController extends Controller
         }
     }
 
- 
+
     /**
      * Store a newly created resource in storage.
      */
@@ -63,11 +62,11 @@ class CatalogController extends Controller
             return response()->json($e->getMessage(), 404);
         }
     }
- 
+
     /**
      * Update the specified resource in storage.
      */
-    public function update(CatalogUpdateRequest $request, string $id):  JsonResponse
+    public function update(CatalogUpdateRequest $request, string $id): JsonResponse
     {
         $validated = $request->validated();
         try {
@@ -89,15 +88,15 @@ class CatalogController extends Controller
             return response()->json($e->getMessage(), 404);
         }
     }
-     
+
     public function moveUp($id)
     {
         $item = Catalog::findOrFail($id);
         $item->moveOrderUp();
-        
+
         return response()->json([
             'message' => 'Item moved up successfully',
             'new_position' => $item->order_column
         ]);
-    } 
+    }
 }

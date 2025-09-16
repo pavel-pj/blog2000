@@ -17,14 +17,11 @@ class CheckRole
     {
 
          //error_log("MIDDLEWARE");
-            $user = auth()->user();
-         
+        $user = auth()->user();
+
         if (!auth()->user()->hasRole($role)) {
             abort(403);
         }
         return $next($request);
-        
     }
 }
-
- 

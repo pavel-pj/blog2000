@@ -5,27 +5,25 @@ namespace App\Services;
 use App\Models\Word;
 use App\Repositories\WordRepository;
 
-
-
 class WordService
 {
     protected WordRepository $repository;
 
     public function __construct()
     {
-       $this->repository = new WordRepository();
+        $this->repository = new WordRepository();
     }
- 
+
     public function index()
     {
         return $this->repository->index();
     }
- 
+
     public function show(string $id)
     {
         return $this->repository->show($id);
     }
- 
+
     public function store(array $validated)
     {
 
@@ -36,7 +34,7 @@ class WordService
         }
         return $item;
     }
- 
+
     public function update(array $validated, string $id)
     {
 
@@ -45,16 +43,15 @@ class WordService
         } catch (ModelNotFoundException $e) {
             throw new \Exception("non-existent instance");
         }
- 
-        
+
+
         Word::updateOrInsert(
-                ['id' => $id],
-                $validated
-                );
+            ['id' => $id],
+            $validated
+        );
         return Word::where('id', $id)->get() ;
- 
     }
- 
+
     public function destroy(string $id): void
     {
 
@@ -69,5 +66,4 @@ class WordService
             throw new \Exception("Item could not be deleted");
         }
     }
- 
 }

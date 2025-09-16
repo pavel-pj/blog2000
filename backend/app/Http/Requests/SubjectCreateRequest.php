@@ -7,10 +7,11 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Contracts\Validation\Validator;
 use Illuminate\Http\Exceptions\HttpResponseException;
 use Illuminate\Http\JsonResponse;
+use Illuminate\Validation\Rule;
 
 class SubjectCreateRequest extends FormRequest
 {
-     public function authorize(): bool
+    public function authorize(): bool
     {
         return Auth::check();
     }
@@ -35,7 +36,16 @@ class SubjectCreateRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'name' => 'string|required|min:3|max:255|unique:subjects,name',
+            'name' => [
+                'string',
+                'required',
+                'min:3',
+                'max:255',
+                 Rule::unique('subjects')->where(function ($query) {
+                    return $query->where('user_id', auth()->id());
+                })
+            
+            ],
             'desription' => 'string|nullable|max:500',
         ];
     }

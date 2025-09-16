@@ -12,13 +12,14 @@ use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Spatie\EloquentSortable\Sortable;
 use Spatie\EloquentSortable\SortableTrait;
 
-
 class Catalog extends Model implements Sortable
 {
     /**
  * @use HasFactory<\Database\Factories\CatalogFactory>
 */
-    use HasFactory,HasUuids, SortableTrait;
+    use HasFactory;
+    use HasUuids;
+    use SortableTrait;
 
     protected $primaryKey = 'id';
     public $incrementing = false;
@@ -26,7 +27,7 @@ class Catalog extends Model implements Sortable
 
     protected $fillable = ['name', 'order_column'];
 
-    
+
 
     protected $casts = [
         'id' => 'string', // важно для UUID
@@ -34,7 +35,7 @@ class Catalog extends Model implements Sortable
 
     ];
 
-     public $sortable = [
+    public $sortable = [
         'order_column_name' => 'order_column',
         'sort_when_creating' => true, // Автоматически устанавливает порядок при создании
     ];

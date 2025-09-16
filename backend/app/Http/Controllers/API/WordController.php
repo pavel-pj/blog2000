@@ -8,7 +8,6 @@ use App\Services\WordService;
 use App\Http\Requests\WordCreateRequest;
 use App\Http\Requests\WordUpdateRequest;
 use Illuminate\Http\JsonResponse;
- 
 
 class WordController extends Controller
 {
@@ -24,20 +23,20 @@ class WordController extends Controller
      */
     public function index(): JsonResponse
     {
-         try {
+        try {
             return response()->json($this->service->index(), 200);
         } catch (\Exception $e) {
             return response()->json($e->getMessage(), 404);
         }
     }
 
-   
+
     /**
      * Store a newly created resource in storage.
      */
     public function store(WordCreateRequest $request): JsonResponse
     {
-         try {
+        try {
             $validated = $request->validated();
             return response()->json($this->service->store($validated), 201);
         } catch (\Exception $e) {
@@ -57,7 +56,7 @@ class WordController extends Controller
             return response()->json($e->getMessage(), 404);
         }
     }
- 
+
     /**
      * Update the specified resource in storage.
      */

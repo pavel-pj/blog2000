@@ -124,13 +124,19 @@ export function useHttpRequest<T = unknown>(
 
       };
     } catch (err) {
-    console.log("ОШИБКА")
+    //console.log("ОШИБКА")
       handleError(err );
+      
+      let errorMsg = 'Request could not be done';
+      if (err.status === 422) {
+        errorMsg =err?.response?.data?.errors?.name[0];
+      }
+
       if(showErrorToast) {
         showToast({
               severity: 'error',
               summary: 'Error',
-              detail: 'Message Content',
+              detail: errorMsg,
               life: 3000
             });
         }

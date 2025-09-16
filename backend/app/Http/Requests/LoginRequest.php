@@ -8,7 +8,6 @@ use Illuminate\Contracts\Validation\Validator;
 use Illuminate\Http\Exceptions\HttpResponseException;
 use Illuminate\Http\JsonResponse;
 
-
 class LoginRequest extends FormRequest
 {
     /**
@@ -19,7 +18,7 @@ class LoginRequest extends FormRequest
         return true;
     }
 
-     protected function failedValidation(Validator $validator)
+    protected function failedValidation(Validator $validator)
     {
         throw new HttpResponseException(
             response()->json(

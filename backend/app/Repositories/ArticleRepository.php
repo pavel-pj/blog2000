@@ -6,7 +6,6 @@ use App\Models\Article;
 
 class ArticleRepository
 {
-   
     public function index()
     {
         return Article::orderBy('created_at', 'DESC')->get();
@@ -22,5 +21,5 @@ class ArticleRepository
         }
 
         return Article::where('id', $id)->get();
-    } 
+    }
 }

@@ -26,6 +26,8 @@ bash-pro:
 
 logs:
 	docker compose -f compose.dev.yaml logs php-fpm
+lint-check:
+	docker compose -f compose.dev.yaml exec -u root workspace bash -c "composer lint"	
 lint:
 	docker compose -f compose.dev.yaml exec -u root workspace bash -c "composer lintfix"
 

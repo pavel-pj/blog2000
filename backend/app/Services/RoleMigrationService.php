@@ -27,10 +27,7 @@ class RoleMigrationService
         //Роль админу.
         $userId =  User::where('email', 'admin@mail.ru')->first()->id;
         $user = User::find($userId);
-        $user->assignRole('Admin','User');
-
-
-
+        $user->assignRole('Admin', 'User');
     }
 
     public static function createPermissions()

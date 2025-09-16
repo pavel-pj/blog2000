@@ -20,22 +20,21 @@ class AuthController extends Controller
     public function __construct()
     {
         $this->service = new AuthService();
-
     }
 
 
     // User Registration API
-    public function register(UserCreateRequest $request): JsonResponse 
+    public function register(UserCreateRequest $request): JsonResponse
     {
         $validated = $request->validated();
- 
+
         try {
             return response()->json($this->service->register($validated), 201);
         } catch (\Exception $e) {
             return response()->json($e->getMessage(), 404);
         }
     }
- 
+
     // User Login API
     public function login(LoginRequest $request)
     {
@@ -47,12 +46,11 @@ class AuthController extends Controller
         } catch (\Exception $e) {
             return response()->json($e->getMessage(), 404);
         }
- 
     }
 
     // User Profile API (Protected)
     public function profile(Request $request)
-    {   
+    {
         $user = $request->user()->makeHidden('roles');
         //$result = ['user' => $request->user()];
         //$result ['user'][] =  'roles' => $request->user()->roles->pluck('name')

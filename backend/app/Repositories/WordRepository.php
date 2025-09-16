@@ -6,12 +6,11 @@ use App\Models\Word;
 
 class WordRepository
 {
-   
     public function index()
     {
         return Word::orderBy('created_at', 'DESC')->get();
     }
-    
+
 
     public function show(string $id)
     {
@@ -23,5 +22,4 @@ class WordRepository
 
         return Word::where('id', $id)->get();
     }
-       
 }

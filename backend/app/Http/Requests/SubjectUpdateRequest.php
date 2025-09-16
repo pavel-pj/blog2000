@@ -10,10 +10,9 @@ use Illuminate\Http\JsonResponse;
 use App\Models\Subject;
 use Illuminate\Validation\Rule;
 
-
 class SubjectUpdateRequest extends FormRequest
 {
-     public function authorize(): bool
+    public function authorize(): bool
     {
         return Auth::check();
     }
@@ -56,6 +55,5 @@ class SubjectUpdateRequest extends FormRequest
             'desription' => 'string|nullable|max:500',
 
         ];
- 
     }
 }

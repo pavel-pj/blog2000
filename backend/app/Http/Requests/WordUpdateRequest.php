@@ -9,12 +9,10 @@ use Illuminate\Http\Exceptions\HttpResponseException;
 use Illuminate\Http\JsonResponse;
 use App\Models\Subject;
 use Illuminate\Validation\Rule;
- 
-
 
 class WordUpdateRequest extends FormRequest
 {
-     public function authorize(): bool
+    public function authorize(): bool
     {
         return Auth::check();
     }
@@ -43,6 +41,5 @@ class WordUpdateRequest extends FormRequest
                 'translation' => 'string|nullable|max:500',
                 'subject_id' => 'string|nullable|exists:subjects,id',
         ];
- 
     }
 }
