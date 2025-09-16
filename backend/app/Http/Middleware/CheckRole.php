@@ -16,7 +16,7 @@ class CheckRole
     public function handle(Request $request, Closure $next, $role): Response
     {
 
-         error_log("MIDDLEWARE");
+         //error_log("MIDDLEWARE");
             $user = auth()->user();
          
         if (!auth()->user()->hasRole($role)) {

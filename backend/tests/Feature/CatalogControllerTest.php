@@ -26,6 +26,8 @@ class CatalogControllerTest extends TestCase
             'name' => 'Test User',
             'email' => 'test@example.com'
         ]);
+
+        $this->user->assignRole(['Admin','User']); 
     }
 
       // Выполняется после КАЖДОГО теста

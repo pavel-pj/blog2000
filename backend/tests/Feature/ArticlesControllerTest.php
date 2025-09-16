@@ -24,8 +24,10 @@ class ArticlesControllerTest extends TestCase
         // Создаем пользователя, который будет доступен в каждом тесте
         $this->user = User::factory()->create([
             'name' => 'Test User',
-            'email' => 'test@example.com'
-        ]);
+            'email' => 'test@example.com',
+         ]);
+
+        $this->user->assignRole(['Admin','User']); 
     }
 
       // Выполняется после КАЖДОГО теста
