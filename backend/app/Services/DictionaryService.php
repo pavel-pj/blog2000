@@ -5,19 +5,15 @@ namespace App\Services;
 use App\Models\Article;
 use App\Repositories\CatalogRepository;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Collection;
 
 class DictionaryService
 {
-    protected CatalogRepository $catalogRepository;
+  
+    public function __construct(protected CatalogRepository $catalogRepository){}
 
-    public function __construct()
+    public function getDictionaryByParams(array $validated, string $typeDictionary): Array
     {
-        $this->catalogRepository = new CatalogRepository();
-    }
-
-    public function getCandidateDictionaryByParams(array $validated, string $typeDictionary)//: array
-    {
-
 
         if ($typeDictionary === 'catalog') {
             return [

@@ -7,12 +7,9 @@ use App\Repositories\SubjectRepository;
 
 class SubjectService
 {
-    protected SubjectRepository $repository;
+    
 
-    public function __construct()
-    {
-        $this->repository = new SubjectRepository();
-    }
+    public function __construct(protected SubjectRepository $repository){}
 
     public function index(): array
     {

@@ -26,7 +26,7 @@ class Word extends Model
 
     ];
 
-    public function subjects(): BelongsTo
+    public function subject(): BelongsTo
     {
         return $this->belongsTo(Subject::class);
     }

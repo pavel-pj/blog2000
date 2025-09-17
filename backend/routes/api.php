@@ -8,7 +8,7 @@ use App\Http\Controllers\API\ArticleController;
 use App\Http\Controllers\API\DictionaryController;
 use App\Http\Controllers\API\SubjectController;
 use App\Http\Controllers\API\WordController;
- 
+use App\Http\Controllers\API\TopicController; 
 
 
 Route::post('/register', [AuthController::class, 'register'])->name('register');
@@ -29,6 +29,8 @@ Route::middleware(['auth:sanctum' ])->group(function () {
     Route::resource('/subjects',  SubjectController::class ) ;
     Route::get('/subjects/{id}/words',  [WordController::class ,'index']) ;
     Route::resource('/words',  WordController::class )->only(['show','store','destroy','update']) ;
+    Route::get('/subjects/{id}/topics',  [TopicController::class ,'index']) ;
+    Route::resource('/topics',  TopicController::class  )->only(['show','store','destroy','update']) ; ;
 
     Route::get('/dictionaries', [ DictionaryController::class, 'index']);
 

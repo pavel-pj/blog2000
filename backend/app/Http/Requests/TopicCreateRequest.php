@@ -7,17 +7,16 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Contracts\Validation\Validator;
 use Illuminate\Http\Exceptions\HttpResponseException;
 use Illuminate\Http\JsonResponse;
-use App\Models\Subject;
 use Illuminate\Validation\Rule;
-use App\Models\Subjects;
 
-class WordUpdateRequest extends FormRequest
+class TopicCreateRequest extends FormRequest
 {
-    public function authorize(): bool
+    /**
+     * Determine if the user is authorized to make this request.
+     */
+     public function authorize(): bool
     {
-        return Auth::check() & Subject::where('id', $this->route('id'))
-                                ->where('user_id', auth()->id())
-                               ->exists();
+        return Auth::check();
     }
 
     protected function failedValidation(Validator $validator)
@@ -39,10 +38,24 @@ class WordUpdateRequest extends FormRequest
      */
     public function rules(): array
     {
-        return [
-                'name' => 'string|required|min:2| max:255',
-                'translation' => 'string|nullable|max:500',
-                'subject_id' => 'string|nullable|exists:subjects,id',
+          return [
+            'name' => [
+                'string',
+                'required',
+                'min:2',
+                'max:255',
+                 Rule::unique('topics')->where(function ($query)   {
+                    return $query->where('subject_id', $this->subject_id);
+                }),
+            ],
+            'subject_id' => [
+                'required',
+                'string',
+                Rule::exists('subjects', 'id')->where(function ($query) {
+                    return $query->where('user_id', auth()->user()->id);
+                }),
+                ]
+            
         ];
     }
 }

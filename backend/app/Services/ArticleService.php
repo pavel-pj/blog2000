@@ -8,12 +8,8 @@ use Illuminate\Support\Facades\DB;
 
 class ArticleService
 {
-    protected ArticleRepository $repository;
-
-    public function __construct()
-    {
-        $this->repository = new ArticleRepository();
-    }
+  
+    public function __construct( protected ArticleRepository $repository){}
 
     public function index()
     {

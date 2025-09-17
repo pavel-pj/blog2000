@@ -10,21 +10,17 @@ use Illuminate\Http\JsonResponse;
 
 class DictionaryController extends Controller
 {
-    private DictionaryService $service;
+  
+    public function __construct( private DictionaryService $service){}
+   
 
-    public function __construct(DictionaryService $service)
-    {
-        $this->service = $service;
-    }
-
-    public function index(DictionaryRequest $request)// : JsonResponse
+    public function index(DictionaryRequest $request) : JsonResponse
     {
         $typeDictionary = $request->input('typeDictionary');
         $validated = $request->validated();
-
-
+ 
         return response()->json(
-            $this->service->getCandidateDictionaryByParams($validated, $typeDictionary)
+            $this->service->getDictionaryByParams($validated, $typeDictionary)
         );
     }
 }

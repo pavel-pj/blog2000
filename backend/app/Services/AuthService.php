@@ -11,9 +11,7 @@ class AuthService
 {
     public function register(array $validated): array
     {
-
-
-
+ 
         $user = User::create([
             'email' => $validated['email'],
             'password' => Hash::make($validated['password']),

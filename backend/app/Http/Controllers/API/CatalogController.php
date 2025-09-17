@@ -13,20 +13,15 @@ use App\Models\Catalog;
 
 class CatalogController extends Controller
 {
-    protected CatalogService $service;
-
-    public function __construct()
-    {
-        $this->service = new CatalogService();
-    }
+  
+    public function __construct(protected CatalogService $service){}
 
     /**
      * Display a listing of the resource.
      */
     public function index(): JsonResponse
     {
-        error_log("ТЕСТ ЛОГОВ");
-
+  
         try {
             return response()->json($this->service->index(), 200);
         } catch (\Exception $e) {
@@ -88,15 +83,5 @@ class CatalogController extends Controller
             return response()->json($e->getMessage(), 404);
         }
     }
-
-    public function moveUp($id)
-    {
-        $item = Catalog::findOrFail($id);
-        $item->moveOrderUp();
-
-        return response()->json([
-            'message' => 'Item moved up successfully',
-            'new_position' => $item->order_column
-        ]);
-    }
+ 
 }

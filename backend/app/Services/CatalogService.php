@@ -6,27 +6,23 @@ use App\Models\Catalog;
 use App\Repositories\CatalogRepository;
 use Exception;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Database\Eloquent\Collection as  EloquentCollection;
 
 class CatalogService
 {
-    protected CatalogRepository $repository;
+     public function __construct(protected CatalogRepository $repository){}
 
-    public function __construct()
-    {
-        $this->repository = new CatalogRepository();
-    }
-
-    public function index()
+    public function index(): EloquentCollection
     {
         return $this->repository->index();
     }
 
-    public function show(string $id)
+    public function show(string $id): EloquentCollection
     {
         return $this->repository->show($id);
     }
 
-    public function store(array $validated)
+    public function store(array $validated): Catalog
     {
         $item =  Catalog::create($validated);
         if (!$item) {
@@ -35,7 +31,7 @@ class CatalogService
         return $item;
     }
 
-    public function update(array $validated, string $id)
+    public function update(array $validated, string $id): EloquentCollection
     {
 
         try {

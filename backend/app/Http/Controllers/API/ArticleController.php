@@ -11,12 +11,8 @@ use Illuminate\Http\JsonResponse;
 
 class ArticleController extends Controller
 {
-    public ArticleService $service;
-
-    public function __construct()
-    {
-        $this->service = new ArticleService();
-    }
+   
+    public function __construct(public ArticleService $service){}
 
     /**
      * Display a listing of the resource.

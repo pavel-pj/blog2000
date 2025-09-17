@@ -3,8 +3,32 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Concerns\HasUuids;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Topic extends Model
 {
-    //
+     use HasUuids;
+
+    protected $primaryKey = 'id';
+    public $incrementing = false;
+    protected $keyType = 'string';
+
+    protected $fillable = [
+        'name',
+        'subject_id',
+        
+    ];
+
+    protected $casts = [
+        'id' => 'string', // важно для UUID
+        
+
+    ];
+
+    public function subjects(): BelongsTo
+    {
+        return $this->belongsTo(Subject::class);
+    }
 }

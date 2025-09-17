@@ -11,17 +11,13 @@ use Illuminate\Http\JsonResponse;
 
 class SubjectController extends Controller
 {
-    protected SubjectService $service;
-
-    public function __construct()
-    {
-        $this->service  = new SubjectService();
-    }
+     
+    public function __construct(protected SubjectService $service){}
 
     /**
      * Display a listing of the resource.
      */
-    public function index()//: JsonResponse
+    public function index(): JsonResponse
     {
 
 

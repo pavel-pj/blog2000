@@ -7,6 +7,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Contracts\Validation\Validator;
 use Illuminate\Http\Exceptions\HttpResponseException;
 use Illuminate\Http\JsonResponse;
+use App\Models\Subject;
 
 class WordCreateRequest extends FormRequest
 {
@@ -15,7 +16,9 @@ class WordCreateRequest extends FormRequest
      */
     public function authorize(): bool
     {
-        return Auth::check();
+        return Auth::check() & Subject::where('id', $this->route('id'))
+                                ->where('user_id', auth()->id())
+                               ->exists();
     }
 
     protected function failedValidation(Validator $validator)

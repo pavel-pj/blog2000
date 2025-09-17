@@ -35,9 +35,8 @@ class SubjectControllerTest extends TestCase
         
         parent::tearDown();
     }
-    /**
-     * A basic feature test example.
-     */
+    
+    
     public function testShow(): void
     {
         $this->actingAs($this->user);
@@ -190,5 +189,6 @@ class SubjectControllerTest extends TestCase
         // Должен вернуть 422 при ошибке валидации
         $response->assertStatus(422);
     }
+         
     
 }

@@ -3,17 +3,18 @@
 namespace App\Repositories;
 
 use App\Models\Word;
+use Illuminate\Database\Eloquent\Collection as EloquentCollection;
 
 class WordRepository
 {
-    public function index(string $subjectId)
+    public function index(string $subjectId): EloquentCollection
     {
         return Word::query()->
             where('subject_id',$subjectId)->orderBy('created_at', 'DESC')->get();
     }
 
 
-    public function show(string $id)
+    public function show(string $id): EloquentCollection
     {
 
         $item = Word::where('id', $id)->exists();
@@ -21,6 +22,6 @@ class WordRepository
             throw new \Exception("non-existent instance");
         }
 
-        return Word::where('id', $id)->get();
+        return Word::where('id', $id)->get() ;
     }
 }

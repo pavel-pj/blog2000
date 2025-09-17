@@ -39,9 +39,8 @@ class ArticlesControllerTest extends TestCase
         parent::tearDown();
     }
 
-    /**
-     * A basic feature test example.
-     */
+    
+    
     public function testArticleShow(): void
     {
         $this->actingAs($this->user);
@@ -104,10 +103,7 @@ class ArticlesControllerTest extends TestCase
         // Должен вернуть 422 при ошибке валидации
         $response->assertStatus(422);
     }
-
-     /**
-     * A basic feature test example.
-     */
+ 
     public function testArticleIndex(): void
     {
         $this->actingAs($this->user);
@@ -231,6 +227,7 @@ class ArticlesControllerTest extends TestCase
         $repository = new \App\Repositories\ArticleRepository();
         $repository->show($nonExistentId);
     }
+        
 }
 
   

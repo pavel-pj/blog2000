@@ -7,14 +7,16 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Contracts\Validation\Validator;
 use Illuminate\Http\Exceptions\HttpResponseException;
 use Illuminate\Http\JsonResponse;
-use App\Models\Subject;
 use Illuminate\Validation\Rule;
-use App\Models\Subjects;
+use App\Models\Subject;
 
-class WordUpdateRequest extends FormRequest
+class WordIndexRequest extends FormRequest
 {
-    public function authorize(): bool
-    {
+    /**
+     * Determine if the user is authorized to make this request.
+     */
+         public function authorize(): bool
+    { 
         return Auth::check() & Subject::where('id', $this->route('id'))
                                 ->where('user_id', auth()->id())
                                ->exists();
@@ -39,10 +41,8 @@ class WordUpdateRequest extends FormRequest
      */
     public function rules(): array
     {
-        return [
-                'name' => 'string|required|min:2| max:255',
-                'translation' => 'string|nullable|max:500',
-                'subject_id' => 'string|nullable|exists:subjects,id',
+         return [
+             
         ];
     }
 }

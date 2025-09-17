@@ -7,23 +7,22 @@ use Illuminate\Http\Request;
 use App\Services\WordService;
 use App\Http\Requests\WordCreateRequest;
 use App\Http\Requests\WordUpdateRequest;
+use App\Http\Requests\WordIndexRequest;
+use App\Http\Requests\WordShowRequest;
 use Illuminate\Http\JsonResponse;
 
 class WordController extends Controller
 {
-    public WordService $service;
-
-    public function __construct()
-    {
-        $this->service = new WordService();
-    }
+ 
+    public function __construct(public WordService $service) {}
 
     /**
      * Display a listing of the resource.
      */
-    public function index(string $subjectId): JsonResponse
+    public function index(WordIndexRequest $request, string $subjectId): JsonResponse
     {
         try {
+            $validated = $request->validated();
             return response()->json($this->service->index($subjectId), 200);
         } catch (\Exception $e) {
             return response()->json($e->getMessage(), 404);
@@ -48,9 +47,10 @@ class WordController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(string $id): JsonResponse
+    public function show(WordShowRequest $request, string $id): JsonResponse
     {
         try {
+            $validated = $request->validated();
             return response()->json($this->service->show($id), 200);
         } catch (\Exception $e) {
             return response()->json($e->getMessage(), 404);
