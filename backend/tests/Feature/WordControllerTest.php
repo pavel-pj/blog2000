@@ -129,7 +129,7 @@ class WordControllerTest extends TestCase
             'subject_id' => $subject->id
         ];
 
-        $response = $this->get('/api/words');
+        $response = $this->get('/api/subjects/'.$subject->id.'/words');
 
         $response->assertStatus(200);
     }

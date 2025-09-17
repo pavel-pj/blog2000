@@ -16,7 +16,7 @@ import TopPanel from '@/components/layouts/appLayout/TopPanel.vue';
       <div class="col-span-7 ">
         <div class="bg-white rounded-xl h-full shadow-md border-bottom-1">
           <main >
-          <section class="py-4 px-8">
+          <section class="py-4 px-8 h-screen">
               <router-view></router-view>
           </section>
           </main>

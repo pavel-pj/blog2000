@@ -21,10 +21,10 @@ class WordController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index(): JsonResponse
+    public function index(string $subjectId): JsonResponse
     {
         try {
-            return response()->json($this->service->index(), 200);
+            return response()->json($this->service->index($subjectId), 200);
         } catch (\Exception $e) {
             return response()->json($e->getMessage(), 404);
         }

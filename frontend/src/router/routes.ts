@@ -144,10 +144,50 @@ export default [
        },
        {
          path: 'subjects/edit/:subject_id',
-         name: 'asubject-edit',
+         name: 'subject-edit',
          component: () => import('@/components/Subject/Create/Index.vue'),
          props: {
           isEdit:true
+         },
+         meta: {
+          //requiresAuth: true,
+          //middlewares: [auth],
+          allowedRoles: "User",
+        },
+       },
+
+       //Words
+        {
+         path: 'subject/:subject_id',
+         name: 'words-index',
+         component: () => import('@/components/Word/Index/Index.vue'),
+ 
+         meta: {
+          //requiresAuth: true,
+          //middlewares: [auth],
+          allowedRoles: "User",
+        },
+       },
+
+        {
+         path: 'words/:word_id',
+         name: 'word-edit',
+         component: () => import('@/components/Word/Create/Index.vue'),
+         props: {
+          isEdit:true
+         },
+         meta: {
+          //requiresAuth: true,
+          //middlewares: [auth],
+          allowedRoles: "User",
+        },
+       },
+       {
+         path: ':subject_id/words/create',
+         name: 'word-create',
+         component: () => import('@/components/Word/Create/Index.vue'),
+        props: {
+          isEdit:false
          },
          meta: {
           //requiresAuth: true,

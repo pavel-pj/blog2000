@@ -14,9 +14,9 @@ class WordService
         $this->repository = new WordRepository();
     }
 
-    public function index()
+    public function index(string $subjectId)
     {
-        return $this->repository->index();
+        return $this->repository->index($subjectId);
     }
 
     public function show(string $id)

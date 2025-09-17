@@ -73,6 +73,29 @@ export function updateSubjectURL(id:string, params?: Record<string, string|numbe
   });
 }
 
+//Words
+export function wordsURL(subject_id:string) {
+  return `${baseUrl}/subjects/${subject_id}/words`;
+}
+
+export function wordCreateURL() {
+  return `${baseUrl}/words`;
+}
+
+export function wordItemShowURL(id: string) {
+  return `${baseUrl}/words/${id}`;
+}
+                
+export function deleteWordURL(id: string) {
+  return `${baseUrl}/words/${id}`;
+}
+
+export function updateWordURL(id:string, params?: Record<string, string|number|boolean>) {
+  return addQueryParams(`${baseUrl}/words/${id}`, {
+    ...params,
+  });
+}
+
 
 
 //dictionaries

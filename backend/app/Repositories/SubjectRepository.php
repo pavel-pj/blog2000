@@ -12,7 +12,7 @@ class SubjectRepository
 
         $user_id = auth()->user()->id;
 
-        return Subject::where('user_id', $user_id)->orderBy('created_at', 'DESC')->get()->toArray();
+        return Subject::where('user_id', $user_id)->orderBy('created_at', 'ASC')->get()->toArray();
     }
 
     public function show(string $id): array

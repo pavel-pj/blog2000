@@ -34,6 +34,16 @@ frontend/.env
 frontend/.env.local
 frontend/.env.*.local
 
+# Vite temporary files
+vite.config.js.timestamp-*
+vite.config.js.timestamp-*.mjs
+*.timestamp-*.mjs
+*.timestamp-*
+
+# Vite cache
+.cache/
+.temp/
+
 
 # Vendor directory - РАБОЧИЙ ВАРИАНТ
 backend/vendor/**/*

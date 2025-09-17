@@ -6,9 +6,10 @@ use App\Models\Word;
 
 class WordRepository
 {
-    public function index()
+    public function index(string $subjectId)
     {
-        return Word::orderBy('created_at', 'DESC')->get();
+        return Word::query()->
+            where('subject_id',$subjectId)->orderBy('created_at', 'DESC')->get();
     }
 
 

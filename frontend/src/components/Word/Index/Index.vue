@@ -1,22 +1,22 @@
 <script setup lang="ts">
 
 import { ref, onMounted ,computed} from 'vue';
-import {useRouter} from 'vue-router';
+import {useRoute, useRouter} from 'vue-router';
 import {
-  subjectsURL,
-  deleteSubjectURL
+  wordsURL,
+  deleteWordURL
 } from '@/config/request-urls';
 import { useHttpRequest } from '@/utils/http-request';
 import modalSpiner from '@/components/common/spiner/ModalSpiner.vue';
-import  SubjectCard  from '@/components/common/content/SubjectCard.vue';
 import PageSpiner from '@/components/common/spiner/PageSpiner.vue';
 import useConfirm from '@/composables/modals/Confirmer';
 import BreadCrumbs from '@/components/common/navigate/BreadCrumbs.vue';
-import { useAuthStore } from '@/store/auth';
 
 const router = useRouter();
+const route = useRoute();
 
-interface SubjectItem {
+
+interface WordItem {
   id: string,
   name: string,
 
@@ -25,18 +25,19 @@ interface SubjectItem {
 const confirm = useConfirm();
 const isSpiner = ref<boolean>(false);
 const margYspiner = '24';
-//const auth = useAuthStore();
-
 
 const {
-  data: subjects,
+  data: words,
   sendRequest: sendData
-} = useHttpRequest<SubjectItem[]>( );
+} = useHttpRequest<WordItem[]>({
+  showSuccessToast:false,
+  showErrorToast: false
+});
 
-const tableData = ref<SubjectItem[]>([]);
+const tableData = ref<WordItem[]>([]);
 
 const isPageSpiner = computed (()=>{
-  const data = subjects.value || null;
+  const data = words.value || null;
   return (!data) ? true : false;
 });
 
@@ -63,13 +64,13 @@ const deleteItem = async () =>{
   isSpiner.value = true;
 
   const res = await sendDelete({
-    url: deleteSubjectURL(dataToDelete.value?.id),
+    url: deleteWordURL(dataToDelete.value?.id),
     method: 'DELETE'
 
   });
 
   if (res?.isOk) {
-    await getSubject();
+    await getWords();
     isSpiner.value = false;
   } else {
     isSpiner.value = false;
@@ -79,11 +80,11 @@ const deleteItem = async () =>{
 
 
 onMounted(async () => {
-  await getSubject();
+  await getWords();
 });
 
-const getSubject = async()=> {
-  const response = await sendData({ url: subjectsURL() });
+const getWords = async()=> {
+  const response = await sendData({ url: wordsURL(route.params.subject_id as string) });
 
   if (response?.data) {
     tableData.value = Array.isArray(response.data)
@@ -94,42 +95,35 @@ const getSubject = async()=> {
 
 
 const create = () => {
-  router.push('create');
+  router.push({name: 'word-create'});
 };
 
 const onRowSelect =(event)=>{
-  console.log(event.data.id);
-  router.push(`edit/${event.data.id}`);
+  //console.log(event.data.id);
+  router.push({ name: 'word-create' ,
+    params: { word_id : event.data.id }
+  }
+  );
 };
 
 const itemsBreadCrumbs =computed(()=>{
 
   return ([
-    { label: 'Subject'   }]);
+    { label: 'Words'   }]);
 });
 
 </script>
 <template>
 
+
 <BreadCrumbs :items="itemsBreadCrumbs" />
 <Button @click="create" label="Primary" rounded style="display:block">Create </Button>
-<PageSpiner :my="margYspiner"  :isSpiner="isPageSpiner"  />
 
-<div class="flex flex-row flex-wrap justify-center gap-6 py-6" v-if="subjects">
-<SubjectCard v-for="(subject, index) in subjects"
-      :key="index"
-      :subject="subject"
-
-
-      > </SubjectCard>
-</div>
-
-
-<!--
- <div class="card pt-6 " v-if="subject" >
+  <PageSpiner :my="margYspiner"  :isSpiner="isPageSpiner"  />
+ <div class="card pt-6 " v-if="words" >
         <DataTable stripedRows
         selectionMode="single" dataKey="id" :metaKeySelection="false"
-        @rowSelect="onRowSelect" :value="subject" tableStyle="min-width: 50rem">
+        @rowSelect="onRowSelect" :value="words" tableStyle="min-width: 50rem">
 
            <Column field="name" header="Name"></Column>
            <Column field="id" header="Id"></Column>
@@ -143,8 +137,6 @@ const itemsBreadCrumbs =computed(()=>{
 
         </DataTable>
         <Toast />
-    </div>-->
+    </div>
   <modalSpiner :isSpiner="isSpiner" ></modalSpiner>
-
-
 </template>

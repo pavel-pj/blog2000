@@ -4,7 +4,8 @@ import { useHttpRequest } from '@/utils/http-request';
 import {
   subjectCreateURL,
   subjectItemShowURL,
-  updateSubjectURL
+  updateSubjectURL,
+  deleteSubjectURL
 } from '@/config/request-urls';
 import {useRouter,useRoute} from 'vue-router';
 import modalSpiner from '@/components/common/spiner/ModalSpiner.vue';
@@ -13,6 +14,7 @@ import BreadCrumbs from '@/components/common/navigate/BreadCrumbs.vue';
 import { Form, Field } from 'vee-validate';
 import { z } from 'zod';
 import { toTypedSchema } from '@vee-validate/zod';
+import useConfirm from '@/composables/modals/Confirmer';
 
 const router = useRouter();
 const route = useRoute();
@@ -22,8 +24,9 @@ type Props = {
 };
 const props = defineProps<Props>();
 
-const itemId =  route?.params?.catatog_id as string;
+const itemId =  route?.params?.subject_id as string;
 const isSpiner = ref<boolean>(false);
+const confirm = useConfirm();
 
 const {
   data : itemData,
@@ -37,7 +40,9 @@ const {
 
 
 onMounted(async () => {
+
   if (props.isEdit) {
+
     await fetchItemSubject();
   }
 });
@@ -76,7 +81,7 @@ const sendData = async(data:any) => {
 
 
     if (res.value?.isOk) {
-      await router.push('index');
+      await router.push({name:'subjects-index'});
 
     } else {
       isSpiner.value = false;
@@ -125,6 +130,47 @@ const pageOptions = computed (()=>  {
 });
 
 
+
+const dataToDelete = ref<any>('');
+
+const openDelete =( )=>{
+  dataToDelete.value = route.params.subject_id;
+
+  confirm({
+    message: 'Do you want to delete this record?',
+    accept: deleteItem,
+    successMessage: 'Record successefully deleted'
+
+  });
+};
+
+const {
+  sendRequest: sendDelete
+} = useHttpRequest( );
+
+
+const deleteItem = async () =>{
+
+
+
+  const res = await sendDelete({
+    url: deleteSubjectURL(dataToDelete.value),
+    method: 'DELETE'
+
+  });
+
+  if (res?.isOk) {
+    //await getCatalog();
+    router.push({name:'subjects-index'});
+
+    isSpiner.value = false;
+  } else {
+    isSpiner.value = false;
+  }
+
+};
+
+
 const itemsBreadCrumbs =computed(()=>{
 
   return ([
@@ -156,9 +202,9 @@ const initialValues = computed(() => ({
 <BreadCrumbs :items="itemsBreadCrumbs" />
 <PageSpiner :isSpiner="isPageSpiner" />
 
-  <div  v-if="!isPageSpiner">
+  <div  v-if="!isPageSpiner" class="h-screen">
   <h1 class="text-3xl mb-12"> {{pageOptions.title}}</h1>
-  <div class="w-[400px] my-6 "  >
+  <div class="w-[400px] "  >
 
     <Form @submit="sendData"
     :validation-schema="schema"
@@ -176,12 +222,17 @@ const initialValues = computed(() => ({
           </Message>
         </Field>
       </div>
-
-
       <Button type="submit"  label="Submit" />
     </Form>
-
+ </div>
+  <div v-if="isEdit"
+  @click="openDelete"
+    class="text-rose-500 my-6 underline font-bold text-xl cursor-pointer inline-block
+    hover:text-rose-700 hover:no-underline"
+  >
+    delete
   </div>
+
 </div>
  <modalSpiner :isSpiner="isLoading" ></modalSpiner>
 

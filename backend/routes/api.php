@@ -27,7 +27,8 @@ Route::middleware(['auth:sanctum' ])->group(function () {
     Route::get('/profile', [AuthController::class, 'profile']);
     Route::post('/logout', [AuthController::class, 'logout']);
     Route::resource('/subjects',  SubjectController::class ) ;
-    Route::resource('/words',  WordController::class ) ;
+    Route::get('/subjects/{id}/words',  [WordController::class ,'index']) ;
+    Route::resource('/words',  WordController::class )->only(['show','store','destroy','update']) ;
 
     Route::get('/dictionaries', [ DictionaryController::class, 'index']);
 
