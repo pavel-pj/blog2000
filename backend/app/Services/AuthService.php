@@ -36,7 +36,7 @@ class AuthService
             'password' => $validated['password'],
             ])
         ) {
-           // $request->only('email', 'password'))) {
+           
             return response()->json(['error' => 'Unauthorized'], 401);
         }
 

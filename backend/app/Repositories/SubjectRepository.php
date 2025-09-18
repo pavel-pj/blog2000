@@ -3,19 +3,20 @@
 namespace App\Repositories;
 
 use App\Models\Subject;
-use Illuminate\Support\Facades\DB;
+use Illuminate\Database\Eloquent\Collection as EloquentCollection;
+use Illuminate\Support\Collection;
 
 class SubjectRepository
 {
-    public function index(): array
+    public function index(): EloquentCollection
     {
 
         $user_id = auth()->user()->id;
 
-        return Subject::where('user_id', $user_id)->orderBy('created_at', 'ASC')->get()->toArray();
+        return Subject::where('user_id', $user_id)->orderBy('created_at', 'ASC')->get() ;
     }
 
-    public function show(string $id): array
+    public function show(string $id): Collection
     {
 
         $item = Subject::where('id', $id)->exists();
@@ -23,6 +24,6 @@ class SubjectRepository
             throw new \Exception("non-existent instance");
         }
 
-        return Subject::where('id', $id)->get()->toArray();
+        return Subject::where('id', $id)->get();
     }
 }

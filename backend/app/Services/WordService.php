@@ -11,7 +11,7 @@ class WordService
  
     public function __construct(protected WordRepository $repository){}
 
-    public function index(string $subjectId) 
+    public function index(string $subjectId): EloquentCollection
     {
         return $this->repository->index($subjectId);
     }
@@ -21,17 +21,17 @@ class WordService
         return $this->repository->show($id);
     }
 
-    public function store(array $validated) 
+    public function store(array $validated): Word
     {
 
         $item =  Word::create($validated);
         if (!$item) {
             throw new \Exception("It is not possible to create new item Article");
         }
-        return $item->toArray();
+        return $item;
     }
 
-    public function update(array $validated, string $id) 
+    public function update(array $validated, string $id):EloquentCollection 
     {
 
         try {
@@ -45,7 +45,7 @@ class WordService
             ['id' => $id],
             $validated
         );
-        return Word::where('id', $id)->get()->toArray() ;
+        return Word::where('id', $id)->get()  ;
     }
 
     public function destroy(string $id): void

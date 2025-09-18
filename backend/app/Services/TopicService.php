@@ -4,13 +4,14 @@ namespace App\Services;
 
 use App\Models\Topic;
 use App\Repositories\TopicRepository;
+use Illuminate\Database\Eloquent\Collection as  EloquentCollection;
 
 class TopicService
 {
  
     public function __construct(protected TopicRepository $repository){} 
     
-    public function index(string $subjectId): Array
+    public function index(string $subjectId): EloquentCollection
     {
         return $this->repository->index($subjectId);
     }
@@ -20,14 +21,14 @@ class TopicService
         return $this->repository->show($id);
     }
     */
-    public function store(array $validated): Array
+    public function store(array $validated): Topic
     {
  
         $item =  Topic::create($validated);
         if (!$item) {
             throw new \Exception("It is not possible to create new item Article");
         }
-        return $item->toArray();
+        return $item;
     }
     /*
     public function update(array $validated, string $id)

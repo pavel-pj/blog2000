@@ -5,23 +5,24 @@ namespace App\Services;
 use App\Models\Article;
 use App\Repositories\ArticleRepository;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Database\Eloquent\Collection as EloquentCollection;
 
 class ArticleService
 {
   
     public function __construct( protected ArticleRepository $repository){}
 
-    public function index()
+    public function index(): EloquentCollection 
     {
         return $this->repository->index();
     }
 
-    public function show(string $id)
+    public function show(string $id): EloquentCollection
     {
         return $this->repository->show($id);
     }
 
-    public function store(array $validated)
+    public function store(array $validated): Article
     {
 
 
@@ -32,7 +33,7 @@ class ArticleService
         return $item;
     }
 
-    public function update(array $validated, string $id)
+    public function update(array $validated, string $id): EloquentCollection
     {
 
         try {

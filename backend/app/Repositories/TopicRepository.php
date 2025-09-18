@@ -3,13 +3,14 @@
 namespace App\Repositories;
 
 use App\Models\Topic;
-use Illuminate\Support\Facades\DB;
+use Illuminate\Database\Eloquent\Collection as EloquentCollection;
+use Illuminate\Support\Collection;
 
 class TopicRepository
 {
-    public function index(string $subjectId): Array
+    public function index(string $subjectId): EloquentCollection
     {
-        return Topic::where('subject_id', $subjectId)->orderBy('created_at', 'ASC')->get()->toArray();
+        return Topic::where('subject_id', $subjectId)->orderBy('created_at', 'ASC');
     }
     /*
     public function show(string $id): array

@@ -8,6 +8,8 @@ use App\Http\Requests\SubjectCreateRequest;
 use App\Http\Requests\SubjectUpdateRequest;
 use App\Services\SubjectService;
 use Illuminate\Http\JsonResponse;
+use App\Models\Subject;
+use Symfony\Component\HttpKernel\Exception\HttpException;
 
 class SubjectController extends Controller
 {
@@ -19,8 +21,6 @@ class SubjectController extends Controller
      */
     public function index(): JsonResponse
     {
-
-
         try {
             return response()->json($this->service->index(), 200);
         } catch (\Exception $e) {
@@ -48,8 +48,9 @@ class SubjectController extends Controller
      */
     public function show(string $id): JsonResponse
     {
-
+ 
         try {
+            $this->isSubjectAllowedToShow($id);
             return response()->json($this->service->show($id), 200);
         } catch (\Exception $e) {
             return response()->json($e->getMessage(), 404);
@@ -81,5 +82,13 @@ class SubjectController extends Controller
         } catch (\Exception $e) {
             return response()->json($e->getMessage(), 404);
         }
+    }
+
+    public function isSubjectAllowedToShow(string $id)  {
+
+        if(Subject::findOrFail($id)->user_id !== auth()->user()->id){
+            throw new HttpException(404, 'The requested resource could not be found');
+        }
+
     }
 }

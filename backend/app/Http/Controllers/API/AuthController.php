@@ -36,7 +36,7 @@ class AuthController extends Controller
     }
 
     // User Login API
-    public function login(LoginRequest $request)
+    public function login(LoginRequest $request): JsonResponse
     {
 
         $validated = $request->validated();
@@ -49,11 +49,9 @@ class AuthController extends Controller
     }
 
     // User Profile API (Protected)
-    public function profile(Request $request)
+    public function profile(Request $request): JsonResponse
     {
         $user = $request->user()->makeHidden('roles');
-        //$result = ['user' => $request->user()];
-        //$result ['user'][] =  'roles' => $request->user()->roles->pluck('name')
         return response()->json(
             [
             //'success' => true,
@@ -63,7 +61,7 @@ class AuthController extends Controller
         );
     }
 
-    public function logout(Request $request)
+    public function logout(Request $request): JsonResponse
     {
         $request->user()->tokens()->delete();
 

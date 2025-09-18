@@ -69,6 +69,9 @@ test-migrate:
 #	docker compose -f compose.dev.yaml exec workspace php artisan test
 test:
 	docker compose -f compose.dev.yaml exec workspace php artisan test --coverage	
+test-%:
+	docker compose -f compose.dev.yaml exec workspace vendor/bin/phpunit tests/Feature/$(subst -,/,$*).php
+
 
 clear-cache:
 	# Останавливаем все контейнеры (игнорируем ошибки если нет контейнеров)
