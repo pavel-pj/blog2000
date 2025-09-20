@@ -16,9 +16,7 @@ class WordCreateRequest extends FormRequest
      */
     public function authorize(): bool
     {
-        return Auth::check() & Subject::where('id', $this->route('id'))
-                                ->where('user_id', auth()->id())
-                               ->exists();
+        return Auth::check() ;
     }
 
     protected function failedValidation(Validator $validator)
@@ -43,7 +41,17 @@ class WordCreateRequest extends FormRequest
         return [
             'name' => 'string|required|min:2|max:255',
             'translation' => 'string|nullable|max:500',
-            'subject_id' => 'required|string|exists:subjects,id',
+            'subject_id' => [
+                'required',
+                'string',
+                'exists:subjects,id',
+                function ($attribute, $value, $fail) {
+                    $subject = Subject::find($value);
+                    if (!$subject || $subject->user_id !== Auth::id()) {
+                        $fail('The selected subject does not belong to you.');
+                    }
+                },
+            ],
         ];
     }
 }

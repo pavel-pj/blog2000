@@ -21,15 +21,7 @@ class WordShowRequest extends FormRequest
          public function authorize(): bool
     { 
         return Auth::check(); 
-        
-        /*
-        && Word::where('id', $this->route('word'))
-                                ->whereIn('subject_id', function($query) {
-                                    $query->select('id')
-                                    ->from('subjects')
-                                    ->where('user_id', auth()->user()->id);
-                                })->exists();   
-        */
+ 
         
     }
 
@@ -44,20 +36,32 @@ class WordShowRequest extends FormRequest
             )
         );
     }
-
-     protected function prepareForValidation()
-    {
-        $this->merge([
-            'word' => $this->route('word')
-        ]);
-    }
-
-
+ 
     public function rules(): array
     {
          return [
-             'word'=>[ 'required','uuid',new WordBelongsToUser ]
+              
         ];
+    }
+
+        public function withValidator($validator)
+    {
+        $validator->after(function ($validator) {
+            $wordId = $this->route('word'); // Получаем id из route
+             
+  
+            // Проверяем существование и принадлежность
+            $word = Word::find($wordId);
+            
+            if (!$word) {
+                $validator->errors()->add('word_id', 'The subject does not exist.');
+                return;
+            }
+            
+            if ($word->subject->user_id !== Auth::id()) {
+                $validator->errors()->add('word_id', 'The word does not belong to you.');
+            }
+        });
     }
  
   

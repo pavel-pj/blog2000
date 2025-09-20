@@ -17,9 +17,7 @@ class WordIndexRequest extends FormRequest
      */
          public function authorize(): bool
     { 
-        return Auth::check() & Subject::where('id', $this->route('id'))
-                                ->where('user_id', auth()->id())
-                               ->exists();
+        return Auth::check();
     }
 
     protected function failedValidation(Validator $validator)
@@ -39,10 +37,29 @@ class WordIndexRequest extends FormRequest
      *
      * @return array<string, \Illuminate\Contracts\Validation\ValidationRule|array<mixed>|string>
      */
-    public function rules(): array
+   public function rules(): array
     {
-         return [
+        return [
              
         ];
     }
+
+public function withValidator($validator)
+{
+    $validator->after(function ($validator) {
+        $subjectId = $this->route('id'); // Получаем id из route
+        
+        // Проверяем существование и принадлежность
+        $subject = Subject::find($subjectId);
+        
+        if (!$subject) {
+            $validator->errors()->add('subject_id', 'The subject does not exist.');
+            return;
+        }
+        
+        if ($subject->user_id !== Auth::id()) {
+            $validator->errors()->add('subject_id', 'The subject does not belong to you.');
+        }
+    });
+}
 }

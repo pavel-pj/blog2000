@@ -9,6 +9,7 @@ use App\Http\Requests\WordCreateRequest;
 use App\Http\Requests\WordUpdateRequest;
 use App\Http\Requests\WordIndexRequest;
 use App\Http\Requests\WordShowRequest;
+use App\Http\Requests\WordDeleteRequest;
 use Illuminate\Http\JsonResponse;
 
 class WordController extends Controller
@@ -73,8 +74,9 @@ class WordController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(string $id): JsonResponse
+    public function destroy(WordDeleteRequest $request, string $id): JsonResponse
     {
+         $validated = $request->validated();
         try {
             $this->service->destroy($id);
             return response()->json("Item was deleted successfully", 200);

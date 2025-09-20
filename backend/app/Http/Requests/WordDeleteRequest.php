@@ -7,13 +7,17 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Contracts\Validation\Validator;
 use Illuminate\Http\Exceptions\HttpResponseException;
 use Illuminate\Http\JsonResponse;
-use App\Models\Subject;
 use Illuminate\Validation\Rule;
+use App\Models\Subject;
 use App\Models\Word;
+use App\Rules\WordBelongsToUser;
 
-class WordUpdateRequest extends FormRequest
+class WordDeleteRequest extends FormRequest
 {
-    public function authorize(): bool
+    /**
+     * Determine if the user is authorized to make this request.
+     */
+     public function authorize(): bool
     {
         return Auth::check() ;
     }
@@ -38,13 +42,11 @@ class WordUpdateRequest extends FormRequest
     public function rules(): array
     {
         return [
-                'name' => 'string|required|min:2| max:255',
-                'translation' => 'string|nullable|max:500',
-                //'subject_id' => 'string|nullable|exists:subjects,id',
+            //
         ];
     }
 
-    public function withValidator($validator)
+        public function withValidator($validator)
     {
         $validator->after(function ($validator) {
             $wordId = $this->route('word'); // Получаем id из route

@@ -28,6 +28,11 @@ class WordControllerTest extends TestCase
             'name' => 'Test User',
             'email' => 'test@example.com'
         ]);
+ 
+        $this->user2 = User::factory()->create([
+            'name' => 'Test User',
+            'email' => 'test2@example.com'
+        ]);
     }
 
       // Выполняется после КАЖДОГО теста
@@ -69,7 +74,29 @@ class WordControllerTest extends TestCase
         // Проверяем обработку несуществующей статьи
         $response->assertStatus(422); 
     }
-    /*
+
+        
+    public function testErrorWhenTryToShowWordOfWordOtherUser()
+    {
+        $this->actingAs($this->user);
+
+        $subject = Subject::create([
+            'name'=>"English language",
+            'user_id'=> $this->user2->id
+        
+        ]);
+        $word = Word::create(
+            [
+                'name' =>'get out',
+                'subject_id' => $subject->id 
+            ]
+        );
+        $response = $this->getJson("/api/words/{$word->id}");
+        
+        // Проверяем обработку несуществующей статьи
+        $response->assertStatus(422); 
+    }
+    
     public function testWordStore(): void
     {
         $this->actingAs($this->user);
@@ -90,7 +117,7 @@ class WordControllerTest extends TestCase
         $response->assertStatus(201); // Проверка статуса
   
     }
- 
+     
     public function testWordStoreWithValidationError()
     {
         $this->actingAs($this->user);
@@ -111,7 +138,28 @@ class WordControllerTest extends TestCase
         // Должен вернуть 422 при ошибке валидации
         $response->assertStatus(422);
     }
-  
+
+    public function testWordStoreToOtherUserSubjectId()
+    {
+        $this->actingAs($this->user);
+
+        $subject2 = Subject::create([
+            'name'=>"English language",
+            'user_id'=> $this->user2->id
+        
+        ]);
+         // Подготовка данных
+        $postData = [
+            'name' => 'get out',
+            'subject_id' => $subject2->id
+        ];
+
+        $response = $this->postJson('/api/words', $postData);
+        
+        // Должен вернуть 422 при ошибке валидации
+        $response->assertStatus(422);
+    }
+ 
     public function testWordIndex(): void
     {
         $this->actingAs($this->user);
@@ -121,17 +169,51 @@ class WordControllerTest extends TestCase
             'user_id'=> $this->user->id
         
         ]);
-         // Подготовка данных
-        $postData = [
+        
+        $word = Word::create([
             'name' => 'get out',
             'subject_id' => $subject->id
-        ];
-
+        ]);
+ 
         $response = $this->get('/api/subjects/'.$subject->id.'/words');
+        $data = json_decode($response->getContent(), true);
+
+        $usersWord = array_filter($data, function ($item) use ($word) {
+            return $word->id === $item['id'];
+        });
+
+        //dd($data);
+
+        $isExistWordInIndex = false;
+        if ($usersWord) {
+           $isExistWordInIndex = true; 
+        }
+
+        $this->assertTrue($isExistWordInIndex);
 
         $response->assertStatus(200);
     }
- 
+
+    public function testWordIndexOnlyWordsBelongsToUser(): void
+    {
+        $this->actingAs($this->user);
+
+        $subject2 = Subject::create([
+            'name'=>"English language",
+            'user_id'=> $this->user2->id
+        
+        ]);
+
+       $word = Word::create([
+            'name' => 'get out',
+            'subject_id' => $subject2->id
+        ]);
+        $response = $this->get('/api/subjects/'.$subject2->id.'/words');
+
+        $response->assertStatus(422);
+    }
+
+  
     public function testWordUpdate(): void
     {
         $this->actingAs($this->user);
@@ -162,7 +244,7 @@ class WordControllerTest extends TestCase
             'name' => 'NEW VALUE' // Новое значение
         ]); 
     }
- 
+    
     public function testWordUpdateWithValidationError()
     {
         $this->actingAs($this->user);
@@ -194,6 +276,37 @@ class WordControllerTest extends TestCase
         // Должен вернуть 422 при ошибке валидации
         $response->assertStatus(422);
     }
+
+        public function testWordUpdateErrorForOtherUserWord(): void
+    {
+        $this->actingAs($this->user);
+
+        $subject = Subject::create([
+            'name'=>"English language",
+            'user_id'=> $this->user2->id
+        
+        ]);
+        $word = Word::create(
+            [
+                'name' =>'get out',
+                'subject_id' => $subject->id 
+            ]
+        );
+
+        $postData = [
+            'name' => 'NEW VALUE',
+            
+        ];
+        $response = $this->patchJson("/api/words/{$word->id}", $postData );
+
+        $response->assertStatus(422);
+
+        // Проверяем, что данные обновились в БД
+        $this->assertDatabaseHas('words', [
+            'id' => $word->id,
+            'name' => 'get out' // СТАРОЕ ЗНАЧЕНИЕ
+        ]); 
+    }
  
     public function testWordDelete(): void
     {
@@ -219,18 +332,45 @@ class WordControllerTest extends TestCase
     ]);
 
     }
+
+    public function testWordDeleteErrorWhenOtherUsersWord(): void
+    {
+        $this->actingAs($this->user);
+
+       $subject = Subject::create([
+            'name'=>"English language",
+            'user_id'=> $this->user2->id
+        
+        ]);
+        $word = Word::create(
+            [
+                'name' =>'get out',
+                'subject_id' => $subject->id 
+            ]
+        );
+        $response = $this->delete("/api/words/{$word->id}");
+
+        $response->assertStatus(422);
+
+       // $word2 = Word::findOrFail($word->id);
+        //$isWOrdExists = 
+
  
+
+    }
+
+  
     public function testArticleDeleteNotFound()
     {
         $this->actingAs($this->user);
 
-        $nonExistentId = 9999;
+        $nonExistentId =  Str::uuid();
         $response = $this->deleteJson("/api/words/{$nonExistentId}");
         
         // Проверяем обработку несуществующей статьи
-        $response->assertStatus(404);  
+        $response->assertStatus(422);  
     }
-
+/*
     public function testShowThrowsExceptionForNonExistentId(): void
     {
         $this->actingAs($this->user);
