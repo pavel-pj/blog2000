@@ -17,9 +17,7 @@ class TopicIndexRequest extends FormRequest
      */
          public function authorize(): bool
     {  
-        return Auth::check() & Subject::where('id', $this->route('id'))
-                                ->where('user_id', auth()->id())
-                               ->exists();
+        return Auth::check() ;
     }
 
     protected function failedValidation(Validator $validator)
@@ -45,4 +43,25 @@ class TopicIndexRequest extends FormRequest
              
         ];
     }
+
+    public function withValidator($validator)
+    {
+    $validator->after(function ($validator) {
+        $subjectId = $this->route('id'); // Получаем id из route
+        
+        // Проверяем существование и принадлежность
+        $subject = Subject::find($subjectId);
+        
+        if (!$subject) {
+           // $validator->errors()->add('subject_id', 'The subject does not exist.');
+            //return;
+            throw new \Illuminate\Database\Eloquent\ModelNotFoundException('Subject not found');
+        }
+        
+        if ($subject->user_id !== Auth::id()) {
+            //$validator->errors()->add('subject_id', 'The subject does not belong to you.');
+            throw new \Illuminate\Database\Eloquent\ModelNotFoundException('Subject not found');
+        }
+    });
+   }
 }

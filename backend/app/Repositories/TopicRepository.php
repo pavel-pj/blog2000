@@ -10,7 +10,7 @@ class TopicRepository
 {
     public function index(string $subjectId): EloquentCollection
     {
-        return Topic::where('subject_id', $subjectId)->orderBy('created_at', 'ASC');
+        return Topic::where('subject_id', $subjectId)->orderBy('created_at', 'ASC')->get();
     }
     /*
     public function show(string $id): array
