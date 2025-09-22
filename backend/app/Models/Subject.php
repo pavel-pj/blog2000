@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Subject extends Model
 {
@@ -22,4 +23,10 @@ class Subject extends Model
         'id' => 'string', // важно для UUID
 
     ];
+
+    public function topics(): BelongsTo
+    {
+        return $this->hasMany(Topic::class);
+    }
+ 
 }

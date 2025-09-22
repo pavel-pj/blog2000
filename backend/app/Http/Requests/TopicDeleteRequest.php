@@ -12,16 +12,14 @@ use App\Models\Subject;
 use App\Models\Topic;
 use App\Rules\WordBelongsToUser;
 
-class TopicUpdateRequest extends FormRequest
+class TopicDeleteRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
      */
-         public function authorize(): bool
-    { 
-        return Auth::check(); 
- 
-        
+     public function authorize(): bool
+    {
+        return Auth::check() ;
     }
 
     protected function failedValidation(Validator $validator)
@@ -35,19 +33,16 @@ class TopicUpdateRequest extends FormRequest
             )
         );
     }
- 
+
+    /**
+     * Get the validation rules that apply to the request.
+     *
+     * @return array<string, \Illuminate\Contracts\Validation\ValidationRule|array<mixed>|string>
+     */
     public function rules(): array
     {
         return [
-                'name' => [
-                'string',
-                'required',
-                'min:2',
-                'max:255',
-                 Rule::unique('topics')->where(function ($query)   {
-                    return $query->where('subject_id', $this->subject_id);
-                })->ignore($this->route('topic')),
-            ],
+            //
         ];
     }
 
@@ -55,17 +50,16 @@ class TopicUpdateRequest extends FormRequest
     {
         $validator->after(function ($validator) {
             $topicId = $this->route('topic'); // Получаем id из route
-             
-  
+            
             // Проверяем существование и принадлежность
             $topic= Topic::find($topicId);
             
             if (!$topic) {
-                  throw new \Illuminate\Database\Eloquent\ModelNotFoundException('Subject not found');
+                throw new \Illuminate\Database\Eloquent\ModelNotFoundException('Subject not found');
             }
             
             if ($topic->subject->user_id !== Auth::id()) {
-                  throw new \Illuminate\Database\Eloquent\ModelNotFoundException('Subject not found');
+                throw new \Illuminate\Database\Eloquent\ModelNotFoundException('Subject not found');
             }
         });
     }

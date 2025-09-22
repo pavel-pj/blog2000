@@ -12,16 +12,17 @@ class TopicRepository
     {
         return Topic::where('subject_id', $subjectId)->orderBy('created_at', 'ASC')->get();
     }
-    /*
-    public function show(string $id): array
+    
+    public function show(string $id): EloquentCollection
     {
 
-        $item = Subject::where('id', $id)->exists();
+        $item = Topic::where('id', $id)->exists();
         if (!$item) {
             throw new \Exception("non-existent instance");
         }
 
-        return Subject::where('id', $id)->get()->toArray();
+        return Topic::where('id',$id)->get() ;
+        
     }
-        */
+ 
 }

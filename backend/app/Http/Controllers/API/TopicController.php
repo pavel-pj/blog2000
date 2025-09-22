@@ -8,6 +8,11 @@ use App\Http\Requests\TopicCreateRequest;
 use App\Services\TopicService;
 use Illuminate\Http\JsonResponse;
 use App\Http\Requests\TopicIndexRequest;
+use App\Http\Requests\TopicShowRequest;
+use App\Http\Requests\TopicUpdateRequest;
+use App\Http\Requests\TopicDeleteRequest;
+
+ 
 
 class TopicController extends Controller
 {
@@ -47,32 +52,41 @@ class TopicController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(string $id)
+    public function show(TopicShowRequest $request, string $id): JsonResponse
     {
-        //
+        try {
+            $validated = $request->validated();
+            return response()->json($this->service->show($id), 200);
+        } catch (\Exception $e) {
+            return response()->json($e->getMessage(), 404);
+        }
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(string $id)
-    {
-        //
-    }
-
+ 
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, string $id)
+    public function update(TopicUpdateRequest $request, string $id): JsonResponse
     {
-        //
+        $validated = $request->validated();
+        try {
+            return response()->json($this->service->update($validated, $id), 200);
+        } catch (\Exception $e) {
+            return response()->json($e->getMessage(), 404);
+        }
     }
 
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(string $id)
+    public function destroy(TopicDeleteRequest $request, string $id): JsonResponse
     {
-        //
+         $validated = $request->validated();
+        try {
+            $this->service->destroy($id);
+            return response()->json("Item was deleted successfully", 200);
+        } catch (\Exception $e) {
+            return response()->json($e->getMessage(), 404);
+        }
     }
 }

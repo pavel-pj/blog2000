@@ -62,7 +62,7 @@ protected function setUp(): void
         parent::tearDown();
     }
 
-     public function testWordStore(): void
+     public function testTopicStore(): void
     {
         $this->actingAs($this->user);
 
@@ -83,7 +83,7 @@ protected function setUp(): void
   
     }
 
-    public function testWordStoreErrorWhenOtherUserSubjectIsUsed(): void
+    public function testTopicStoreErrorWhenOtherUserSubjectIsUsed(): void
     {
         $this->actingAs($this->user);
 
@@ -101,7 +101,7 @@ protected function setUp(): void
   
     }
 
-    public function testWordStoreErrorUnexistedSubject(): void
+    public function testTopicStoreErrorUnexistedSubject(): void
     {
         $this->actingAs($this->user);
 
@@ -119,7 +119,7 @@ protected function setUp(): void
   
     }
 
-    public function testWordStoreSameNameForOtherSubjects(): void
+    public function testTopicStoreSameNameForOtherSubjects(): void
     {
         $this->actingAs($this->user);
         
@@ -149,7 +149,7 @@ protected function setUp(): void
   
     }
 
-     public function testWordStoreDublicate(): void
+     public function testTopicStoreDublicate(): void
     {
         $this->actingAs($this->user);
         
@@ -167,8 +167,8 @@ protected function setUp(): void
  
   
     }
-    /*
-    public function testWordIndex(): void
+     
+    public function testTopicIndex(): void
     {
         $this->actingAs($this->user);
 
@@ -178,11 +178,198 @@ protected function setUp(): void
         ]);
        
         // Отправка POST запроса
-        $response = $this->post('/api/subjects/'.$this->subject->id.'/topics');
+        $response = $this->get('/api/subjects/'.$this->subject->id.'/topics');
         $data = json_decode($response->getContent(), true);
-        dd($data);
-        $response->assertStatus(200);  
+        $response->assertStatus(200);     
+        $founded = array_filter($data, function ($item) use ($topic) 
+        {
+            return $item['id'] === $topic->id;
+        });
+ 
+        $isFounded = false;
+        if ($founded) {
+            $isFounded =true;
+        }
+
+        $this->assertTrue($isFounded); 
  
   
-    }*/
+    } 
+    
+        public function testTopicIndexErrorWithOtherUserSubject(): void
+    {
+        $this->actingAs($this->user);
+
+        $topic = Topic::create([
+            'name' => 'nouns',
+            'subject_id' => $this->subject2->id
+        ]);
+       
+        // Отправка POST запроса
+        $response = $this->get('/api/subjects/'.$this->subject2->id.'/topics');
+        $response->assertStatus(404);  
+ 
+  
+    } 
+
+    public function testTopicIndexErrorIncorrectSubject(): void
+    {
+        $this->actingAs($this->user);
+ 
+        // Отправка POST запроса
+        $response = $this->get('/api/subjects/'.Str::uuid().'/topics');
+        $response->assertStatus(404);  
+ 
+  
+    } 
+
+    public function testTopicShow(): void
+    {
+        $this->actingAs($this->user);
+ 
+        $topic = Topic::create(
+            [
+                'name' =>'get out',
+                'subject_id' => $this->subject->id 
+            ]
+        );
+        $response = $this->get('/api/topics/'. $topic->id);
+
+        $response->assertStatus(200);
+    }
+
+    public function testTopicShowErrorOtherUserSubject(): void
+    {
+        $this->actingAs($this->user);
+ 
+        $topic2 = Topic::create(
+            [
+                'name' =>'get out',
+                'subject_id' => $this->subject2->id 
+            ]
+        );
+        $response = $this->get('/api/topics/'. $topic2->id);
+
+        $response->assertStatus(404);
+    }
+    
+    public function testTopicShowErrorIncorrectId(): void
+    {
+        $this->actingAs($this->user);
+ 
+        $response = $this->get('/api/topics/'. Str::uuid());
+
+        $response->assertStatus(404);
+    }
+
+   public function testTopicUpdate(): void
+    {
+        $this->actingAs($this->user);
+ 
+        $topic = Topic::create(
+            [
+                'name' =>'verbs',
+                'subject_id' => $this->subject->id 
+            ]
+        );
+
+        $postData = [
+            'name' => 'NEW VALUE',
+            
+        ];
+        $response = $this->patchJson("/api/topics/{$topic->id}", $postData );
+
+        $response->assertStatus(200);
+
+        // Проверяем, что данные обновились в БД
+        $this->assertDatabaseHas('topics', [
+            'id' => $topic->id,
+            'name' => 'NEW VALUE' // Новое значение
+        ]); 
+    }
+
+    public function testTopicUpdateErrorOtherUserTopic(): void
+    {
+        $this->actingAs($this->user);
+ 
+        $topic = Topic::create(
+            [
+                'name' =>'verbs',
+                'subject_id' => $this->subject2->id 
+            ]
+        );
+
+        $postData = [
+            'name' => 'NEW VALUE',
+            
+        ];
+        $response = $this->patchJson("/api/topics/{$topic->id}", $postData );
+
+        $response->assertStatus(404);
+ 
+    }
+
+    public function testTopicUpdateErrorIncorrectTopic(): void
+    {
+        $this->actingAs($this->user);
+ 
+        $postData = [
+            'name' => 'NEW VALUE',
+            
+        ];
+        $response = $this->patchJson("/api/topics/".Str::uuid(), $postData );
+
+        $response->assertStatus(404);
+ 
+    }
+
+    public function testTopicDelete(): void
+    {
+        $this->actingAs($this->user);
+ 
+        $topic= Topic::create(
+            [
+                'name' =>'get out',
+                'subject_id' => $this->subject->id 
+            ]
+        );
+        $response = $this->delete("/api/topics/{$topic->id}");
+
+        $response->assertStatus(200);
+
+        $this->assertDatabaseMissing('topics', [
+        'id' => $topic->id
+    ]);
+
+    }
+
+    
+    public function testTopicDeleteOtherUsersTopic(): void
+    {
+        $this->actingAs($this->user);
+ 
+        $topic= Topic::create(
+            [
+                'name' =>'get out',
+                'subject_id' => $this->subject2->id 
+            ]
+        );
+        $response = $this->delete("/api/topics/{$topic->id}");
+
+        $response->assertStatus(404);
+ 
+
+    }
+
+    public function testTopicDeleteIncorrectTopicId(): void
+    {
+        $this->actingAs($this->user);
+  
+        $response = $this->delete("/api/topics/".Str::uuid());
+
+        $response->assertStatus(404);
+ 
+
+    }
+    
 }

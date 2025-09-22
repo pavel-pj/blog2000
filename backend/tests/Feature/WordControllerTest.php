@@ -72,7 +72,7 @@ class WordControllerTest extends TestCase
         $response = $this->getJson("/api/words/{$nonExistentId}");
         
         // Проверяем обработку несуществующей статьи
-        $response->assertStatus(422); 
+        $response->assertStatus(404); 
     }
 
         
@@ -94,7 +94,7 @@ class WordControllerTest extends TestCase
         $response = $this->getJson("/api/words/{$word->id}");
         
         // Проверяем обработку несуществующей статьи
-        $response->assertStatus(422); 
+        $response->assertStatus(404); 
     }
     
     public function testWordStore(): void
@@ -210,7 +210,7 @@ class WordControllerTest extends TestCase
         ]);
         $response = $this->get('/api/subjects/'.$subject2->id.'/words');
 
-        $response->assertStatus(422);
+        $response->assertStatus(404);
     }
 
   
@@ -350,13 +350,8 @@ class WordControllerTest extends TestCase
         );
         $response = $this->delete("/api/words/{$word->id}");
 
-        $response->assertStatus(422);
-
-       // $word2 = Word::findOrFail($word->id);
-        //$isWOrdExists = 
-
+        $response->assertStatus(404);
  
-
     }
 
   
@@ -368,7 +363,7 @@ class WordControllerTest extends TestCase
         $response = $this->deleteJson("/api/words/{$nonExistentId}");
         
         // Проверяем обработку несуществующей статьи
-        $response->assertStatus(422);  
+        $response->assertStatus(404);  
     }
 /*
     public function testShowThrowsExceptionForNonExistentId(): void

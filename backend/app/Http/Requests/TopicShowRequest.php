@@ -12,9 +12,10 @@ use App\Models\Subject;
 use App\Models\Topic;
 use App\Rules\WordBelongsToUser;
 
-class TopicUpdateRequest extends FormRequest
+
+class TopicShowRequest extends FormRequest
 {
-    /**
+ /**
      * Determine if the user is authorized to make this request.
      */
          public function authorize(): bool
@@ -38,16 +39,8 @@ class TopicUpdateRequest extends FormRequest
  
     public function rules(): array
     {
-        return [
-                'name' => [
-                'string',
-                'required',
-                'min:2',
-                'max:255',
-                 Rule::unique('topics')->where(function ($query)   {
-                    return $query->where('subject_id', $this->subject_id);
-                })->ignore($this->route('topic')),
-            ],
+         return [
+              
         ];
     }
 
@@ -69,4 +62,7 @@ class TopicUpdateRequest extends FormRequest
             }
         });
     }
+ 
+  
+
 }

@@ -33,29 +33,30 @@ class WordService
 
     public function update(array $validated, string $id):EloquentCollection 
     {
-
+        /*
         try {
             $item = Word::findOrFail($id);
         } catch (ModelNotFoundException $e) {
             throw new \Exception("non-existent instance");
         }
-
-
+        */
         Word::updateOrInsert(
             ['id' => $id],
             $validated
         );
+ 
         return Word::where('id', $id)->get()  ;
     }
 
     public function destroy(string $id): void
     {
-
+        /*
         try {
             $item = Word::findOrFail($id);
         } catch (ModelNotFoundException $e) {
             throw new \Exception("non-existent instance");
         }
+        */
 
         $result = Word::destroy($id);
         if (!$result) {

@@ -54,12 +54,11 @@ class WordShowRequest extends FormRequest
             $word = Word::find($wordId);
             
             if (!$word) {
-                $validator->errors()->add('word_id', 'The subject does not exist.');
-                return;
+                 throw new \Illuminate\Database\Eloquent\ModelNotFoundException('Subject not found');
             }
             
             if ($word->subject->user_id !== Auth::id()) {
-                $validator->errors()->add('word_id', 'The word does not belong to you.');
+                 throw new \Illuminate\Database\Eloquent\ModelNotFoundException('Subject not found');
             }
         });
     }

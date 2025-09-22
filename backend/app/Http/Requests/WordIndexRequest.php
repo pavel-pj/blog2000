@@ -53,13 +53,15 @@ public function withValidator($validator)
         $subject = Subject::find($subjectId);
         
         if (!$subject) {
-            $validator->errors()->add('subject_id', 'The subject does not exist.');
-            return;
+            //$validator->errors()->add('subject_id', 'The subject does not exist.');
+            //return;
+            throw new \Illuminate\Database\Eloquent\ModelNotFoundException('Subject not found');
         }
         
         if ($subject->user_id !== Auth::id()) {
-            $validator->errors()->add('subject_id', 'The subject does not belong to you.');
+            //$validator->errors()->add('subject_id', 'The subject does not belong to you.');
+            throw new \Illuminate\Database\Eloquent\ModelNotFoundException('Subject not found');
         }
     });
-}
+   }
 }

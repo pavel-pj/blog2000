@@ -39,8 +39,8 @@ class TopicIndexRequest extends FormRequest
      */
     public function rules(): array
     {
-         return [
-             
+        return [
+            'id' => ['required', 'uuid'] // Правило для параметра маршрута
         ];
     }
 
