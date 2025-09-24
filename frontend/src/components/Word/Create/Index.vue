@@ -9,7 +9,7 @@ import {
 import {useRouter,useRoute} from 'vue-router';
 import modalSpiner from '@/components/common/spiner/ModalSpiner.vue';
 import PageSpiner from '@/components/common/spiner/PageSpiner.vue';
-import BreadCrumbs from '@/components/common/navigate/BreadCrumbs.vue';
+//import BreadCrumbs from '@/components/common/navigate/BreadCrumbs.vue';
 import { Form, Field } from 'vee-validate';
 import { z } from 'zod';
 import { toTypedSchema } from '@vee-validate/zod';
@@ -48,8 +48,6 @@ const {
   id:string,
   name:string,
   translation:string
-  //slug: string
-  subject_id: string,
 
 }>();
 
@@ -59,8 +57,9 @@ onMounted(async () => {
   //if (!dictionaries.value) {
   //  await fetchDictionary('topics');
   //}
+  console.log('onMounted');
   if (props.isEdit) {
-
+    console.log('props.isEdit');
     await fetchItemWord();
   }
 
@@ -72,7 +71,7 @@ const fetchItemWord = async () => {
   }
 };
 
-const html_content = ref<string>('');
+//const html_content = ref<string>('');
 
 /*
 watch (itemData ,
@@ -101,8 +100,9 @@ const sendData = async(data:any) => {
 
   isSpiner.value = true;
   const params = data;
-  params.subject_id = route.params.subject_id;
-
+  if (!props.isEdit) {
+    params.subject_id = route.params.subject_id;
+  }
 
   let res = ref<any>();
 
@@ -146,7 +146,7 @@ const sendData = async(data:any) => {
 
 
 
-const itemName = computed(() => itemData.value?.[0]?.name || '');
+//const itemName = computed(() => itemData.value?.[0]?.name || '');
 
 const isPageSpiner = computed(()=>{
   if (!props.isEdit) {
@@ -159,7 +159,18 @@ const isPageSpiner = computed(()=>{
   ) ? true : false;
 });
 
+
+
+
+/*
 const itemsBreadCrumbs =computed(()=>{
+
+  let subject_id = '';
+  if (props.isEdit ){
+    if (!itemData.value){
+      return '';
+    }
+  }
 
   return ([
     { label: 'Words' ,route: {
@@ -169,7 +180,7 @@ const itemsBreadCrumbs =computed(()=>{
     },
     { label: itemName.value }
   ]) ;
-});
+});*/
 
 // Схема валидации
 const schema = toTypedSchema(
@@ -201,18 +212,25 @@ const initialValues = computed(() => {
 });
 
 
+/*
+ <!--<h1 class="text-1xl  font-bold"> {{pageOptions.title}}</h1>-->
+  <h1 class="text-2xl  font-bold my-4">{{itemsBreadCrumbs[1].label}}</h1>-->
+*/
+
 </script>
 
 <template>
-
-<BreadCrumbs :items="itemsBreadCrumbs" />
+{{initialValues}}<br><br>
+{{itemData }} <br><br>
+{{itemData?.[0]?.name}}
+<!--
+<BreadCrumbs :items="itemsBreadCrumbs" />-->
 <PageSpiner :isSpiner="isPageSpiner" />
   <div  v-if="!isPageSpiner">
-  <!--<h1 class="text-1xl  font-bold"> {{pageOptions.title}}</h1>-->
-  <h1 class="text-2xl  font-bold my-4">{{itemsBreadCrumbs[1].label}}</h1>
+
+
 
       <div class="card">
-
                 <div class="w-[700px] my-6"  >
                   <Form @submit="sendData"
                     :validation-schema="schema"

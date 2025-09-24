@@ -100,7 +100,7 @@ const create = () => {
 
 const onRowSelect =(event)=>{
   //console.log(event.data.id);
-  router.push({ name: 'word-create' ,
+  router.push({ name: 'word-edit' ,
     params: { word_id : event.data.id }
   }
   );
