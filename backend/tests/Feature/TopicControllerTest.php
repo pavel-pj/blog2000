@@ -101,7 +101,7 @@ protected function setUp(): void
   
     }
 
-    public function testTopicStoreErrorUnexistedSubject(): void
+    public function testTopicStoreErrorUnExistedSubject(): void
     {
         $this->actingAs($this->user);
 
@@ -195,6 +195,37 @@ protected function setUp(): void
  
   
     } 
+
+         
+    public function testTopicIndexNoTopicOtherUsers(): void
+    {
+        $this->actingAs($this->user);
+
+        $topic = Topic::create([
+            'name' => 'nouns',
+            'subject_id' => $this->subject2->id
+        ]);
+       
+        // Отправка POST запроса
+        $response = $this->get('/api/subjects/'.$this->subject->id.'/topics');
+        $data = json_decode($response->getContent(), true);
+        $response->assertStatus(200);     
+        $founded = array_filter($data, function ($item) use ($topic) 
+        {
+            return $item['id'] === $topic->id;
+        });
+ 
+        $isFounded = false;
+        if ($founded) {
+            $isFounded =true;
+        }
+
+        $this->assertEquals(false,$isFounded); 
+ 
+  
+    }
+
+
     
         public function testTopicIndexErrorWithOtherUserSubject(): void
     {

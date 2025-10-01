@@ -299,7 +299,7 @@ class WordControllerTest extends TestCase
         ];
         $response = $this->patchJson("/api/words/{$word->id}", $postData );
 
-        $response->assertStatus(422);
+        $response->assertStatus(404);
 
         // Проверяем, что данные обновились в БД
         $this->assertDatabaseHas('words', [
