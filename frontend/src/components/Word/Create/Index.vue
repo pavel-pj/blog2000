@@ -220,9 +220,7 @@ const initialValues = computed(() => {
 </script>
 
 <template>
-{{initialValues}}<br><br>
-{{itemData }} <br><br>
-{{itemData?.[0]?.name}}
+
 <!--
 <BreadCrumbs :items="itemsBreadCrumbs" />-->
 <PageSpiner :isSpiner="isPageSpiner" />

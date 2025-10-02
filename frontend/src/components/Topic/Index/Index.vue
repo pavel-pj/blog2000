@@ -3,8 +3,8 @@
 import { ref, onMounted ,computed} from 'vue';
 import {useRoute, useRouter} from 'vue-router';
 import {
-  wordsURL,
-  deleteWordURL
+  topicsURL,
+  deleteTopicURL
 } from '@/config/request-urls';
 import { useHttpRequest } from '@/utils/http-request';
 import modalSpiner from '@/components/common/spiner/ModalSpiner.vue';
@@ -16,19 +16,10 @@ const router = useRouter();
 const route = useRoute();
 
 
-interface WordItem {
-  id: string;
-  name: string;
-  translation:string;
-  subject_id: string;
-  created_at: string;
-  updated_at: string;
+interface TopicItem {
+  id: string,
+  name: string,
 
-}
-
-interface SubjectData {
-  subject: any;
-  data: WordItem[];
 }
 
 const confirm = useConfirm();
@@ -36,22 +27,18 @@ const isSpiner = ref<boolean>(false);
 const margYspiner = '24';
 
 const {
-  data: wordsData,
+  data: topics,
   sendRequest: sendData
-} = useHttpRequest<SubjectData>({
+} = useHttpRequest<TopicItem[]>({
   showSuccessToast:false,
   showErrorToast: false
 });
 
-const tableData = ref<WordItem[]>([]);
-
-
-const wordsArray = computed(() => {
-  return wordsData.value?.data || [];
-});
+const tableData = ref<TopicItem[]>([]);
 
 const isPageSpiner = computed (()=>{
-  return !wordsData.value;
+  const data = topics.value || null;
+  return (!data) ? true : false;
 });
 
 const {
@@ -75,15 +62,14 @@ const openDelete =(data:any)=>{
 const deleteItem = async () =>{
 
   isSpiner.value = true;
-
   const res = await sendDelete({
-    url: deleteWordURL(dataToDelete.value?.id),
+    url: deleteTopicURL(dataToDelete.value?.id),
     method: 'DELETE'
 
   });
 
   if (res?.isOk) {
-    await getWords();
+    await getTopics();
     isSpiner.value = false;
   } else {
     isSpiner.value = false;
@@ -93,33 +79,28 @@ const deleteItem = async () =>{
 
 
 onMounted(async () => {
-  await getWords();
+  await getTopics();
 });
 
-const getWords = async()=> {
-  // const response = await sendData({ url: wordsURL(route.params.subject_id as string) });
+const getTopics = async()=> {
+  const response = await sendData({ url: topicsURL(route.params.subject_id as string) });
 
-  // if (response?.data) {
-  //   tableData.value =   response.data['data'];
-
-  const response = await sendData({
-    url: wordsURL(route.params.subject_id as string)
-  });
-    // tableData.value = Array.isArray(response.data['words'])
-    //  ? response.data['words']
-    //  : [response.data['words']];
-
+  if (response?.data) {
+    tableData.value = Array.isArray(response.data)
+      ? response.data
+      : [response.data];
+  }
 };
 
 
 const create = () => {
-  router.push({name: 'word-create'});
+  router.push({name: 'topic-create'});
 };
 
 const onRowSelect =(event)=>{
   //console.log(event.data.id);
-  router.push({ name: 'word-edit' ,
-    params: { word_id : event.data.id }
+  router.push({ name: 'topic-edit' ,
+    params: { topic_id : event.data.id }
   }
   );
 };
@@ -127,11 +108,8 @@ const onRowSelect =(event)=>{
 const itemsBreadCrumbs =computed(()=>{
 
   return ([
-    { label: wordsData.value?.subject?.name ,
-      route: {name:'subject-edit' , params : {subject_id: wordsData.value?.subject?.id}
-      }
-    },
-    { label: 'Words'   }]);
+    {label: 'Subject'}  ,
+    { label: 'Topics'   }]);
 });
 
 </script>
@@ -141,24 +119,22 @@ const itemsBreadCrumbs =computed(()=>{
 <BreadCrumbs :items="itemsBreadCrumbs" />
 <Button @click="create" label="Primary" rounded style="display:block">Create </Button>
 
-  <PageSpiner :my="margYspiner"  :isSpiner="isPageSpiner"  />
- <div class="card pt-6 " v-if="wordsData" >
+ <PageSpiner :my="margYspiner"  :isSpiner="isPageSpiner"  />
+ <div class="card pt-6 " v-if="topics" >
         <DataTable stripedRows
         selectionMode="single" dataKey="id" :metaKeySelection="false"
-        @rowSelect="onRowSelect" :value="wordsArray" tableStyle="min-width: 50rem">
-
+        @rowSelect="onRowSelect" :value="topics" tableStyle="min-width: 50rem">
            <Column field="name" header="Name"></Column>
            <Column field="id" header="Id"></Column>
            <Column class="w-24 !text-end">
                 <template #body="{ data }"  >
-
-                    <Button icon="pi pi-times " @click="openDelete(data)" severity="danger"  ></Button>
-
+                   <Button icon="pi pi-times " @click="openDelete(data)" severity="danger"  ></Button>
                 </template>
             </Column>
 
         </DataTable>
         <Toast />
     </div>
+
   <modalSpiner :isSpiner="isSpiner" ></modalSpiner>
 </template>

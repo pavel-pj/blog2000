@@ -36,7 +36,7 @@ build-dev:
 up-postgres:
 	docker compose -f compose.dev.yaml up -d postgres
 
-up-dev:
+first-up-dev2:
 	sudo chmod -R 775 backend/storage/   
 	sudo chmod -R 775 backend/bootstrap/cache/ 
 	docker compose -f compose.dev.yaml up -d
@@ -49,8 +49,15 @@ up-dev:
 	docker compose -f compose.dev.yaml exec -u root php-fpm chown -R www:www /var/www/storage/ 
 	docker compose -f compose.dev.yaml exec -u root php-fpm chmod -R 775 /var/www/storage/ 
 	docker compose -f compose.dev.yaml exec -u root php-fpm chmod -R 775 /var/www/bootstrap/cache/ 
+
+up-dev:
+	docker compose -f compose.dev.yaml up -d
+
+
 down-dev:
 	 docker compose -f compose.dev.yaml down
+stop-dev:
+	 docker compose -f compose.dev.yaml stop	 
 bash-dev:
 	docker compose -f compose.dev.yaml exec -u root workspace bash
 

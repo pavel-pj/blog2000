@@ -25,7 +25,6 @@ if (auth.hasRole('User')){
     icon: 'pi pi-address-book',
     to: { name: 'subjects-index' }
   });
-
 }
 
 

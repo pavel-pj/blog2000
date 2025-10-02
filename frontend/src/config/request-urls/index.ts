@@ -96,6 +96,29 @@ export function updateWordURL(id:string, params?: Record<string, string|number|b
   });
 }
 
+//Topics
+export function topicsURL(subject_id:string) {
+  return `${baseUrl}/subjects/${subject_id}/topics`;
+}
+
+export function topicCreateURL() {
+  return `${baseUrl}/topics`;
+}
+
+export function topicItemShowURL(id: string) {
+  return `${baseUrl}/topic/${id}`;
+}
+                
+export function deleteTopicURL(id: string) {
+  return `${baseUrl}/topic/${id}`;
+}
+
+export function updateTopicURL(id:string, params?: Record<string, string|number|boolean>) {
+  return addQueryParams(`${baseUrl}/topics/${id}`, {
+    ...params,
+  });
+}
+
 
 
 //dictionaries

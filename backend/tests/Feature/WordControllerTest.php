@@ -178,7 +178,7 @@ class WordControllerTest extends TestCase
         $response = $this->get('/api/subjects/'.$subject->id.'/words');
         $data = json_decode($response->getContent(), true);
 
-        $usersWord = array_filter($data, function ($item) use ($word) {
+        $usersWord = array_filter($data['data'], function ($item) use ($word) {
             return $word->id === $item['id'];
         });
 

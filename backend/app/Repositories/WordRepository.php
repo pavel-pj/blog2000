@@ -3,14 +3,21 @@
 namespace App\Repositories;
 
 use App\Models\Word;
+use App\Models\Subject;
 use Illuminate\Database\Eloquent\Collection as EloquentCollection;
 
 class WordRepository
 {
-    public function index(string $subjectId): EloquentCollection
+    public function index(string $subjectId): Array
     {
-        return Word::query()->
-            where('subject_id',$subjectId)->orderBy('created_at', 'DESC')->get();
+
+        $data = Word::query() 
+            ->where('subject_id',$subjectId)->orderBy('created_at', 'DESC')->get();
+        $subject = Subject::findOrFail($subjectId)->only(['id','name']) ;    
+        return [
+            'subject' => $subject,
+            'data' => $data,
+        ] ;  
     }
 
 

@@ -158,7 +158,7 @@ export default [
 
        //Words
         {
-         path: 'subject/:subject_id',
+         path: 'subject/:subject_id/words',
          name: 'words-index',
          component: () => import('@/components/Word/Index/Index.vue'),
  
@@ -195,6 +195,23 @@ export default [
           allowedRoles: "User",
         },
        },
+
+
+      //Topics 
+ 
+        {
+         path: 'subject/:subject_id/topics',
+         name: 'topics-index',
+         component: () => import('@/components/Topic/Index/Index.vue'),
+                                      
+         meta: {
+          //requiresAuth: true,
+          //middlewares: [auth],
+          allowedRoles: "User",
+        },
+       }, 
+
+
 
       {
         name: "forbidden",

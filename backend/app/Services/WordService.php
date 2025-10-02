@@ -11,7 +11,7 @@ class WordService
  
     public function __construct(protected WordRepository $repository){}
 
-    public function index(string $subjectId): EloquentCollection
+    public function index(string $subjectId): Array
     {
         return $this->repository->index($subjectId);
     }
@@ -33,13 +33,7 @@ class WordService
 
     public function update(array $validated, string $id):EloquentCollection 
     {
-        /*
-        try {
-            $item = Word::findOrFail($id);
-        } catch (ModelNotFoundException $e) {
-            throw new \Exception("non-existent instance");
-        }
-        */
+       
         Word::updateOrInsert(
             ['id' => $id],
             $validated
@@ -50,13 +44,7 @@ class WordService
 
     public function destroy(string $id): void
     {
-        /*
-        try {
-            $item = Word::findOrFail($id);
-        } catch (ModelNotFoundException $e) {
-            throw new \Exception("non-existent instance");
-        }
-        */
+     
 
         $result = Word::destroy($id);
         if (!$result) {
