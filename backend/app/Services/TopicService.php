@@ -11,12 +11,12 @@ class TopicService
  
     public function __construct(protected TopicRepository $repository){} 
     
-    public function index(string $subjectId): EloquentCollection
+    public function index(string $subjectId): Array
     {
         return $this->repository->index($subjectId);
     }
    
-    public function show(string $id)
+    public function show(string $id): Topic
     {
         return $this->repository->show($id);
     }

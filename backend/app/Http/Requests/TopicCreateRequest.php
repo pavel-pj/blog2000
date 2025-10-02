@@ -54,8 +54,15 @@ class TopicCreateRequest extends FormRequest
                 Rule::exists('subjects', 'id')->where(function ($query) {
                     return $query->where('user_id', auth()->user()->id);
                 }),
-                ]
-            
+            ],
+            'topic_id' => [
+                'nullable',
+                'string',
+                    Rule::exists('topics', 'id')->where(function ($query) {
+                    return $query->where('subject_id', $this->subject_id);
+                 }),
+            ]
+ 
         ];
     }
 }

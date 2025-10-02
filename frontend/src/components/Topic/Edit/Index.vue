@@ -2,20 +2,17 @@
 import { computed, ref,onMounted  } from 'vue';
 import { useHttpRequest } from '@/utils/http-request';
 import {
-  wordCreateURL,
-  wordItemShowURL,
-  updateWordURL
+  topicCreateURL,
+  topicItemShowURL,
+  updateTopicURL
 } from '@/config/request-urls';
 import {useRouter,useRoute} from 'vue-router';
 import modalSpiner from '@/components/common/spiner/ModalSpiner.vue';
 import PageSpiner from '@/components/common/spiner/PageSpiner.vue';
-//import BreadCrumbs from '@/components/common/navigate/BreadCrumbs.vue';
 import { Form, Field } from 'vee-validate';
 import { z } from 'zod';
 import { toTypedSchema } from '@vee-validate/zod';
-///import Select from 'primevue/select';
-//import { useDictionariesStore } from '@/store/dictionaries';
-//import Editor from '@/components/Tiptap/Editor.vue';
+
 
 const router = useRouter();
 const route = useRoute();
@@ -24,20 +21,13 @@ type Props = {
    isEdit:boolean
 };
 
-//const {
-//  dictionaries,
-//  getDictionaryByType,
-//  fetchDictionary
-//} = useDictionariesStore();
-
-
 
 // Или альтернативный вариант:
 //const wordsOptions = computed(() => getDictionaryByType('topics'));
 
 const props = defineProps<Props>();
 
-const itemId =  route?.params?.word_id as string;
+const itemId =  route?.params?.topic_id as string;
 const isSpiner = ref<boolean>(false);
 
 const {
@@ -47,7 +37,7 @@ const {
 } = useHttpRequest<{
   id:string,
   name:string,
-  translation:string
+  subject_id:string,
 
 }>();
 
@@ -55,18 +45,20 @@ const {
 
 onMounted(async () => {
 
+
   if (props.isEdit) {
 
-    await fetchItemWord();
+    await fetchItem();
   }
 
 });
 
-const fetchItemWord = async () => {
+const fetchItem= async () => {
   if (itemId) {
-    await getDataRequest({ url: wordItemShowURL(itemId) });
+    await getDataRequest({ url: topicItemShowURL(itemId) });
   }
 };
+
 
 
 const {
@@ -94,7 +86,7 @@ const sendData = async(data:any) => {
   if (!props.isEdit) {
 
     res.value = await sendRequest({
-      url: wordCreateURL(),
+      url: topicCreateURL(),
       method: 'POST',
       data: params
     });
@@ -102,7 +94,7 @@ const sendData = async(data:any) => {
 
     if (res.value?.isOk) {
       await router.push({
-        name: 'words-index',
+        name: 'topics-index',
         params: {subject_id: route.params.subject_id}
       });
 
@@ -113,13 +105,13 @@ const sendData = async(data:any) => {
 
 
     res.value = await sendRequest({
-      url: updateWordURL(itemId),
+      url: updateTopicURL(itemId),
       method: 'PATCH',
       data: params
     });
 
     if (res.value?.isOk) {
-      await fetchItemWord();
+      await fetchItem();
       isSpiner.value = false;
     } else {
       isSpiner.value = false;
@@ -146,69 +138,70 @@ const isPageSpiner = computed(()=>{
 
 
 
-
-/*
-const itemsBreadCrumbs =computed(()=>{
-
-  let subject_id = '';
-  if (props.isEdit ){
-    if (!itemData.value){
-      return '';
-    }
-  }
-
-  return ([
-    { label: 'Words' ,route: {
-      name: 'words-index',
-      params: {subject_id: route.params.subject_id}
-    }
-    },
-    { label: itemName.value }
-  ]) ;
-});*/
-
 // Схема валидации
 const schema = toTypedSchema(
   z.object({
     name: z.string()
       .min(2, '"name" is required')
-      .max(255, '"name" is too long'),
+      .max(255, '"name" is too long')
 
-    translation: z.string()
-      .min(2, '"translation" is required')
-      .max(255, '"translation" is too long')
 
   })
 
 );
 
 
-
 const initialValues = computed(() => {
-  const name = props.isEdit ? itemData.value?.[0]?.name || '' : '';
-  const translation = props.isEdit ? itemData.value?.[0]?.translation || '' : '';
-
-
+  const name = props.isEdit ? itemData.value?.name || '' : '';
 
   return {
-    name,
-    translation
+    name
   };
 });
 
+const itemsBreadCrumbs =computed(()=>{
+  if (!itemId) {
+    return ([
+      { label: 'Topics' ,
+        route: {name:'topics-index' , params : {subject_id: route.params.subject_id}
+        }
+      },
+      { label: 'Topic'   }
+    ]);
+  } else {
+    // Редактирование - проверяем что данные загружены
+    const subjectId = itemData.value?.subject_id;
 
-/*
- <!--<h1 class="text-1xl  font-bold"> {{pageOptions.title}}</h1>-->
-  <h1 class="text-2xl  font-bold my-4">{{itemsBreadCrumbs[1].label}}</h1>-->
-*/
+    // Если subjectId ещё не загружен, возвращаем breadcrumbs без route
+    if (!subjectId) {
+      return [];
+    }
+
+    return [
+      {
+        label: 'Topics',
+        route: {
+          name: 'topics-index',
+          params: { subject_id: subjectId }
+        }
+      },
+      { label: itemData.value?.name }
+    ];
+  }
+});
+
+
+
+
 
 </script>
 
 <template>
 
-<!--
-<BreadCrumbs :items="itemsBreadCrumbs" />-->
+
+<BreadCrumbs :items="itemsBreadCrumbs" />
 <PageSpiner :isSpiner="isPageSpiner" />
+
   <div  v-if="!isPageSpiner">
 
 
@@ -232,21 +225,6 @@ const initialValues = computed(() => {
                           </Message>
                         </Field>
                       </div>
-                    <div class="flex gap-2 flex-col">
-                        <label for="Translation" class="font-medium">Translation <span class="px-2 font-bold text-red-700"> * </span></label>
-                        <Field name="translation" v-slot="{ field, errors }">
-                          <InputText
-                            v-bind="field"
-                            placeholder="Translation"
-                            :class="{ 'p-invalid': errors.length }"
-                          />
-                          <Message v-if="errors.length" severity="error" size="small" variant="simple">
-                            {{ errors[0] }}
-                          </Message>
-                        </Field>
-                      </div>
-
-
 
                       <Button type="submit"  label="Submit" class="custom-button"/>
                     </Form>

@@ -97,17 +97,10 @@ onMounted(async () => {
 });
 
 const getWords = async()=> {
-  // const response = await sendData({ url: wordsURL(route.params.subject_id as string) });
-
-  // if (response?.data) {
-  //   tableData.value =   response.data['data'];
 
   const response = await sendData({
     url: wordsURL(route.params.subject_id as string)
   });
-    // tableData.value = Array.isArray(response.data['words'])
-    //  ? response.data['words']
-    //  : [response.data['words']];
 
 };
 
@@ -115,6 +108,15 @@ const getWords = async()=> {
 const create = () => {
   router.push({name: 'word-create'});
 };
+
+const topics = () => {
+  router.push({
+    name: 'topics-index',
+    params: {subject_id: route.params.subject_id}
+  });
+};
+
+
 
 const onRowSelect =(event)=>{
   //console.log(event.data.id);
@@ -139,7 +141,10 @@ const itemsBreadCrumbs =computed(()=>{
 
 
 <BreadCrumbs :items="itemsBreadCrumbs" />
-<Button @click="create" label="Primary" rounded style="display:block">Create </Button>
+<div class="flex flex-raw justify-start gap-6">
+  <Button @click="create" label="Primary" rounded style="display:block">Create </Button>
+  <Button @click="topics" label="Primary" rounded severity="secondary" style="display:block">Topics </Button>
+</div>
 
   <PageSpiner :my="margYspiner"  :isSpiner="isPageSpiner"  />
  <div class="card pt-6 " v-if="wordsData" >

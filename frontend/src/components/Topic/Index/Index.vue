@@ -17,9 +17,20 @@ const route = useRoute();
 
 
 interface TopicItem {
-  id: string,
-  name: string,
+  id: string;
+  name: string;
+  subject_id: string;
+  created_at: string;
+  updated_at: string;
 
+}
+
+interface SubjectData {
+  subject: {
+    id: string;
+    name: string;
+  };
+  data:TopicItem[];
 }
 
 const confirm = useConfirm();
@@ -27,18 +38,21 @@ const isSpiner = ref<boolean>(false);
 const margYspiner = '24';
 
 const {
-  data: topics,
+  data: topicsData,
   sendRequest: sendData
-} = useHttpRequest<TopicItem[]>({
+} = useHttpRequest<SubjectData>({
   showSuccessToast:false,
   showErrorToast: false
 });
 
 const tableData = ref<TopicItem[]>([]);
 
+const topicsArray = computed(() => {
+  return topicsData.value?.data || [];
+});
+
 const isPageSpiner = computed (()=>{
-  const data = topics.value || null;
-  return (!data) ? true : false;
+  return !topicsData.value;
 });
 
 const {
@@ -83,19 +97,24 @@ onMounted(async () => {
 });
 
 const getTopics = async()=> {
-  const response = await sendData({ url: topicsURL(route.params.subject_id as string) });
-
-  if (response?.data) {
-    tableData.value = Array.isArray(response.data)
-      ? response.data
-      : [response.data];
-  }
+  const response = await sendData({
+    url: topicsURL(route.params.subject_id as string)
+  });
 };
 
 
 const create = () => {
   router.push({name: 'topic-create'});
 };
+
+const words = () => {
+  router.push(
+    {name: 'words-index',
+      params: {subject_id: route.params.subject_id}
+    });
+};
+
+
 
 const onRowSelect =(event)=>{
   //console.log(event.data.id);
@@ -106,9 +125,12 @@ const onRowSelect =(event)=>{
 };
 
 const itemsBreadCrumbs =computed(()=>{
-
+  if (!topicsData.value?.subject) return [];
   return ([
-    {label: 'Subject'}  ,
+    { label: topicsData.value?.subject?.name ,
+      route: {name:'subject-edit' , params : {subject_id: topicsData.value?.subject?.id}
+      }
+    },
     { label: 'Topics'   }]);
 });
 
@@ -117,13 +139,15 @@ const itemsBreadCrumbs =computed(()=>{
 
 
 <BreadCrumbs :items="itemsBreadCrumbs" />
-<Button @click="create" label="Primary" rounded style="display:block">Create </Button>
-
+<div class="flex flex-raw justify-start gap-6">
+  <Button @click="create" label="Primary" rounded style="display:block">Create </Button>
+  <Button @click="words" label="Primary" rounded severity="secondary" style="display:block">Words </Button>
+</div>
  <PageSpiner :my="margYspiner"  :isSpiner="isPageSpiner"  />
- <div class="card pt-6 " v-if="topics" >
+ <div class="card pt-6 " v-if="topicsData" >
         <DataTable stripedRows
         selectionMode="single" dataKey="id" :metaKeySelection="false"
-        @rowSelect="onRowSelect" :value="topics" tableStyle="min-width: 50rem">
+        @rowSelect="onRowSelect" :value="topicsArray" tableStyle="min-width: 50rem">
            <Column field="name" header="Name"></Column>
            <Column field="id" header="Id"></Column>
            <Column class="w-24 !text-end">

@@ -181,7 +181,7 @@ protected function setUp(): void
         $response = $this->get('/api/subjects/'.$this->subject->id.'/topics');
         $data = json_decode($response->getContent(), true);
         $response->assertStatus(200);     
-        $founded = array_filter($data, function ($item) use ($topic) 
+        $founded = array_filter($data['data'], function ($item) use ($topic) 
         {
             return $item['id'] === $topic->id;
         });
@@ -210,7 +210,7 @@ protected function setUp(): void
         $response = $this->get('/api/subjects/'.$this->subject->id.'/topics');
         $data = json_decode($response->getContent(), true);
         $response->assertStatus(200);     
-        $founded = array_filter($data, function ($item) use ($topic) 
+        $founded = array_filter($data['data'], function ($item) use ($topic) 
         {
             return $item['id'] === $topic->id;
         });

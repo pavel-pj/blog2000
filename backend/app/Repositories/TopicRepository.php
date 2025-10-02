@@ -3,17 +3,25 @@
 namespace App\Repositories;
 
 use App\Models\Topic;
+use App\Models\Subject;
 use Illuminate\Database\Eloquent\Collection as EloquentCollection;
 use Illuminate\Support\Collection;
 
 class TopicRepository
 {
-    public function index(string $subjectId): EloquentCollection
+    public function index(string $subjectId): Array
     {
-        return Topic::where('subject_id', $subjectId)->orderBy('created_at', 'ASC')->get();
+        $data =  Topic::query()
+            ->where('subject_id', $subjectId)->orderBy('created_at', 'ASC')->get();
+        $subject = Subject::findOrFail($subjectId)->only(['id','name']) ;  
+
+        return [
+            'subject' => $subject,
+            'data' => $data,
+        ] ;  
     }
     
-    public function show(string $id): EloquentCollection
+    public function show(string $id): Topic
     {
 
         $item = Topic::where('id', $id)->exists();
@@ -21,7 +29,7 @@ class TopicRepository
             throw new \Exception("non-existent instance");
         }
 
-        return Topic::where('id',$id)->get() ;
+        return Topic::where('id',$id)->first() ;
         
     }
  

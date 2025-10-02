@@ -211,6 +211,34 @@ export default [
         },
        }, 
 
+       {
+         path: ':subject_id/topics/create',
+         name: 'topic-create',
+         component: () => import('@/components/Topic/Edit/Index.vue'),
+          props: {
+          isEdit:false
+         },                             
+         meta: {
+          //requiresAuth: true,
+          //middlewares: [auth],
+          allowedRoles: "User",
+        },
+       }, 
+
+              {
+         path: '/topics/:topic_id',
+         name: 'topic-edit',
+         component: () => import('@/components/Topic/Edit/Index.vue'),
+          props: {
+          isEdit:true
+         },                             
+         meta: {
+          //requiresAuth: true,
+          //middlewares: [auth],
+          allowedRoles: "User",
+        },
+       }, 
+
 
 
       {

@@ -106,11 +106,11 @@ export function topicCreateURL() {
 }
 
 export function topicItemShowURL(id: string) {
-  return `${baseUrl}/topic/${id}`;
+  return `${baseUrl}/topics/${id}`;
 }
                 
 export function deleteTopicURL(id: string) {
-  return `${baseUrl}/topic/${id}`;
+  return `${baseUrl}/topics/${id}`;
 }
 
 export function updateTopicURL(id:string, params?: Record<string, string|number|boolean>) {
