@@ -8,6 +8,7 @@ use Illuminate\Contracts\Validation\Validator;
 use Illuminate\Http\Exceptions\HttpResponseException;
 use Illuminate\Http\JsonResponse;
 use App\Models\Subject;
+use App\Models\Topic;  
 
 class WordCreateRequest extends FormRequest
 {
@@ -52,6 +53,35 @@ class WordCreateRequest extends FormRequest
                     }
                 },
             ],
+
+           'topics' => [
+                'nullable',
+                'array',
+                 function ($attribute, $value, $fail) {
+                    $subjectId = $this->subject_id;
+                    $errors = [];
+                    
+                    foreach ($value as $index => $topicId) {
+                        $topic = Topic::find($topicId);
+                        
+                        if (!$topic) {
+                            $errors[] = "Topic #{$index} (ID: {$topicId}) does not exist.";
+                            continue;
+                        }
+                        
+                        if ($topic->subject_id != $subjectId) {
+                            $errors[] = "Topic '{$topic->name}' does not belong to the selected subject.";
+                        }
+                    }
+                    
+                    if (!empty($errors)) {
+                        // Combine all errors into a single string
+                        $fail(implode(' ', $errors));
+                    }
+                }
+            ],
+            'topics.*' => 'string|exists:topics,id' // Validate each array element
+
         ];
     }
 }

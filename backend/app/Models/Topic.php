@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use App\Models\Word;
 
 class Topic extends Model
 {
@@ -30,5 +31,10 @@ class Topic extends Model
     public function subject(): BelongsTo
     {
         return $this->belongsTo(Subject::class);
+    }
+
+     public function words(): HasMany
+    {
+        return $this->hasMany(Word::class);
     }
 }

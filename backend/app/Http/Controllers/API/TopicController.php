@@ -61,7 +61,6 @@ class TopicController extends Controller
             return response()->json($e->getMessage(), 404);
         }
     }
-
  
     /**
      * Update the specified resource in storage.

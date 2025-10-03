@@ -72,4 +72,10 @@ class User extends Authenticatable
             }
         });
     }
+
+       // Relationship should be PLURAL (subjects, not subject)
+    public function subjects()
+    {
+        return $this->hasMany(Subject::class);
+    }
 }

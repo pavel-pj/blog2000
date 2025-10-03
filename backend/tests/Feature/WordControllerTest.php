@@ -18,6 +18,12 @@ class WordControllerTest extends TestCase
    // use DatabaseTransactions; // вместо RefreshDatabase
 
     protected $user;
+    protected $user2; 
+    protected $subject1;
+    protected $subject2;
+    protected $topicUser1;
+    protected $topicUser2;
+
 
     protected function setUp(): void
     {
@@ -28,11 +34,21 @@ class WordControllerTest extends TestCase
             'name' => 'Test User',
             'email' => 'test@example.com'
         ]);
+        $this->subject1 = Subject::factory()->create([
+            'name' => 'Test Subject1',
+            'user_id' => $this->user->id
+        ]);
  
         $this->user2 = User::factory()->create([
             'name' => 'Test User',
             'email' => 'test2@example.com'
         ]);
+
+         $this->subject2 = Subject::factory()->create([
+            'name' => 'Test Subject2',
+            'user_id' => $this->user2->id
+        ]);
+ 
     }
 
       // Выполняется после КАЖДОГО теста
@@ -104,7 +120,6 @@ class WordControllerTest extends TestCase
          $subject = Subject::create([
             'name'=>"English language",
             'user_id'=> $this->user->id
-        
         ]);
          // Подготовка данных
         $postData = [

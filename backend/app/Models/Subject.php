@@ -7,11 +7,13 @@ use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use App\Models\Topic;
 use App\Models\Word;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
  
 
 class Subject extends Model
 {
     use HasUuids;
+    use HasFactory;
 
     protected $primaryKey = 'id';
     public $incrementing = false;
