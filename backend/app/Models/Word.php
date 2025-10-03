@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use App\Models\Topic;
 
 class Word extends Model
@@ -32,8 +33,9 @@ class Word extends Model
         return $this->belongsTo(Subject::class);
     }
 
-    public function topics(): hasMany
+    public function topics(): BelongsToMany
     {
-        return $this->hasMany(Topic::class);
+        return $this->belongsToMany(Topic::class, 'topic_words', 'word_id', 'topic_id') ;
     }
+ 
 }

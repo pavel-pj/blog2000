@@ -8,6 +8,7 @@ use Illuminate\Foundation\Testing\WithFaker;
 use Tests\TestCase;
 use App\Models\User;
 use App\Models\Word;
+use App\Models\Topic;
 use App\Models\Subject;
 use Illuminate\Support\Str;
  
@@ -116,32 +117,48 @@ class WordControllerTest extends TestCase
     public function testWordStore(): void
     {
         $this->actingAs($this->user);
+ 
 
-         $subject = Subject::create([
-            'name'=>"English language",
-            'user_id'=> $this->user->id
+        $topic1 = Topic::create([
+            'name'=>"verbs",
+            'subject_id'=> $this->subject1->id
         ]);
+         $topic2 = Topic::create([
+            'name'=>"phrases",
+            'subject_id'=> $this->subject1->id
+        ]);
+
          // Подготовка данных
         $postData = [
             'name' => 'get out',
-            'subject_id' => $subject->id
+            'subject_id' => $this->subject1->id,
+            'topics' =>[$topic1->id, $topic2->id]
         ];
+         
 
         // Отправка POST запроса
         $response = $this->post('/api/words', $postData);
+        $id =json_decode($response->getContent())->id;
         $response->assertStatus(201); // Проверка статуса
-  
+         
+        $topics = Word::findOrFail($id)->topics->toArray();
+        $found = array_filter($topics, function ($item) use ($topic1){
+            return $item['id'] === $topic1->id;
+        } );
+
+        $isFoundTopic  = false;
+        if ($found) {
+           $isFoundTopic  = true; 
+        } 
+
+        $this->assertTrue($isFoundTopic);
+   
     }
      
     public function testWordStoreWithValidationError()
     {
         $this->actingAs($this->user);
-
-        $subject = Subject::create([
-            'name'=>"English language",
-            'user_id'=> $this->user->id
-        
-        ]);
+ 
          // Подготовка данных
         $invalidData = [
             'name' => ''
@@ -157,22 +174,72 @@ class WordControllerTest extends TestCase
     public function testWordStoreToOtherUserSubjectId()
     {
         $this->actingAs($this->user);
-
-        $subject2 = Subject::create([
-            'name'=>"English language",
-            'user_id'=> $this->user2->id
-        
-        ]);
+ 
          // Подготовка данных
         $postData = [
             'name' => 'get out',
-            'subject_id' => $subject2->id
+            'subject_id' => $this->subject2->id
         ];
 
         $response = $this->postJson('/api/words', $postData);
         
         // Должен вернуть 422 при ошибке валидации
         $response->assertStatus(422);
+    }
+
+        public function testWordStoreInvalidatedTopicId(): void
+    {
+        $this->actingAs($this->user);
+ 
+        $topic1 = Topic::create([
+            'name'=>"verbs",
+            'subject_id'=> $this->subject1->id
+        ]);
+ 
+
+         // Подготовка данных
+        $postData = [
+            'name' => 'get out',
+            'subject_id' => $this->subject1->id,
+            'topics' =>[$topic1->id, Str::uuid()]
+        ];
+   
+        // Отправка POST запроса
+        $response = $this->post('/api/words', $postData);
+        $response->assertStatus(422); // Проверка статуса
+
+   
+    }
+
+    
+    public function testWordStoreOtherUserTopicId(): void
+    {
+        $this->actingAs($this->user);
+ 
+
+        $topic1 = Topic::create([
+            'name'=>"verbs",
+            'subject_id'=> $this->subject1->id
+        ]);
+
+        $topic2 = Topic::create([
+            'name'=>"phrases",
+            'subject_id'=> $this->subject2->id
+        ]);
+ 
+
+         // Подготовка данных
+        $postData = [
+            'name' => 'get out',
+            'subject_id' => $this->subject1->id,
+            'topics' =>[$topic1->id,$topic2->id]
+        ];
+   
+        // Отправка POST запроса
+        $response = $this->post('/api/words', $postData);
+        $response->assertStatus(422); // Проверка статуса
+
+   
     }
  
     public function testWordIndex(): void

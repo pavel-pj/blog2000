@@ -7,10 +7,13 @@ use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use App\Models\Word;
+use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 class Topic extends Model
 {
-     use HasUuids;
+    use HasUuids;
+    use HasFactory;
 
     protected $primaryKey = 'id';
     public $incrementing = false;

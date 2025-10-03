@@ -18,11 +18,12 @@ class SubjectFactory extends Factory
             'description' => $this->faker->sentence(),
         ];
     }
-
+    /*
     public function forUser(User $user): static
     {
         return $this->state(fn (array $attributes) => [
             'user_id' => $user->id,
         ]);
     }
+        */
 }

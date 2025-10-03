@@ -80,6 +80,7 @@ test-%:
 	docker compose -f compose.dev.yaml exec workspace vendor/bin/phpunit tests/Feature/$(subst -,/,$*).php
 
 
+
 clear-cache:
 	# Останавливаем все контейнеры (игнорируем ошибки если нет контейнеров)
 	-docker stop $$(docker ps -aq)
@@ -134,5 +135,9 @@ first-up-dev:
 
 right:
 	sudo chown -R $$USER:$$USER /var/www/blog/blog2000/
+	docker compose -f compose.dev.yaml exec workspace chmod +x vendor/bin/phpunit
+
+seed:
+	docker compose -f compose.dev.yaml exec -u root workspace php artisan db:seed
  
 

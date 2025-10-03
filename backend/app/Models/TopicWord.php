@@ -4,6 +4,8 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class TopicWord extends Model
 {
@@ -14,13 +16,23 @@ class TopicWord extends Model
     protected $keyType = 'string';
 
     protected $fillable = [
-        'name',
+        'id',
+        'topic_id',
+        'word_id'
         
     ];
 
     protected $casts = [
         'id' => 'string', // важно для UUID
-        
-
     ];
+
+    public function topic(): BelongsTo
+    {
+        return $this->belongsTo(Topic::class);
+    }
+
+    public function word(): BelongsTo
+    {
+        return $this->belongsTo(Word::class);
+    }
 }
