@@ -24,6 +24,7 @@ declare module 'vue' {
     Menu: typeof import('primevue/menu')['default']
     Message: typeof import('primevue/message')['default']
     ModalSpiner: typeof import('./src/components/common/spiner/ModalSpiner.vue')['default']
+    MultiSelect: typeof import('primevue/multiselect')['default']
     PageSpiner: typeof import('./src/components/common/spiner/PageSpiner.vue')['default']
     RouterLink: typeof import('vue-router')['RouterLink']
     RouterView: typeof import('vue-router')['RouterView']

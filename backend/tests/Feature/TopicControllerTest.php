@@ -76,10 +76,14 @@ protected function setUp(): void
         // Отправка POST запроса
         $response = $this->post('/api/topics', $postData);
         $response->assertStatus(201); // Проверка статуса
+        $this->assertDatabaseHas('topics', [
+          'name' => 'nouns',
+          'subject_id' => $this->subject->id,
+        ]);
 
-        $data = json_decode($response->getContent(), true);
-        $isDataInDb = Topic::where('id',$data['id'])->exists();
-        $this->assertTrue($isDataInDb, true);
+       // $data = json_decode($response->getContent(), true);
+       // $isDataInDb = Topic::where('id',$data['id'])->exists();
+        //$this->assertTrue($isDataInDb, true);
   
     }
 

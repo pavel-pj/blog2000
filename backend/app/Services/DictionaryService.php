@@ -14,10 +14,17 @@ class DictionaryService
 
     public function getDictionaryByParams(array $validated, string $typeDictionary): Array
     {
-
+        
         if ($typeDictionary === 'catalog') {
             return [
                 'dictionaryCatalog' => $this->catalogRepository->getCatalogDictionary(),
+
+            ];
+        }
+
+          if ($typeDictionary === 'topics') {
+            return [
+                'topics' => $this->catalogRepository->getCatalogDictionary(),
 
             ];
         }
