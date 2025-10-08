@@ -21,7 +21,7 @@ class WordRepository
     }
 
 
-    public function show(string $id): EloquentCollection
+    public function show(string $id): Word
     {
 
         $item = Word::where('id', $id)->exists();
@@ -29,6 +29,6 @@ class WordRepository
             throw new \Exception("non-existent instance");
         }
 
-        return Word::where('id', $id)->get() ;
+        return Word::where('id', $id)->first() ;
     }
 }

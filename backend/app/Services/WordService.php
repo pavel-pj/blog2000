@@ -23,7 +23,7 @@ class WordService
         return $this->repository->index($subjectId);
     }
 
-    public function show(string $id): EloquentCollection 
+    public function show(string $id): Word 
     {
         return $this->repository->show($id);
     }

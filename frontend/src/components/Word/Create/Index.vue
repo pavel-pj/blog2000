@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed, ref,onMounted  } from 'vue';
+import { computed, ref,onMounted ,watch } from 'vue';
 import { useHttpRequest } from '@/utils/http-request';
 import {
   wordCreateURL,
@@ -14,8 +14,9 @@ import { Form, Field } from 'vee-validate';
 import { z } from 'zod';
 import { toTypedSchema } from '@vee-validate/zod';
 ///import Select from 'primevue/select';
-import { useDictionariesStore } from '@/store/dictionaries';
+import { useTopicsStore } from '@/store/topicsStore';
 //import Editor from '@/components/Tiptap/Editor.vue';
+
 
 const router = useRouter();
 const route = useRoute();
@@ -25,48 +26,73 @@ type Props = {
 };
 
 const {
-  dictionaries,
-  getDictionaryByType,
-  fetchDictionary
-} = useDictionariesStore();
+  topics,
+  loadingTopics ,
+  loadingErrors ,
+  fetchTopics
+} = useTopicsStore();
 
-
-
-// Или альтернативный вариант:
-const wordsOptions = computed(() => getDictionaryByType('topics'));
 
 const props = defineProps<Props>();
 
+
 const itemId =  route?.params?.word_id as string;
 const isSpiner = ref<boolean>(false);
+const subjectId = ref<string>('');
 
 const {
   data : itemData,
   //loading: isItemLoading ,
   sendRequest: getDataRequest
 } = useHttpRequest<{
-  id:string,
-  name:string,
-  translation:string
-
+  id: string,
+  name: string,
+  translation: string,
+  subject_id: string,
+  created_at: string,
+  updated_at: string
 }>();
 
 
 
 onMounted(async () => {
 
+
   if (props.isEdit) {
 
     await fetchItemWord();
+
   }
 
 });
 
 const fetchItemWord = async () => {
-  if (itemId) {
+  if (props.isEdit) {
     await getDataRequest({ url: wordItemShowURL(itemId) });
+
+  } else {
+    subjectId.value = route.params.subject_id as string;
+    fetchTopics(subjectId.value);
   }
 };
+
+// Исправленный watch для объекта
+watch(
+  () => itemData.value,
+  (newData) => {
+    if (newData && newData.subject_id) {
+      console.log('CHANGE');
+      console.log(newData); // Теперь это объект
+
+      // Получаем subject_id напрямую из объекта
+      subjectId.value = newData.subject_id;
+      console.log('Subject ID:', subjectId.value);
+
+      fetchTopics(subjectId.value);
+    }
+  },
+  { immediate: true }
+);
 
 
 const {
@@ -185,8 +211,8 @@ const schema = toTypedSchema(
 
 
 const initialValues = computed(() => {
-  const name = props.isEdit ? itemData.value?.[0]?.name || '' : '';
-  const translation = props.isEdit ? itemData.value?.[0]?.translation || '' : '';
+  const name = props.isEdit ? itemData.value?.name || '' : '';
+  const translation = props.isEdit ? itemData.value?.translation || '' : '';
 
 
 
@@ -218,7 +244,7 @@ const countries = ref([
 </script>
 
 <template>
-{{ wordsOptions  }}
+{{ topics  }}
 <!--
 <BreadCrumbs :items="itemsBreadCrumbs" />-->
 <PageSpiner :isSpiner="isPageSpiner" />
