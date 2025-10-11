@@ -34,8 +34,9 @@ class WordController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(WordCreateRequest $request): JsonResponse
+    public function store(WordCreateRequest $request) : JsonResponse
     {
+ 
         try {
             $validated = $request->validated();
             return response()->json($this->service->store($validated), 201);
@@ -63,8 +64,10 @@ class WordController extends Controller
      */
     public function update(WordUpdateRequest $request, string $id): JsonResponse
     {
-        $validated = $request->validated();
+         
         try {
+            $validated = $request->validated();
+    
             return response()->json($this->service->update($validated, $id), 200);
         } catch (\Exception $e) {
             return response()->json($e->getMessage(), 404);

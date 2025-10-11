@@ -29,6 +29,6 @@ class WordRepository
             throw new \Exception("non-existent instance");
         }
 
-        return Word::where('id', $id)->first() ;
+        return Word::where('id', $id)->with('topics')->first() ;
     }
 }

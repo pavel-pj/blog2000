@@ -10,6 +10,7 @@ use Illuminate\Http\JsonResponse;
 use App\Models\Subject;
 use Illuminate\Validation\Rule;
 use App\Models\Word;
+use App\Models\Topic;
 
 class WordUpdateRequest extends FormRequest
 {
@@ -40,7 +41,42 @@ class WordUpdateRequest extends FormRequest
         return [
                 'name' => 'string|required|min:2| max:255',
                 'translation' => 'string|nullable|max:500',
-                //'subject_id' => 'string|nullable|exists:subjects,id',
+                'topics' => [
+                'present',
+                'array',
+                function ($attribute, $value, $fail) {
+                    if (!$value) return;
+                    
+                    $wordId = $this->route('word');
+                    $word = Word::find($wordId);
+                    
+                    if (!$word) {
+                        $fail('Word not found.');
+                        return;
+                    }
+                    
+                    $subjectId = $word->subject_id;
+                    $errors = [];
+                    
+                    foreach ($value as $index => $topicId) {
+                        $topic = Topic::find($topicId);
+                        
+                        if (!$topic) {
+                            $errors[] = "Topic #{$index} (ID: {$topicId}) does not exist.";
+                            continue;
+                        }
+                        
+                        if ($topic->subject_id != $subjectId) {
+                            $errors[] = "Topic '{$topic->name}' does not belong to the word's subject.";
+                        }
+                    }
+                    
+                    if (!empty($errors)) {
+                        $fail(implode(' ', $errors));
+                    }
+                }
+            ],
+            'topics.*' => 'string|exists:topics,id'
         ];
     }
 

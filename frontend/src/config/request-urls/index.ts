@@ -128,6 +128,13 @@ export function catalogDictionariesURL(dicntionaryType: string) {
   });
 }
 
+//dictionaries
+export function userDictionariesURL(dicntionaryType: string) {
+  return addQueryParams(`${baseUrl}/dictionaries`, {
+    typeDictionary: dicntionaryType
+  });
+}
+
 
 
 // helper

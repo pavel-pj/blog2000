@@ -9,6 +9,7 @@ use Illuminate\Database\Eloquent\Builder as EloquentBuilder;
 use Exception;
 use Illuminate\Support\Facades\DB;
 use App\Services\TopicWordService;
+use App\Models\TopicWord;
 
 class WordService
 {
@@ -65,7 +66,7 @@ class WordService
                 return $topic->only('id', 'name');
             });
 
-return $wordWithTopics;
+            return $wordWithTopics;
 
         } catch (Exception $e) {
             DB::rollBack(); 
@@ -74,15 +75,47 @@ return $wordWithTopics;
  
     }
 
-    public function update(array $validated, string $id):EloquentCollection 
+    public function update(array $validated, string $id)//:EloquentCollection 
     {
-       
-        Word::updateOrInsert(
-            ['id' => $id],
-            $validated
-        );
+        try {
+
+            DB::beginTransaction();
  
-        return Word::where('id', $id)->get()  ;
+                $wordValidated = array_filter($validated, function($value, $key){
+                    return $key !== 'topics';
+                }, ARRAY_FILTER_USE_BOTH);
+
+
+            $topics = $validated['topics'];
+            //Удаляем все связи между топиками и словом
+            TopicWord::where('word_id',$id)->delete();
+ 
+            Word::updateOrInsert(
+                ['id' => $id],
+                $wordValidated
+            );
+
+             foreach ($topics as $topic) 
+            {
+                $this->topicWordService->store([
+                    'topic_id' => $topic,
+                    'word_id' => $id
+                ]);
+            }
+
+
+
+
+             DB::commit();
+ 
+            return $this->repository->show($id);
+
+        } catch (Exception $e) {
+            DB::rollBack(); 
+            throw new \Exception($e->getMessage());
+        }
+ 
+         
     }
 
     public function destroy(string $id): void

@@ -22,7 +22,8 @@ class WordControllerTest extends TestCase
     protected $user2; 
     protected $subject1;
     protected $subject2;
-    protected $topicUser1;
+    protected $topicUser1A;
+    protected $topicUser1B;
     protected $topicUser2;
 
 
@@ -38,6 +39,14 @@ class WordControllerTest extends TestCase
         $this->subject1 = Subject::factory()->create([
             'name' => 'Test Subject1',
             'user_id' => $this->user->id
+        ]);
+        $this->topicUser1A = Topic::create([
+            'name' => 'B1',
+            'subject_id' =>$this->subject1->id
+        ]);
+        $this->topicUser1B = Topic::create([
+            'name' => 'B2',
+            'subject_id' =>$this->subject1->id
         ]);
  
         $this->user2 = User::factory()->create([
@@ -80,7 +89,7 @@ class WordControllerTest extends TestCase
 
         $response->assertStatus(200);
     }
-    
+     
     public function testWordShowNotFound()
     {
         $this->actingAs($this->user);
@@ -299,21 +308,20 @@ class WordControllerTest extends TestCase
     public function testWordUpdate(): void
     {
         $this->actingAs($this->user);
-
-        $subject = Subject::create([
-            'name'=>"English language",
-            'user_id'=> $this->user->id
-        
-        ]);
+ 
         $word = Word::create(
             [
                 'name' =>'get out',
-                'subject_id' => $subject->id 
+                'subject_id' => $this->subject1->id ,
+                
             ]
         );
 
         $postData = [
             'name' => 'NEW VALUE',
+            'topics' => [
+                    $this->topicUser1A->id, $this->topicUser1B->id
+                ]
             
         ];
         $response = $this->patchJson("/api/words/{$word->id}", $postData );
@@ -330,6 +338,8 @@ class WordControllerTest extends TestCase
     public function testWordUpdateWithValidationError()
     {
         $this->actingAs($this->user);
+
+        
 
         $subject = Subject::create([
             'name'=>"English language",
@@ -356,6 +366,27 @@ class WordControllerTest extends TestCase
         $response = $this->patchJson("/api/words/{$word->id}", $postData );
         
         // Должен вернуть 422 при ошибке валидации
+        $response->assertStatus(422);
+    }
+
+     public function testWordUpdateWithoutTopicsError()
+    {
+        $this->actingAs($this->user);
+ 
+        $word = Word::create(
+            [
+                'name' =>'get out',
+                'subject_id' => $this->subject1->id 
+            ]
+        );
+
+        $postData = [
+            'name' => 'NEW VALUE',
+            
+        ];
+        $response = $this->patchJson("/api/words/{$word->id}", $postData );
+ 
+        // Должен вернуть 422 при ошибке валидации, требуется topics []
         $response->assertStatus(422);
     }
 

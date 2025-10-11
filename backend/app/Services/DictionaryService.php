@@ -3,14 +3,20 @@
 namespace App\Services;
 
 use App\Models\Article;
+use App\Models\Topic;
 use App\Repositories\CatalogRepository;
+use App\Repositories\TopicRepository;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Collection;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 class DictionaryService
 {
   
-    public function __construct(protected CatalogRepository $catalogRepository){}
+    public function __construct(
+        protected CatalogRepository $catalogRepository,
+        protected TopicRepository $topicRepository
+        ){}
 
     public function getDictionaryByParams(array $validated, string $typeDictionary): Array
     {
@@ -22,9 +28,9 @@ class DictionaryService
             ];
         }
 
-          if ($typeDictionary === 'topics') {
+          if ($typeDictionary === 'user') {
             return [
-                'topics' => $this->catalogRepository->getCatalogDictionary(),
+                'data' => $this->topicRepository->getTopicsDctionary(),
 
             ];
         }
