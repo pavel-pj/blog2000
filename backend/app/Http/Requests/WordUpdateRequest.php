@@ -11,6 +11,7 @@ use App\Models\Subject;
 use Illuminate\Validation\Rule;
 use App\Models\Word;
 use App\Models\Topic;
+use App\Enums\WordStatus;
 
 class WordUpdateRequest extends FormRequest
 {
@@ -41,6 +42,11 @@ class WordUpdateRequest extends FormRequest
         return [
                 'name' => 'string|required|min:2| max:255',
                 'translation' => 'string|nullable|max:500',
+                'status' => [
+                    'nullable',
+                    'string',
+                    Rule::enum(WordStatus::class)
+                ],
                 'topics' => [
                 'present',
                 'array',

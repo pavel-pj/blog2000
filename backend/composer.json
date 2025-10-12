@@ -9,6 +9,7 @@
         "php": "^8.2",
         "laravel/framework": "^12.0",
         "laravel/tinker": "^2.10.1",
+        "maatwebsite/excel": "^4.0",
         "spatie/eloquent-sortable": "^4.5",
         "spatie/laravel-permission": "^6.21"
     },
@@ -62,7 +63,16 @@
         "lint:strict": "phpcs --standard=phpcs.xml -p --colors  ",
         "lintfix": [
             "phpcbf app/"
-        ]
+        ],
+         "clear" :[ "@php artisan cache:clear",
+                    "@php artisan config:clear",
+                    "@php artisan view:clear",
+                    "@php artisan route:clear",
+                    "@php artisan event:clear",
+                    "@php artisan optimize",
+                    "@php artisan permission:cache-reset"
+        ] 
+
     },
     "extra": {
         "branch-alias": {

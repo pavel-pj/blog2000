@@ -10,6 +10,7 @@ use Exception;
 use Illuminate\Support\Facades\DB;
 use App\Services\TopicWordService;
 use App\Models\TopicWord;
+use App\Enums\WordStatus;
 
 class WordService
 {
@@ -41,6 +42,7 @@ class WordService
             }, ARRAY_FILTER_USE_BOTH);
             $topics = $validated['topics'];
 
+            $wordValidated['status'] = WordStatus::NEW;
             $word =  Word::create($wordValidated);
 
             if (!$word) {

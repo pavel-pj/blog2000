@@ -280,7 +280,7 @@ const itemsBreadCrumbs =computed(()=>{
 <div  v-if="!isPageSpiner">
 
       <div class="card">
-                <div class="w-[700px] my-6"  >
+                <div class="    lg:w-[700px] my-6"  >
                   <Form @submit="sendData"
                     :validation-schema="schema"
                     :initial-values="initialValues"

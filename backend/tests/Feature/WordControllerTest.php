@@ -11,6 +11,7 @@ use App\Models\Word;
 use App\Models\Topic;
 use App\Models\Subject;
 use Illuminate\Support\Str;
+use App\Enums\WordStatus;
  
 
 class WordControllerTest extends TestCase
@@ -313,7 +314,6 @@ class WordControllerTest extends TestCase
             [
                 'name' =>'get out',
                 'subject_id' => $this->subject1->id ,
-                
             ]
         );
 
@@ -321,7 +321,8 @@ class WordControllerTest extends TestCase
             'name' => 'NEW VALUE',
             'topics' => [
                     $this->topicUser1A->id, $this->topicUser1B->id
-                ]
+            ],
+            'status' => WordStatus::REPEATED
             
         ];
         $response = $this->patchJson("/api/words/{$word->id}", $postData );
@@ -355,6 +356,7 @@ class WordControllerTest extends TestCase
 
         $postData = [
             'name' => 'NEW VALUE',
+             'status' => 'STATUS'
             
         ];
         $response = $this->patchJson("/api/words/{$word->id}", $postData );

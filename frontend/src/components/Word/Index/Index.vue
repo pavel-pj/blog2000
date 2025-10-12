@@ -136,6 +136,7 @@ const itemsBreadCrumbs =computed(()=>{
     { label: 'Words'   }]);
 });
 
+
 </script>
 <template>
 
@@ -150,10 +151,12 @@ const itemsBreadCrumbs =computed(()=>{
  <div class="card pt-6 " v-if="wordsData" >
         <DataTable stripedRows
         selectionMode="single" dataKey="id" :metaKeySelection="false"
-        @rowSelect="onRowSelect" :value="wordsArray" tableStyle="min-width: 50rem">
+        @rowSelect="onRowSelect" :value="wordsArray" tableStyle=" ">
 
-           <Column field="name" header="Name"></Column>
-           <Column field="id" header="Id"></Column>
+           <Column field="name" header="Name">
+
+          </Column>
+           <Column field="id" header="Id" class="hidden lg:block"></Column>
            <Column class="w-24 !text-end">
                 <template #body="{ data }"  >
 
@@ -166,4 +169,5 @@ const itemsBreadCrumbs =computed(()=>{
         <Toast />
     </div>
   <modalSpiner :isSpiner="isSpiner" ></modalSpiner>
+
 </template>
