@@ -11,6 +11,7 @@ use App\Http\Controllers\API\WordController;
 use App\Http\Controllers\API\TopicController; 
 use App\Http\Controllers\API\ExcelExportController;
 use App\Http\Controllers\API\WordExcelExportController;
+use App\Http\Controllers\API\WordImportController;
  
 
 
@@ -59,6 +60,9 @@ Route::middleware(['auth:sanctum' ])->group(function () {
     //Route::get('/list-files', [ExcelExportController::class, 'listFiles']);
     //Route::get('/download/{filename}', [ExcelExportController::class, 'downloadFile']);
  });
+
+ Route::post('/{subject_id}/import/words', [WordImportController::class, 'import']);
+Route::get('/import/words/template', [WordImportController::class, 'downloadTemplate']);
 
 
 });

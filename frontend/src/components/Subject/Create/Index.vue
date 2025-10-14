@@ -194,6 +194,10 @@ const initialValues = computed(() => ({
   name: props.isEdit ? itemData.value?.[0]?.name || '' : ''
 }));
 
+const importWords =()=>{
+
+};
+
 </script>
 
 <template>
@@ -202,38 +206,77 @@ const initialValues = computed(() => ({
 <BreadCrumbs :items="itemsBreadCrumbs" />
 <PageSpiner :isSpiner="isPageSpiner" />
 
-  <div  v-if="!isPageSpiner" class="h-screen">
-  <h1 class="text-3xl mb-12"> {{pageOptions.title}}</h1>
-  <div class="w-[400px] "  >
 
-    <Form @submit="sendData"
-    :validation-schema="schema"
-    :initial-values="initialValues"
-    class="flex flex-col gap-4 w-full ">
-      <div class="flex flex-col gap-1">
-        <Field name="name" v-slot="{ field, errors }">
-          <InputText
-            v-bind="field"
-            placeholder="name"
-            :class="{ 'p-invalid': errors.length }"
-          />
-          <Message v-if="errors.length" severity="error" size="small" variant="simple">
-            {{ errors[0] }}
-          </Message>
-        </Field>
-      </div>
-      <Button type="submit"  label="Submit" />
-    </Form>
- </div>
-  <div v-if="isEdit"
-  @click="openDelete"
-    class="text-rose-500 my-6 underline font-bold text-xl cursor-pointer inline-block
-    hover:text-rose-700 hover:no-underline"
-  >
-    delete
-  </div>
 
-</div>
+<Tabs value="0" v-if="!isPageSpiner">
+    <TabList>
+        <Tab value="0">Edit</Tab>
+        <Tab value="1">Downloads</Tab>
+        <Tab value="2">Options</Tab>
+    </TabList>
+    <TabPanels>
+        <TabPanel value="0">
+                <div class="w-[350px] py-6"  >
+                  <Form @submit="sendData"
+                  :validation-schema="schema"
+                  :initial-values="initialValues"
+                  class="flex flex-col gap-4 w-full ">
+                    <div class="flex flex-col gap-1">
+                      <Field name="name" v-slot="{ field, errors }">
+                        <InputText
+                          v-bind="field"
+                          placeholder="name"
+                          :class="{ 'p-invalid': errors.length }"
+                        />
+                        <Message v-if="errors.length" severity="error" size="small" variant="simple">
+                          {{ errors[0] }}
+                        </Message>
+                      </Field>
+                    </div>
+                    <Button type="submit"  label="Submit" />
+                  </Form>
+              </div>
+                <div v-if="isEdit"
+                @click="openDelete"
+                  class="text-rose-500 my-6 underline font-bold text-xl cursor-pointer inline-block
+                  hover:text-rose-700 hover:no-underline"
+                >
+                  delete
+                </div>
+        </TabPanel>
+        <TabPanel value="1">
+            <div class="flex flex-raw justify-start gap-6">
+              <Button @click="importWords" label="Primary" rounded style="display:block">Import</Button>
+
+            </div>
+        </TabPanel>
+        <TabPanel value="2">
+            <p class="m-0">
+                At vero eos et accusamus et iusto odio dignissimos ducimus qui blanditiis praesentium voluptatum deleniti atque corrupti quos dolores et quas molestias excepturi sint occaecati cupiditate non provident, similique sunt in culpa
+                qui officia deserunt mollitia animi, id est laborum et dolorum fuga. Et harum quidem rerum facilis est et expedita distinctio. Nam libero tempore, cum soluta nobis est eligendi optio cumque nihil impedit quo minus.
+            </p>
+        </TabPanel>
+    </TabPanels>
+</Tabs>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
  <modalSpiner :isSpiner="isLoading" ></modalSpiner>
 
 

@@ -12,7 +12,9 @@ class WordRepository
     {
 
         $data = Word::query() 
-            ->where('subject_id',$subjectId)->orderBy('created_at', 'DESC')->get();
+            ->where('subject_id',$subjectId)
+            ->select('id','name')            
+            ->orderBy('created_at', 'DESC')->get();
         $subject = Subject::findOrFail($subjectId)->only(['id','name']) ;    
         return [
             'subject' => $subject,

@@ -149,18 +149,19 @@ const itemsBreadCrumbs =computed(()=>{
 
   <PageSpiner :my="margYspiner"  :isSpiner="isPageSpiner"  />
  <div class="card pt-6 " v-if="wordsData" >
-        <DataTable stripedRows
+        <DataTable stripedRows paginator :rows="5" :rowsPerPageOptions="[5, 10, 20, 50]"
         selectionMode="single" dataKey="id" :metaKeySelection="false"
         @rowSelect="onRowSelect" :value="wordsArray" tableStyle=" ">
 
            <Column field="name" header="Name">
 
           </Column>
-           <Column field="id" header="Id" class="hidden lg:block"></Column>
-           <Column class="w-24 !text-end">
+           <Column field="id" header="Id"  ></Column>
+
+           <Column class="w-16 h-16 !text-end">
                 <template #body="{ data }"  >
 
-                    <Button icon="pi pi-times " @click="openDelete(data)" severity="danger"  ></Button>
+                    <Button icon="pi pi-times" @click="openDelete(data)" severity="danger" class="p-button-sm w-2rem h-2rem"></Button>
 
                 </template>
             </Column>
@@ -168,6 +169,8 @@ const itemsBreadCrumbs =computed(()=>{
         </DataTable>
         <Toast />
     </div>
+
   <modalSpiner :isSpiner="isSpiner" ></modalSpiner>
 
 </template>
+

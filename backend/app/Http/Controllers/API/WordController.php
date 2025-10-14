@@ -11,6 +11,7 @@ use App\Http\Requests\WordIndexRequest;
 use App\Http\Requests\WordShowRequest;
 use App\Http\Requests\WordDeleteRequest;
 use Illuminate\Http\JsonResponse;
+use App\Imports\WordsImport;
 
 class WordController extends Controller
 {
@@ -87,4 +88,5 @@ class WordController extends Controller
             return response()->json($e->getMessage(), 404);
         }
     }
+  
 }
