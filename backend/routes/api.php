@@ -47,8 +47,8 @@ Route::middleware(['auth:sanctum' ])->group(function () {
     */
     Route::prefix('excel')->group(function () {
     // Basic exports
-    Route::get('/export-users', [ExcelExportController::class, 'exportUsers']);
-    Route::get('/export-words', [WordExcelExportController::class, 'exportWords']);
+    //Route::get('/export-users', [ExcelExportController::class, 'exportUsers']);
+    Route::get('/{subject_id}/export-words', [WordExcelExportController::class, 'exportWords']);
     //Route::get('/download-users', [ExcelExportController::class, 'downloadUsers']);
     
     // Advanced exports

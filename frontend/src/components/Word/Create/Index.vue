@@ -213,10 +213,17 @@ const schema = toTypedSchema(
     name: z.string()
       .min(2, '"name" is required')
       .max(255, '"name" is too long'),
-
+    /*
     translation: z.string()
       .min(2, '"translation" is required')
       .max(255, '"translation" is too long')
+    */
+
+    translation: z.union([
+      z.string().max(255, '"translation" is too long'),
+      z.string().length(0) // Пустая строка
+    ]).optional()
+
 
   })
 

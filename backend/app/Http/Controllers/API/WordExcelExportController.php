@@ -8,18 +8,17 @@ use Maatwebsite\Excel\Facades\Excel;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 
+
 class WordExcelExportController extends Controller
 {   
-
-
     // Simple export
-    public function exportWords()
+    public function exportWords(string $subject_id)
     {
         try {
             $filename = 'words_export_' . date('Y-m-d_H-i-s') . '.xlsx';
             
             // Store file
-            Excel::store(new WordExcelExport('01997c0d-98b8-709d-a447-ccd9cbeba1f3'), 'exports/' . $filename);
+            Excel::store(new WordExcelExport($subject_id), 'exports/' . $filename);
             
             return response()->json([
                 'success' => true,
