@@ -3,7 +3,7 @@
 import { ref, onMounted ,computed} from 'vue';
 import {useRoute, useRouter} from 'vue-router';
 import {
-  wordsURL,
+  //wordsURL,
   deleteWordURL
 } from '@/config/request-urls';
 import { useHttpRequest } from '@/utils/http-request';
@@ -11,11 +11,15 @@ import modalSpiner from '@/components/common/spiner/ModalSpiner.vue';
 import PageSpiner from '@/components/common/spiner/PageSpiner.vue';
 import useConfirm from '@/composables/modals/Confirmer';
 import BreadCrumbs from '@/components/common/navigate/BreadCrumbs.vue';
+import { useWordsStore } from '@/store/wordsStore';
+import { storeToRefs } from 'pinia';
 
 const router = useRouter();
 const route = useRoute();
 
+const wordsStore = useWordsStore();
 
+/*
 interface WordItem {
   id: string;
   name: string;
@@ -25,33 +29,52 @@ interface WordItem {
   updated_at: string;
 
 }
+  */
 
+const {
+  data: words,
+  subject,
+  loading: wordsLoading,
+  error: wordsError
+} = storeToRefs(wordsStore);
+
+const {
+  fetchData,
+  deleteWord
+} = wordsStore;
+
+/*
 interface SubjectData {
   subject: any;
   data: WordItem[];
 }
+*/
 
 const confirm = useConfirm();
 const isSpiner = ref<boolean>(false);
 const margYspiner = '24';
 
+/*
 const {
   data: wordsData,
   sendRequest: sendData
 } = useHttpRequest<SubjectData>({
   showSuccessToast:false,
   showErrorToast: false
-});
+});*/
 
-const tableData = ref<WordItem[]>([]);
+//const tableData = ref<WordItem[]>([]);
 
 
 const wordsArray = computed(() => {
-  return wordsData.value?.data || [];
+  return words.value || [];
 });
 
 const isPageSpiner = computed (()=>{
-  return !wordsData.value;
+  if (words.value.length > 0 ) {
+    return false;
+  };
+  return true;
 });
 
 const {
@@ -83,8 +106,9 @@ const deleteItem = async () =>{
   });
 
   if (res?.isOk) {
-    await getWords();
+    //await getWords();
     isSpiner.value = false;
+    deleteWord(dataToDelete.value?.id);
   } else {
     isSpiner.value = false;
   }
@@ -93,9 +117,12 @@ const deleteItem = async () =>{
 
 
 onMounted(async () => {
-  await getWords();
+  if (words.value.length===0) {
+    fetchData(route.params.subject_id as string);
+  }
 });
 
+/*
 const getWords = async()=> {
 
   const response = await sendData({
@@ -103,6 +130,7 @@ const getWords = async()=> {
   });
 
 };
+*/
 
 
 const create = () => {
@@ -129,8 +157,8 @@ const onRowSelect =(event)=>{
 const itemsBreadCrumbs =computed(()=>{
 
   return ([
-    { label: wordsData.value?.subject?.name ,
-      route: {name:'subject-edit' , params : {subject_id: wordsData.value?.subject?.id}
+    { label: subject.value?.name || '',
+      route: {name:'subject-edit' , params : {subject_id: subject.value?.id}
       }
     },
     { label: 'Words'   }]);
@@ -148,7 +176,8 @@ const itemsBreadCrumbs =computed(()=>{
 </div>
 
   <PageSpiner :my="margYspiner"  :isSpiner="isPageSpiner"  />
- <div class="card pt-6 " v-if="wordsData" >
+
+ <div class="card pt-6 " v-if="wordsArray.length>0" >
         <DataTable stripedRows paginator :rows="5" :rowsPerPageOptions="[5, 10, 20, 50]"
         selectionMode="single" dataKey="id" :metaKeySelection="false"
         @rowSelect="onRowSelect" :value="wordsArray" tableStyle=" ">

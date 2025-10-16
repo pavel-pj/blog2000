@@ -18,6 +18,8 @@ import { toTypedSchema } from '@vee-validate/zod';
 //import Editor from '@/components/Tiptap/Editor.vue';
 import { useUserStore } from '@/store/userStore';
 //import { storeToRefs } from 'pinia';
+import { useWordsStore } from '@/store/wordsStore';
+import { storeToRefs } from 'pinia';
 
 
 type Props = {
@@ -26,9 +28,22 @@ type Props = {
 const props = defineProps<Props>();
 
 const userStore = useUserStore();
+const wordsStore = useWordsStore();
 
 const router = useRouter();
 const route = useRoute();
+
+const {
+  data: words,
+  subject,
+  loading: wordsLoading,
+  error: wordsError
+} = storeToRefs(wordsStore);
+
+const {
+  fetchData: wordsFetchdata,
+  addNewWord
+} = wordsStore;
 
 /*
 const {
@@ -69,14 +84,19 @@ onMounted(async () => {
   if (!props.isEdit) {
     subjectId.value = route.params.subject_id as string;
     topics.value =  getTopic(subjectId.value);
+
+    if (words.value.length ===0 ) {
+      wordsFetchdata(subjectId.value as string );
+    }
+
   }
 
 
   if (props.isEdit) {
-
     await fetchItemWord();
-
   }
+
+
 
 });
 
@@ -138,7 +158,7 @@ const {
 
 const sendData = async(data:any) => {
 
-  isSpiner.value = true;
+  //isSpiner.value = true;
   const params = data;
   if (!props.isEdit) {
     params.subject_id = route.params.subject_id;
@@ -159,10 +179,19 @@ const sendData = async(data:any) => {
 
 
     if (res.value?.isOk) {
+
+      addNewWord({
+        id:res.value.data.id,
+        name:res.value.data.name
+      });
+
       await router.push({
         name: 'words-index',
         params: {subject_id: route.params.subject_id}
       });
+
+
+
 
     } else {
       isSpiner.value = false;
