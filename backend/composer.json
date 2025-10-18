@@ -71,7 +71,10 @@
                     "@php artisan event:clear",
                     "@php artisan optimize",
                     "@php artisan permission:cache-reset"
-        ] 
+        ],
+        "migrate:test":["@php artisan migrate --database=testing"],
+        "migrate:test-status":["@php artisan migrate:status --database=testing"],
+        "migrate:test-rollback":["@php artisan migrate:status --database=testing"]
 
     },
     "extra": {

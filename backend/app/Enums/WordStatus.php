@@ -6,6 +6,7 @@ enum WordStatus: string
 {
     case NEW = 'NEW';
     case REPEATED = 'REPEATED';
+    case REPEATED_FAILED = 'REPEATED_FAILED';
     
 
     // Optional: Helper methods
@@ -14,6 +15,7 @@ enum WordStatus: string
         return match($this) {
             self::NEW => 'NEW',
             self::REPEATED => 'REPEATED',
+            self::REPEATED_FAILED => 'REPEATED_FAILED',
             
         };
     }

@@ -15,8 +15,9 @@ use App\Enums\WordStatus;
 class WordExcelExport implements FromCollection, WithHeadings, WithMapping, WithStyles,WithEvents
 {   
     //user options 
-    private int $totalRows = 30;
-    private int $newWords = 5;
+    private int $totalRows = 50;
+    private int $newWordsAmount = 5;
+    private int $failedWordsAmount = 5;
 
     private string $topic = "Wild animals";
     private int $sentenseLength = 18; 
@@ -39,27 +40,35 @@ class WordExcelExport implements FromCollection, WithHeadings, WithMapping, With
          
         $newWords =  Word::where('subject_id', $this->subject_id)
             ->where('status', WordStatus::NEW)
-            ->select('id', 'name', 'translation', 'status','created_at')->orderBy('created_at','ASC')->limit($this->newWords)
+            ->select('id', 'name', 'translation', 'status','created_at')
+            ->orderBy('created_at','ASC')
+            ->limit($this->newWordsAmount)
             ->get();
  
+         $failedWords = Word::where('subject_id', $this->subject_id)
+            ->where('status', WordStatus::REPEATED_FAILED)
+            ->orderBy('repeated_at','ASC')
+            ->select('id', 'name', 'translation', 'status','repeated_at')
+            ->get(); 
+
          $repeatedWords = Word::where('subject_id', $this->subject_id)
             ->where('status', WordStatus::REPEATED)
             ->orderBy('repeated_at','ASC')
             ->select('id', 'name', 'translation', 'status','repeated_at')
-            ->get(); 
+            ->get();    
             
         // Combine both collections
         $combined = collect();
-        // Get the maximum count between both statuses
-        //$maxCount = max($newWords->count(), $repeatedWords->count());
+     
         
         for ($i = 0; $i < $this->totalRows; $i++) {
 
-            $newWordIndex = $i % $this->newWords; // Циклический индекс (0,1,2,3,4,0,1,2...)
+            $newWordIndex = $i % $this->newWordsAmount; // Циклический индекс (0,1,2,3,4,0,1,2...)
             //$repeatedWords = $repeatedWords->get($i);   // REPEATED слова идут по порядку
 
             $combined->push([
                 'NEW' => $newWords->get($newWordIndex),
+                'REPEATED_FAILED' => $failedWords->get($i),
                 'REPEATED' => $repeatedWords->get($i)
             ]);
         }
@@ -79,12 +88,21 @@ class WordExcelExport implements FromCollection, WithHeadings, WithMapping, With
         foreach ($combined as $index => $row) {
             $newWord = $row['NEW'];
             $repeatedWord = $row['REPEATED'];
+            $failedWord = $row['FAILED_WORD'];
             
             $newCombinedText = '';
             if ($newWord) {
                 $newCombinedText .= "'{$newWord->name}'";
                 if ($newWord->translation) {
                     $newCombinedText .= " with meaning '{$newWord->translation}'";
+                }
+            }
+
+            $failedCombinedText = '';
+            if ($failedWord) {
+                $failedCombinedText .= "'{$failedWord->name}'";
+                if ($failedWord->translation) {
+                    $failedCombinedText .= " with meaning '{$failedWord->translation}'";
                 }
             }
 
@@ -96,9 +114,16 @@ class WordExcelExport implements FromCollection, WithHeadings, WithMapping, With
                 }
             }
 
+
+
+
             $rowNumber = $index + 1;
             $currentRowText = "{$rowNumber}. In the {$rowNumber} sentence you must use words: {$newCombinedText}";
             
+            if ($failedCombinedText) {
+                $currentRowText .= " , {$failedCombinedText}";
+            }
+
             if ($repeatedCombinedText) {
                 $currentRowText .= " , {$repeatedCombinedText}";
             }
@@ -132,23 +157,24 @@ class WordExcelExport implements FromCollection, WithHeadings, WithMapping, With
     public function headings(): array
     {
 
-        
-
         return [
-            'new_id',
-            'new_name',
-            'new_translation', 
-            'new_status',
-            'new_date',
-            'repeated_id',
-            'repeated_name',
-            'repeated_translation',
-            'repeated_status',
-            'repeated_date',
-            'task',
-            'answer'
+            'NEW - ID',
+            'NEW - Name',
+            'NEW - Translation', 
+            'NEW - Status',
+            'NEW - Date',
+            'FAILED_REPEATED - ID',
+            'FAILED_REPEATED - Name',
+            'FAILED_REPEATED - Translation', 
+            'FAILED_REPEATED - Status',
+            'FAILED_REPEATED - Date',
+            'REPEATED - ID',
+            'REPEATED - Name',
+            'REPEATED - Translation',
+            'REPEATED - Status',
+            'REPEATED - Date',
 
-           // 'Combined Words',
+            'Combined Words',
         ];
     }
 
@@ -156,7 +182,7 @@ class WordExcelExport implements FromCollection, WithHeadings, WithMapping, With
     {
         $newWord = $row['NEW'];
         $repeatedWord = $row['REPEATED'];
-       
+        $failedWord = $row['REPEATED_FAILED'];
         
   
 
@@ -164,16 +190,22 @@ class WordExcelExport implements FromCollection, WithHeadings, WithMapping, With
             $newWord ? $newWord->id : '',
             $newWord ? $newWord->name : '',
             $newWord ? $newWord->translation : '',
-           
             $newWord ? $newWord->status : '',
             $newWord ? $newWord->created_at : '',
+
+            $failedWord ? $failedWord->id : '',
+            $failedWord ? $failedWord->name : '',
+            $failedWord ? $failedWord->translation : '',
+            $failedWord ? $failedWord->status : '',
+            $failedWord ? $failedWord->repeated_at : '',
+
             $repeatedWord ? $repeatedWord->id : '',
             $repeatedWord ? $repeatedWord->name : '',
             $repeatedWord ? $repeatedWord->translation : '',
-          
             $repeatedWord ? $repeatedWord->status : '',
             $repeatedWord ? $repeatedWord->repeated_at : '',
-            //$this->allCombinedText ,
+
+            $this->allCombinedText ,
         ];
     }
 

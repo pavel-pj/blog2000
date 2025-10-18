@@ -12,6 +12,7 @@ use App\Http\Controllers\API\TopicController;
 use App\Http\Controllers\API\ExcelExportController;
 use App\Http\Controllers\API\WordExcelExportController;
 use App\Http\Controllers\API\WordImportController;
+use App\Http\Controllers\API\RepetitionImportController;
  
 
 
@@ -38,31 +39,29 @@ Route::middleware(['auth:sanctum' ])->group(function () {
     Route::resource('/topics',  TopicController::class  )->only(['show','store','destroy','update']) ; ;
 
     Route::get('/dictionaries', [ DictionaryController::class, 'index']);
-    /*
-    Route::prefix('csv')->group(function () {
-        Route::get('/export-users', [CsvExportController::class, 'exportUsersToCsv']);
-        Route::get('/download-users', [CsvExportController::class, 'downloadUsersCsv']);
-        Route::get('/list-files', [CsvExportController::class, 'listCsvFiles']);
-        Route::get('/download/{filename}', [CsvExportController::class, 'downloadCsvFile']);
-    });
-    */
-    Route::prefix('excel')->group(function () {
-    // Basic exports
-    //Route::get('/export-users', [ExcelExportController::class, 'exportUsers']);
-    Route::get('/{subject_id}/export-words', [WordExcelExportController::class, 'exportWords']);
-    //Route::get('/download-users', [ExcelExportController::class, 'downloadUsers']);
-    
-    // Advanced exports
-    //Route::get('/export-advanced-users', [ExcelExportController::class, 'exportAdvancedUsers']);
-    //Route::get('/export-multiple-sheets', [ExcelExportController::class, 'exportMultipleSheets']);
-    
-    // File management
-    //Route::get('/list-files', [ExcelExportController::class, 'listFiles']);
-    //Route::get('/download/{filename}', [ExcelExportController::class, 'downloadFile']);
- });
+   
 
- Route::post('/{subject_id}/import/words', [WordImportController::class, 'import']);
-Route::get('/import/words/template', [WordImportController::class, 'downloadTemplate']);
+
+
+
+
+
+
+
+
+
+    Route::prefix('excel')->group(function () {
+   
+    Route::get('/{subject_id}/export-words', [WordExcelExportController::class, 'exportWords']);
+   // Route::get('/{subject_id}/export-words-failed', [WordExcelExportController::class, 'exportWordsFailed']);
+    
+    });
+
+    Route::post('/{subject_id}/import/words', [WordImportController::class, 'import']);
+
+    Route::post('/{subject_id}/import/repetition-simple', [RepetitionImportController::class, 'importRepetitionSimple']);
+
+    Route::get('/import/words/template', [WordImportController::class, 'downloadTemplate']);
 
 
 });
