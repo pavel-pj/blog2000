@@ -11,10 +11,10 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('repetition_words', function (Blueprint $table) {
+        Schema::create('task_words', function (Blueprint $table) {
             $table->uuid('id')->primary();
             $table->uuid('word_id');
-            $table->uuid('repetition_id');
+            $table->uuid('task_id');
 
               // Добавляем внешний ключ
             $table->foreign('word_id')
@@ -22,9 +22,9 @@ return new class extends Migration
                 ->on('words');
 
                   // Добавляем внешний ключ
-            $table->foreign('repetition_id')
+            $table->foreign('task_id')
                 ->references('id')
-                ->on('repetitions');
+                ->on('tasks');
              
         });
     }
@@ -34,6 +34,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('repetition_words');
+        Schema::dropIfExists('task_words');
     }
 };

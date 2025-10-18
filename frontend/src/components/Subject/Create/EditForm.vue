@@ -1,0 +1,165 @@
+<script setup lang="ts">
+import { computed, ref, onMounted } from 'vue';
+import { useHttpRequest } from '@/utils/http-request';
+import {
+  subjectCreateURL,
+  subjectItemShowURL,
+  updateSubjectURL,
+  deleteSubjectURL
+} from '@/config/request-urls';
+import {useRouter,useRoute} from 'vue-router';
+import modalSpiner from '@/components/common/spiner/ModalSpiner.vue';
+import { Form, Field } from 'vee-validate';
+import { z } from 'zod';
+import { toTypedSchema } from '@vee-validate/zod';
+import useConfirm from '@/composables/modals/Confirmer';
+import { useToast } from 'primevue/usetoast';
+
+type Props = {
+   isEdit:boolean
+};
+const props = defineProps<Props>();
+
+const confirm = useConfirm();
+const toast = useToast();
+const router = useRouter();
+const route = useRoute();
+
+const emit = defineEmits(['setSpiner','fetchItemSubject' ]);
+ 
+const {
+  loading: isLoading ,
+
+  sendRequest
+} = useHttpRequest({
+  showSuccessToast:true,
+  showErrorToast: true
+});
+
+const sendData = async(data:any) => {
+
+  //isSpiner.value = true;
+  emit('setSpiner', true);
+  const params = data;
+
+  let res = ref<any>();
+
+  if (!props.isEdit) {
+
+    res.value = await sendRequest({
+      url: subjectCreateURL(),
+      method: 'POST',
+      data: params
+    });
+
+
+    if (res.value?.isOk) {
+      await router.push({name:'subjects-index'});
+
+    } else {
+      isSpiner.value = false;
+      emit('setSpiner', false);
+    }
+  } else {
+
+    res.value = await sendRequest({
+      url: updateSubjectURL(itemId),
+      method: 'PATCH',
+      data: params
+    });
+
+    if (res.value?.isOk) {
+      await fetchItemSubject();
+      isSpiner.value = false;
+    } else {
+      isSpiner.value = false;
+    }
+
+  }
+};
+ 
+
+const dataToDelete = ref<any>('');
+
+const openDelete =( )=>{
+  dataToDelete.value = route.params.subject_id;
+
+  confirm({
+    message: 'Do you want to delete this record?',
+    accept: deleteItem,
+    successMessage: 'Record successefully deleted'
+
+  });
+};
+
+const {
+  sendRequest: sendDelete
+} = useHttpRequest( );
+
+
+const deleteItem = async () =>{
+
+
+
+  const res = await sendDelete({
+    url: deleteSubjectURL(dataToDelete.value),
+    method: 'DELETE'
+
+  });
+
+  if (res?.isOk) {
+    //await getCatalog();
+    router.push({name:'subjects-index'});
+
+    isSpiner.value = false;
+  } else {
+    isSpiner.value = false;
+  }
+
+};
+
+const pageOptions = computed (()=>  {
+
+  const title =ref<string>('Create new Catalog');
+  if (props.isEdit) {
+    title.value = `Edit item ${itemName.value}` ;
+  }
+
+  const buttonTitle = (props.isEdit) ? 'Update' : 'Create';
+
+  return{
+    title,
+    buttonTitle
+  };
+
+});
+</script>
+<template>
+            <div class="w-[350px] py-6"  >
+                  <Form @submit="sendData"
+                  :validation-schema="schema"
+                  :initial-values="initialValues"
+                  class="flex flex-col gap-4 w-full ">
+                    <div class="flex flex-col gap-1">
+                      <Field name="name" v-slot="{ field, errors }">
+                        <InputText
+                          v-bind="field"
+                          placeholder="name"
+                          :class="{ 'p-invalid': errors.length }"
+                        />
+                        <Message v-if="errors.length" severity="error" size="small" variant="simple">
+                          {{ errors[0] }}
+                        </Message>
+                      </Field>
+                    </div>
+                    <Button type="submit"  label="Submit" />
+                  </Form>
+              </div>
+                <div v-if="isEdit"
+                @click="openDelete"
+                  class="text-rose-500 my-6 underline font-bold text-xl cursor-pointer inline-block
+                  hover:text-rose-700 hover:no-underline"
+                >
+                  delete
+                </div>
+</template>

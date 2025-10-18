@@ -8,7 +8,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 
-class RepetitionWord extends Model
+class TaskWord extends Model
 {
     use HasUuids;
 
@@ -20,7 +20,7 @@ class RepetitionWord extends Model
     protected $fillable = [
         'id',
         'word_id',
-        'repetition_id',
+        'task_id',
          
     ];
 

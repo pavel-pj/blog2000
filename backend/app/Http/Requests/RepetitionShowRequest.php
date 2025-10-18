@@ -8,12 +8,9 @@ use Illuminate\Contracts\Validation\Validator;
 use Illuminate\Http\Exceptions\HttpResponseException;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Validation\Rule;
-use App\Models\Subject;
-use App\Models\Word;
-use App\Rules\WordBelongsToUser;
+use App\Models\Repetition;
 
-
-class WordShowRequest extends FormRequest
+class RepetitionShowRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -21,8 +18,6 @@ class WordShowRequest extends FormRequest
     public function authorize(): bool
     { 
         return Auth::check(); 
- 
-        
     }
 
     protected function failedValidation(Validator $validator)
@@ -36,33 +31,31 @@ class WordShowRequest extends FormRequest
             )
         );
     }
- 
-    public function rules(): array
-    {
-         return [
-              
-        ];
-    }
 
-        public function withValidator($validator)
+    /**
+     * Get the validation rules that apply to the request.
+     *
+     * @return array<string, \Illuminate\Contracts\Validation\ValidationRule|array<mixed>|string>
+     */
+    public function withValidator($validator)
     {
         $validator->after(function ($validator) {
-            $wordId = $this->route('word'); // Получаем id из route
+
+            
+
+            $repetitionId = $this->route('repetition'); // Получаем id из route
              
   
             // Проверяем существование и принадлежность
-            $word = Word::find($wordId);
+            $repetition = Repetition::find($repetitionId);
             
-            if (!$word) {
+            if (!$repetition) {
                  throw new \Illuminate\Database\Eloquent\ModelNotFoundException('Subject not found');
             }
             
-            if ($word->subject->user_id !== Auth::id()) {
+            if ($repetition->subject->user_id !== Auth::id()) {
                  throw new \Illuminate\Database\Eloquent\ModelNotFoundException('Subject not found');
             }
         });
     }
- 
-  
-
 }

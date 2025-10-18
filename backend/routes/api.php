@@ -13,6 +13,7 @@ use App\Http\Controllers\API\ExcelExportController;
 use App\Http\Controllers\API\WordExcelExportController;
 use App\Http\Controllers\API\WordImportController;
 use App\Http\Controllers\API\RepetitionImportController;
+use App\Http\Controllers\API\RepetitionController;
  
 
 
@@ -37,6 +38,10 @@ Route::middleware(['auth:sanctum' ])->group(function () {
     Route::resource('/words',  WordController::class )->only(['show','store','destroy','update']) ;
     Route::get('/subjects/{id}/topics',  [TopicController::class ,'index']) ;
     Route::resource('/topics',  TopicController::class  )->only(['show','store','destroy','update']) ; ;
+
+    Route::resource('/repetitions',  RepetitionController::class );
+    Route::get('/subjects/{id}/repetitions',  [RepetitionController::class, 'index'] ) ;
+
 
     Route::get('/dictionaries', [ DictionaryController::class, 'index']);
    
