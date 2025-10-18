@@ -10,17 +10,18 @@ use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Http\JsonResponse;
 use App\Imports\RepetitionSimpleImport;
+use Illuminate\Support\Facades\Log;
 
 
 class RepetitionImportController extends Controller
 {
     public function importRepetitionSimple(Request $request, string $subject_id): JsonResponse
     {
-
+ 
         set_time_limit(1000);
         
         $request->validate([
-            'excel_file' =>  'required|file|mimes:xlsx,xls,csv,txt,application/vnd.ms-excel,text/plain,text/csv,application/octet-stream|max:10240'
+            'excel_file' =>  'required|file|mimes:xlsx,xlsb,xls,csv,txt,application/vnd.ms-excel,text/plain,text/csv,application/octet-stream|max:10240'
         ]);
 
         try {

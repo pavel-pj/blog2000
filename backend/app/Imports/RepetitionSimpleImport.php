@@ -12,6 +12,7 @@ use Maatwebsite\Excel\Concerns\Importable;
 use App\Models\Repetition;  
 use App\Models\RepetitionWord;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
  
 
 class RepetitionSimpleImport implements ToModel,   WithValidation, SkipsOnFailure,WithHeadingRow
@@ -33,7 +34,7 @@ class RepetitionSimpleImport implements ToModel,   WithValidation, SkipsOnFailur
         if (empty($row['new_id'])) {
             return null;
         }
-
+ 
         $this->rowCount++;
          // Use transaction to ensure both records are created
         return  DB::transaction(function () use ($row) {
@@ -42,6 +43,8 @@ class RepetitionSimpleImport implements ToModel,   WithValidation, SkipsOnFailur
                 'answer' => $row['answer'] ,                  // Вторая колонка - перевод (обязательно)
                 'subject_id' => $this->subject_id
             ]);
+
+            Log::info('Created repetition', ['repetition_id' => $repetition->id]);
             
             RepetitionWord::create([
                 'word_id' => $row['new_id'],

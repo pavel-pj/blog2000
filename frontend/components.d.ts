@@ -19,6 +19,7 @@ declare module 'vue' {
     DataTable: typeof import('primevue/datatable')['default']
     Editor: typeof import('./src/components/Tiptap/Editor.vue')['default']
     EditorRrrrrrrrrrrrrrr2: typeof import('./src/components/Tiptap/Editor-rrrrrrrrrrrrrrr2.vue')['default']
+    FileUpload: typeof import('primevue/fileupload')['default']
     IconField: typeof import('primevue/iconfield')['default']
     Index: typeof import('./src/components/Article/Create/Index.vue')['default']
     IndexFilterTest: typeof import('./src/components/Word/Index/Index-filter-test.vue')['default']

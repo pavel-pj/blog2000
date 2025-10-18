@@ -119,7 +119,18 @@ export function updateTopicURL(id:string, params?: Record<string, string|number|
   });
 }
 
+//EXCEL 
+//Export words to repeate
+export function ExportWordsToRepeateURL(subject_id: string) {
+  return `${baseUrl}/excel/${subject_id}/export-words`;
+}
 
+//Import words with task to load for repeat
+export function ImportWordsToRepeateURL(subject_id: string) {
+  return `${baseUrl}/${subject_id}/import/repetition-simple`;
+}
+ 
+ 
 
 //dictionaries
 export function catalogDictionariesURL(dicntionaryType: string) {

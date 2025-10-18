@@ -15,17 +15,20 @@ class WordExcelExportController extends Controller
     public function exportWords(string $subject_id)
     {
         try {
+          
             $filename = 'words_export_' . date('Y-m-d_H-i-s') . '.xlsx';
-            
+            $filePath = 'private/exports/' . $filename;  
             // Store file
-            Excel::store(new WordExcelExport($subject_id), 'exports/' . $filename);
-            
+            //Excel::store(new WordExcelExport($subject_id), 'exports/' . $filename);
+             // Return file download response instead of JSON
+            return Excel::download(new WordExcelExport($subject_id), $filename);
+            /*
             return response()->json([
                 'success' => true,
                 'message' => 'Users exported to Excel successfully!',
                 'file_path' => 'exports/' . $filename,
                 'download_url' => url("/api/excel/download/{$filename}")
-            ]);
+            ]);*/
             
         } catch (\Exception $e) {
             return response()->json([

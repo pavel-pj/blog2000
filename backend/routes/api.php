@@ -50,7 +50,12 @@ Route::middleware(['auth:sanctum' ])->group(function () {
 
 
 
-    Route::prefix('excel')->group(function () {
+  
+
+});
+
+
+   Route::prefix('excel')->group(function () {
    
     Route::get('/{subject_id}/export-words', [WordExcelExportController::class, 'exportWords']);
    // Route::get('/{subject_id}/export-words-failed', [WordExcelExportController::class, 'exportWordsFailed']);
@@ -61,12 +66,8 @@ Route::middleware(['auth:sanctum' ])->group(function () {
 
     Route::post('/{subject_id}/import/repetition-simple', [RepetitionImportController::class, 'importRepetitionSimple']);
 
-    Route::get('/import/words/template', [WordImportController::class, 'downloadTemplate']);
+    //Route::get('/import/words/template', [WordImportController::class, 'downloadTemplate']);
 
-
-});
-
- 
 
 Route::get('/sanctum/csrf-cookie', function (Request $request) {
     return response()->json(['csrf_token' => csrf_token()]);

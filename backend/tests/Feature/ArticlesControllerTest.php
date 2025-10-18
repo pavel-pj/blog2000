@@ -12,8 +12,8 @@ use App\Models\Catalog;
 
 class ArticlesControllerTest extends TestCase
 {
-    use RefreshDatabase;
-   // use DatabaseTransactions; // вместо RefreshDatabase
+    //use RefreshDatabase;
+    use DatabaseTransactions; // вместо RefreshDatabase
 
     protected $user;
 

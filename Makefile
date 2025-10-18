@@ -62,7 +62,7 @@ bash-dev:
 	docker compose -f compose.dev.yaml exec -u root workspace bash
 
 pgsql-dev:
-	docker exec -it  vue-postgres-1 psql -U laravel -d app	
+	docker exec -it   blog2000-postgres-1 psql -U laravel -d app	
 pgsql-dev-log:	
 	docker compose -f compose.dev.yaml logs postgres
 

@@ -16,7 +16,8 @@ use Illuminate\Support\Str;
 class TopicControllerTest extends TestCase
 {
 
-    use RefreshDatabase;
+    //use RefreshDatabase;
+    use DatabaseTransactions;
     /**
      * A basic feature test example.
      */

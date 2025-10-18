@@ -22,7 +22,8 @@ interface SendRequestParams<R = unknown> {
   headers?: Record<string, string>;
   showSuccessToast?:boolean;
   showErrorToast?:boolean;
-  toastSuccessMsg?:string
+  toastSuccessMsg?:string;
+  responseType?: AxiosRequestConfig['responseType'];
 }
  
 
@@ -79,6 +80,7 @@ export function useHttpRequest<T = unknown>(
       showErrorToast = finalOptions.showErrorToast,
       showSuccessToast = finalOptions.showSuccessToast,
       toastSuccessMsg = finalOptions.toastSuccessMsg,
+      responseType = 'json',  
 
     }: SendRequestParams<R> = {}
   ) : Promise<HttpResponse<R> | null> => {
@@ -97,6 +99,7 @@ export function useHttpRequest<T = unknown>(
             'Authorization': `Bearer ${authStore.token}`
           } : {})
         },
+        responseType,
         ...(method !== "GET" && requestData ? { data: requestData } : {}),
 
       };

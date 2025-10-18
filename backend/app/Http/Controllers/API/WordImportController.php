@@ -16,7 +16,7 @@ class WordImportController extends Controller
      public function import(Request $request, string $subject_id): JsonResponse
     {
 
-        set_time_limit(300);
+        set_time_limit(1500);
         
         $request->validate([
             'excel_file' => 'required|file|mimes:xlsx,xls,csv|max:10240'

@@ -10,6 +10,7 @@ use App\Services\SubjectService;
 use Illuminate\Http\JsonResponse;
 use App\Models\Subject;
 use Symfony\Component\HttpKernel\Exception\HttpException;
+use Illuminate\Support\Facades\Log;
 
 class SubjectController extends Controller
 {

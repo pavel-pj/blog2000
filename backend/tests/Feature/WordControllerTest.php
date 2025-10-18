@@ -16,8 +16,10 @@ use App\Enums\WordStatus;
 
 class WordControllerTest extends TestCase
 {
-    use RefreshDatabase;
-   // use DatabaseTransactions; // вместо RefreshDatabase
+    //use RefreshDatabase;
+    use DatabaseTransactions; // вместо RefreshDatabase
+
+    protected $connectionsToTransact = ['testing'];
 
     protected $user;
     protected $user2; 
@@ -31,6 +33,13 @@ class WordControllerTest extends TestCase
     protected function setUp(): void
     {
         parent::setUp();
+
+        $this->app['config']->set('database.default', 'testing');
+
+           // Debug: check which database we're using
+        $connection = config('database.default');
+        $database = config("database.connections.{$connection}.database");
+        //echo "Using database: " . $database . PHP_EOL;
         
         // Создаем пользователя, который будет доступен в каждом тесте
         $this->user = User::factory()->create([

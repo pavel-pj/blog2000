@@ -105,7 +105,7 @@ return [
         'username' => env('DB_TEST_USERNAME', 'laravel'),
         'password' => env('DB_TEST_PASSWORD', 'secret'),
          ],
-        */ 
+        
          'testing' => [
             'driver' => 'pgsql',
             'url' => env('DB_TEST_URL'),
@@ -115,6 +115,21 @@ return [
             'username' => env('DB_TEST_USERNAME', 'laravel'),
             'password' => env('DB_TEST_PASSWORD', 'secret'),
         ],
+ */
+    'testing' => [
+        'driver' => 'pgsql',
+        'url' => env('DB_TEST_URL'),
+        'host' => env('DB_TEST_HOST', 'postgres'),
+        'port' => env('DB_TEST_PORT', '5432'),
+        'database' => env('DB_TEST_DATABASE', 'app_test'),
+        'username' => env('DB_TEST_USERNAME', 'laravel'),
+        'password' => env('DB_TEST_PASSWORD', 'secret'),
+        'charset' => 'utf8',
+        'prefix' => '',
+        'prefix_indexes' => true,
+        'search_path' => 'public',
+        'sslmode' => 'prefer',
+    ],
  
 
         'sqlsrv' => [

@@ -12,8 +12,8 @@ use Illuminate\Support\Str;
 
 class SubjectControllerTest extends TestCase
 {
-    use RefreshDatabase;
-   // use DatabaseTransactions; // вместо RefreshDatabase
+    //use RefreshDatabase;
+    use DatabaseTransactions; // вместо RefreshDatabase
 
     protected $user;
     protected $user2;
