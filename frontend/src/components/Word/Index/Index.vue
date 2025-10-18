@@ -1,6 +1,7 @@
 <script setup lang="ts">
+//import Filters from '@/components/Word/Index/Index-filter-test.vue';
 
-import { ref, onMounted ,computed} from 'vue';
+import { ref, onMounted ,computed, watch} from 'vue';
 import {useRoute, useRouter} from 'vue-router';
 import {
   //wordsURL,
@@ -13,23 +14,15 @@ import useConfirm from '@/composables/modals/Confirmer';
 import BreadCrumbs from '@/components/common/navigate/BreadCrumbs.vue';
 import { useWordsStore } from '@/store/wordsStore';
 import { storeToRefs } from 'pinia';
+import { FilterMatchMode } from '@primevue/core/api';
+
+
+
 
 const router = useRouter();
 const route = useRoute();
 
 const wordsStore = useWordsStore();
-
-/*
-interface WordItem {
-  id: string;
-  name: string;
-  translation:string;
-  subject_id: string;
-  created_at: string;
-  updated_at: string;
-
-}
-  */
 
 const {
   data: words,
@@ -43,27 +36,11 @@ const {
   deleteWord
 } = wordsStore;
 
-/*
-interface SubjectData {
-  subject: any;
-  data: WordItem[];
-}
-*/
 
 const confirm = useConfirm();
 const isSpiner = ref<boolean>(false);
 const margYspiner = '24';
 
-/*
-const {
-  data: wordsData,
-  sendRequest: sendData
-} = useHttpRequest<SubjectData>({
-  showSuccessToast:false,
-  showErrorToast: false
-});*/
-
-//const tableData = ref<WordItem[]>([]);
 
 
 const wordsArray = computed(() => {
@@ -71,10 +48,8 @@ const wordsArray = computed(() => {
 });
 
 const isPageSpiner = computed (()=>{
-  if (words.value.length > 0 ) {
-    return false;
-  };
-  return true;
+  return  (wordsLoading.value) ? true : false;
+
 });
 
 const {
@@ -117,20 +92,16 @@ const deleteItem = async () =>{
 
 
 onMounted(async () => {
-  if (words.value.length===0) {
+
+  if (words.value.length === 0){
+    fetchData(route.params.subject_id as string);
+  } else if
+  (subject.value   && subject.value.id !== route.params.subject_id as string) {
     fetchData(route.params.subject_id as string);
   }
+
 });
 
-/*
-const getWords = async()=> {
-
-  const response = await sendData({
-    url: wordsURL(route.params.subject_id as string)
-  });
-
-};
-*/
 
 
 const create = () => {
@@ -153,6 +124,12 @@ const onRowSelect =(event)=>{
   }
   );
 };
+
+
+const filters = ref({
+  name: { value: null, matchMode: FilterMatchMode.CONTAINS }
+});
+
 
 const itemsBreadCrumbs =computed(()=>{
 
@@ -177,21 +154,36 @@ const itemsBreadCrumbs =computed(()=>{
 
   <PageSpiner :my="margYspiner"  :isSpiner="isPageSpiner"  />
 
- <div class="card pt-6 " v-if="wordsArray.length>0" >
-        <DataTable stripedRows paginator :rows="5" :rowsPerPageOptions="[5, 10, 20, 50]"
-        selectionMode="single" dataKey="id" :metaKeySelection="false"
-        @rowSelect="onRowSelect" :value="wordsArray" tableStyle=" ">
+ <div class="card pt-6 " v-if="!wordsLoading" >
+        <DataTable
+        v-model:filters="filters"
+        :value="words"
+        filterDisplay="row"
+        stripedRows
+        paginator
+        :rows="5"
+        :rowsPerPageOptions="[5, 10, 20, 50]"
+        selectionMode="single"
+        dataKey="id"
+        :metaKeySelection="false"
+        @rowSelect="onRowSelect"
+        tableStyle=" "
+        >
 
-           <Column field="name" header="Name">
+          <Column field="name" header="Name">
+                <template #body="{ data }">
+                    {{ data.name }}
+                </template>
+                 <template #filter="{ filterModel, filterCallback }">
+                    <InputText v-model="filterModel.value" type="text" @input="filterCallback()" placeholder="Search by name" />
+                </template>
+
 
           </Column>
            <Column field="id" header="Id"  ></Column>
-
            <Column class="w-16 h-16 !text-end">
                 <template #body="{ data }"  >
-
                     <Button icon="pi pi-times" @click="openDelete(data)" severity="danger" class="p-button-sm w-2rem h-2rem"></Button>
-
                 </template>
             </Column>
 
