@@ -6,6 +6,8 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Illuminate\Database\Eloquent\Relations\HasMany;
+ 
 
 class Task extends Model
 {
@@ -22,6 +24,8 @@ class Task extends Model
         'repetition_id',
         'task',
         'answer',
+        'status'  ,
+        'position'
     ];
 
     protected $casts = [
@@ -32,5 +36,17 @@ class Task extends Model
     public function repetition(): BelongsTo
     {
         return $this->belongsTo(Repetition::class);
+    }
+
+    public function words():BelongsToMany
+    {
+        return $this->belongsToMany(Word::class, 'task_words', 'task_id', 'word_id');
+                    
+    }
+
+    public function taskWords():HasMany
+    {
+        return $this->hasMany(TaskWord::class );
+                    
     }
 }

@@ -52,7 +52,7 @@ export function useHttpRequest<T = unknown>(
 
   const finalOptions = { ...defaultOptions, ...options };
  
-  console.log( finalOptions.showErrorToast)
+  //console.log( finalOptions.showErrorToast)
 
   const authStore = useAuthStore(); // Получаем хранилище
   const data: Ref<T | null> = ref(null);

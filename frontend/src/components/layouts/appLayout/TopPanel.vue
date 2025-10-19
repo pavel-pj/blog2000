@@ -25,7 +25,7 @@ const logout = async () => {
 
     </div>
     <div>
-      <Button @click="logout" label="Primary" rounded>Logout</Button>
+      <Button @click="logout" label="Primary" severity="contrast" rounded>Logout</Button>
     </div>
   </div>
 

@@ -12,6 +12,7 @@ declare module 'vue' {
     Breadcrumb: typeof import('primevue/breadcrumb')['default']
     BreadCrumbs: typeof import('./src/components/common/navigate/BreadCrumbs.vue')['default']
     Button: typeof import('primevue/button')['default']
+    Card: typeof import('./src/components/Repetition/Test/Card.vue')['default']
     Checkbox: typeof import('primevue/checkbox')['default']
     Column: typeof import('primevue/column')['default']
     ConfirmDialog: typeof import('primevue/confirmdialog')['default']
@@ -42,6 +43,7 @@ declare module 'vue' {
     TabPanels: typeof import('primevue/tabpanels')['default']
     Tabs: typeof import('primevue/tabs')['default']
     Tag: typeof import('primevue/tag')['default']
+    Test: typeof import('./src/components/Repetition/Test/Test.vue')['default']
     Toast: typeof import('primevue/toast')['default']
     TopPanel: typeof import('./src/components/layouts/appLayout/TopPanel.vue')['default']
   }

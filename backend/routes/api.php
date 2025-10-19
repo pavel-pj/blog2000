@@ -14,6 +14,8 @@ use App\Http\Controllers\API\WordExcelExportController;
 use App\Http\Controllers\API\WordImportController;
 use App\Http\Controllers\API\RepetitionImportController;
 use App\Http\Controllers\API\RepetitionController;
+use App\Http\Controllers\API\TaskController;
+ 
  
 
 
@@ -35,12 +37,16 @@ Route::middleware(['auth:sanctum' ])->group(function () {
     Route::resource('/subjects',  SubjectController::class ) ;
     Route::get('/subjects/{id}/words',  [WordController::class ,'index']) ;
     Route::resource('/words',  WordController::class )->only(['show','store','destroy','update']) ;
+     
     Route::resource('/words',  WordController::class )->only(['show','store','destroy','update']) ;
     Route::get('/subjects/{id}/topics',  [TopicController::class ,'index']) ;
-    Route::resource('/topics',  TopicController::class  )->only(['show','store','destroy','update']) ; ;
+    Route::resource('/topics',  TopicController::class  )->only(['show','store','destroy','update']); 
 
     Route::resource('/repetitions',  RepetitionController::class );
     Route::get('/subjects/{id}/repetitions',  [RepetitionController::class, 'index'] ) ;
+    Route::patch('/repetition/update-word-status',  [WordController::class,'updateStatus'] );
+
+    Route::resource('/tasks',  TaskController::class  )->only(['update']); 
 
 
     Route::get('/dictionaries', [ DictionaryController::class, 'index']);

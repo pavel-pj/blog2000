@@ -2,21 +2,18 @@
 
 namespace App\Enums;
 
-enum WordStatus: string
+enum TaskStatus: string
 {
     case NEW = 'NEW';
-    case REPEATED = 'REPEATED';
-    case IMPORTANT = 'IMPORTANT';
-    
-
+    case DONE = 'DONE';
+ 
     // Optional: Helper methods
     public function label(): string
     {
         return match($this) {
             self::NEW => 'NEW',
-            self::REPEATED => 'REPEATED',
-            self::IMPORTANT => 'IMPORTANT',
-            
+            self::DONE => 'DONE',
+             
         };
     }
 }

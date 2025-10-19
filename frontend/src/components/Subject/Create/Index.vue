@@ -2,21 +2,16 @@
 import { computed, ref,onMounted } from 'vue';
 import { useHttpRequest } from '@/utils/http-request';
 import {
-  // subjectCreateURL,
-  subjectItemShowURL,
-  //updateSubjectURL,
-  //deleteSubjectURL,
-  ExportWordsToRepeateURL,
-  ImportWordsToRepeateURL
+  subjectItemShowURL
 } from '@/config/request-urls';
 import {useRouter,useRoute} from 'vue-router';
 import modalSpiner from '@/components/common/spiner/ModalSpiner.vue';
 import PageSpiner from '@/components/common/spiner/PageSpiner.vue';
 import BreadCrumbs from '@/components/common/navigate/BreadCrumbs.vue';
-import { Form, Field } from 'vee-validate';
-import { z } from 'zod';
-import { toTypedSchema } from '@vee-validate/zod';
-import useConfirm from '@/composables/modals/Confirmer';
+//import { Form, Field } from 'vee-validate';
+//import { z } from 'zod';
+//import { toTypedSchema } from '@vee-validate/zod';
+//import useConfirm from '@/composables/modals/Confirmer';
 import { useToast } from 'primevue/usetoast';
 import Repetition from '@/components/Subject/Create/Repetition.vue';
 import EditForm from '@/components/Subject/Create/EditForm.vue';

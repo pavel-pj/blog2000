@@ -20,13 +20,17 @@ class Word extends Model
     protected $fillable = [
         'name',
         'subject_id',
-        'translation'
+        'translation',
+        'status',
+        'repeated_at'
     ];
 
     protected $casts = [
         'id' => 'string', // важно для UUID
 
     ];
+
+    //protected $hidden = ['pivot']; // всегда скрывать pivot
 
     public function subject(): BelongsTo
     {
@@ -36,6 +40,11 @@ class Word extends Model
     public function topics(): BelongsToMany
     {
         return $this->belongsToMany(Topic::class, 'topic_words', 'word_id', 'topic_id') ;
+    }
+
+    public function tasks(): BelongsToMany
+    {
+        return $this->belongsToMany(Task::class, 'task_words', 'word_id', 'task_id');
     }
  
 }

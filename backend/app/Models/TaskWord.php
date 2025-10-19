@@ -21,12 +21,17 @@ class TaskWord extends Model
         'id',
         'word_id',
         'task_id',
+        'status'
          
     ];
 
     protected $casts = [
         'id' => 'string', // важно для UUID
-
     ];
+
+    public function task(): BelongsTo
+    {
+        return $this->belongsTo(Task::class);
+    }
  
 }

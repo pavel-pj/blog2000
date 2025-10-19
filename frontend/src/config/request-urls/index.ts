@@ -119,6 +119,31 @@ export function updateTopicURL(id:string, params?: Record<string, string|number|
   });
 }
 
+//Repetitions
+export function repetitionIndexURL(subject_id:string) {
+  return `${baseUrl}/subjects/${subject_id}/repetitions`;
+}
+
+export function repetitionShowURL(repetition_id:string) {
+  return `${baseUrl}/repetitions/${repetition_id}`;
+}
+
+//Update Status Word, status TaskWord
+export function updateWordStatusTaskWordStatusURL(params?: Record<string, string|number|boolean>) {
+  return addQueryParams(`${baseUrl}/repetition/update-word-status`, {
+    ...params,
+  });
+}
+
+//Task
+export function updateTaskURL(id:string, params?: Record<string, string|number|boolean>) {
+  return addQueryParams(`${baseUrl}/tasks/${id}`, {
+    ...params,
+  });
+}
+
+ 
+
 //EXCEL 
 //Export words to repeate
 export function ExportWordsToRepeateURL(subject_id: string) {

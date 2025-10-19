@@ -55,7 +55,9 @@ class RepetitionSimpleImport implements ToModel,   WithValidation, SkipsOnFailur
             $task = Task::create([
                 'task' => $row['task'],                      // Первая колонка - слово (обязательно)
                 'answer' => $row['answer'] ,                  // Вторая колонка - перевод (обязательно)
-                'repetition_id' => $this->repetitionId
+                'repetition_id' => $this->repetitionId,
+                'position' =>  $this->rowCount
+            
             ]);
  
             

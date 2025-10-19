@@ -225,13 +225,26 @@ export default [
         },
        }, 
 
-              {
+      {
          path: '/topics/:topic_id',
          name: 'topic-edit',
          component: () => import('@/components/Topic/Edit/Index.vue'),
           props: {
           isEdit:true
          },                             
+         meta: {
+          //requiresAuth: true,
+          //middlewares: [auth],
+          allowedRoles: "User",
+        },
+       }, 
+
+
+      {
+         path: '/repetition/:repetition_id',
+         name: 'repetition',
+         component: () => import('@/components/Repetition/Test/Index.vue'),
+                                    
          meta: {
           //requiresAuth: true,
           //middlewares: [auth],

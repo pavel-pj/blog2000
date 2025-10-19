@@ -30,6 +30,20 @@ class RepetitionRepository
             throw new \Exception("non-existent instance");
         }
 
-        return Repetition::with('tasks')->find($id);
+        return Repetition::with([
+            'tasks' => function($query) {
+                $query->select('id', 'repetition_id', 'task', 'answer', 'status')
+                    ->with(['words' => function($wordQuery) {
+                        $wordQuery->select(
+                            'words.id',
+                            'words.name',
+                            'words.translation',
+                            'words.status',
+                            'words.repeated_at')
+                            ->wherePivot('status','NEW')
+                            ->withPivot('status','id');
+                    }])->orderBy('position', 'ASC');
+            }
+         ])->find($id);
     }
 }

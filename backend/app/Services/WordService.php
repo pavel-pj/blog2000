@@ -11,6 +11,11 @@ use Illuminate\Support\Facades\DB;
 use App\Services\TopicWordService;
 use App\Models\TopicWord;
 use App\Enums\WordStatus;
+use App\Enums\TaskStatus;
+use App\Enums\TaskWordStatus;
+use App\Models\TaskWord;
+use App\Models\Task;
+use Illuminate\Support\Facades\Log;
 
 class WordService
 {
@@ -104,10 +109,7 @@ class WordService
                     'word_id' => $id
                 ]);
             }
-
-
-
-
+ 
              DB::commit();
  
             return $this->repository->show($id);
@@ -116,8 +118,70 @@ class WordService
             DB::rollBack(); 
             throw new \Exception($e->getMessage());
         }
+    }
+
+
+    public function updateStatus(array $validated) : array
+    {
+       
+
+       try {
+        DB::beginTransaction();
+
+        $word = Word::find($validated['word_id']);
+        if (!$word) {
+            throw new \Exception("Word not found with ID: {$validated['word_id']}");
+        }
+
+        $taskWord = TaskWord::find($validated['task_word_id']);
+        if (!$taskWord) {
+            throw new \Exception("TaskWord not found with ID: {$validated['task_word_id']}");
+        }
+      
  
+        $wordUpdated = $word->update([
+            'status' => $validated['word_status'],
+            'repeated_at' => now()
+        ]);
+        $taskWordUpdated = $taskWord->update(['status' => $validated['task_word_status']]);
+        $word->refresh();
+        $taskWord->refresh();
+
+        $isTaskToBeDone = Task::find($taskWord->task_id)->taskWords
+        ->where('status', '!=', TaskWordStatus::DONE)
+        ->count();
+
+        $taskStatus = TaskStatus::NEW;
+
+        if ($isTaskToBeDone === 0) {
+            $taskStatus = TaskStatus::DONE;
+            Task::find($taskWord->task_id)->update([
+                'status' =>  $taskStatus
+            ]);
+              
+        }
+
+        
+
+
+        DB::commit();
+
+        // Refresh models to get updated data
          
+        
+        return [
+            'word'=>$word,
+            'task_word' => $taskWord,
+            'task_status' => $taskStatus
+        ];
+
+
+    } catch (Exception $e) {
+        DB::rollBack(); 
+      
+        throw new \Exception($e->getMessage());
+    }
+
     }
 
     public function destroy(string $id): void

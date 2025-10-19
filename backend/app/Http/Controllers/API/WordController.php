@@ -12,6 +12,7 @@ use App\Http\Requests\WordShowRequest;
 use App\Http\Requests\WordDeleteRequest;
 use Illuminate\Http\JsonResponse;
 use App\Imports\WordsImport;
+use App\Http\Requests\WordUpdateStatusRequest;
 
 class WordController extends Controller
 {
@@ -70,6 +71,18 @@ class WordController extends Controller
             $validated = $request->validated();
     
             return response()->json($this->service->update($validated, $id), 200);
+        } catch (\Exception $e) {
+            return response()->json($e->getMessage(), 404);
+        }
+    }
+
+    public function updateStatus(WordUpdateStatusRequest $request ): JsonResponse
+    {
+         
+        try {
+            $validated = $request->validated();
+    
+            return response()->json($this->service->updateStatus($validated ), 200);
         } catch (\Exception $e) {
             return response()->json($e->getMessage(), 404);
         }

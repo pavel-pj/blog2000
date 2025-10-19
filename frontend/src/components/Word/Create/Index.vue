@@ -182,7 +182,10 @@ const sendData = async(data:any) => {
 
       addNewWord({
         id:res.value.data.id,
-        name:res.value.data.name
+        name:res.value.data.name,
+        translation: res.value.data.translation,
+        status:'NEW'
+
       });
 
       await router.push({
