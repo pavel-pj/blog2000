@@ -30,7 +30,7 @@ class SubjectService
     }
 
 
-    public function show(string $id): EloquentCollection
+    public function show(string $id): Subject
     {
         return $this->repository->show($id);
     }

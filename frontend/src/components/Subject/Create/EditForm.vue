@@ -1,4 +1,5 @@
 <script setup lang="ts">
+
 import { computed, ref, onMounted } from 'vue';
 import { useHttpRequest } from '@/utils/http-request';
 import {
@@ -16,7 +17,9 @@ import useConfirm from '@/composables/modals/Confirmer';
 import { useToast } from 'primevue/usetoast';
 
 type Props = {
-   isEdit:boolean
+   isEdit:boolean,
+   itemData :any
+
 };
 const props = defineProps<Props>();
 
@@ -25,8 +28,10 @@ const toast = useToast();
 const router = useRouter();
 const route = useRoute();
 
+const itemId =  route?.params?.subject_id as string;
+
 const emit = defineEmits(['setSpiner','fetchItemSubject' ]);
- 
+
 const {
   loading: isLoading ,
 
@@ -35,6 +40,10 @@ const {
   showSuccessToast:true,
   showErrorToast: true
 });
+
+
+
+
 
 const sendData = async(data:any) => {
 
@@ -53,31 +62,34 @@ const sendData = async(data:any) => {
     });
 
 
+
     if (res.value?.isOk) {
       await router.push({name:'subjects-index'});
 
     } else {
-      isSpiner.value = false;
+
       emit('setSpiner', false);
     }
   } else {
 
     res.value = await sendRequest({
-      url: updateSubjectURL(itemId),
+      url: updateSubjectURL(itemId as string),
       method: 'PATCH',
       data: params
     });
 
     if (res.value?.isOk) {
-      await fetchItemSubject();
-      isSpiner.value = false;
+      emit('fetchItemSubject');
+
+
+      emit('setSpiner', false);
     } else {
-      isSpiner.value = false;
+      emit('setSpiner', false);
     }
 
   }
 };
- 
+
 
 const dataToDelete = ref<any>('');
 
@@ -111,18 +123,22 @@ const deleteItem = async () =>{
     //await getCatalog();
     router.push({name:'subjects-index'});
 
-    isSpiner.value = false;
+    emit('setSpiner', false);
   } else {
-    isSpiner.value = false;
+    emit('setSpiner', false);
   }
 
 };
 
+
+const buttonTitle = (props.isEdit) ? 'Update' : 'Create';
+/*
 const pageOptions = computed (()=>  {
+
 
   const title =ref<string>('Create new Catalog');
   if (props.isEdit) {
-    title.value = `Edit item ${itemName.value}` ;
+    title.value = `Edit item ${props.itemName as string}` ;
   }
 
   const buttonTitle = (props.isEdit) ? 'Update' : 'Create';
@@ -133,8 +149,25 @@ const pageOptions = computed (()=>  {
   };
 
 });
+*/
+
+// Схема валидации
+const schema = toTypedSchema(
+  z.object({
+    name: z.string()
+      .min(1, '"name" is required')
+      .max(32, '"name" is too long')
+
+  })
+);
+
+const initialValues = computed(() => ({
+  name: props.isEdit ? props.itemData?.name || '' : ''
+}));
+
 </script>
 <template>
+
             <div class="w-[350px] py-6"  >
                   <Form @submit="sendData"
                   :validation-schema="schema"
@@ -152,7 +185,9 @@ const pageOptions = computed (()=>  {
                         </Message>
                       </Field>
                     </div>
-                    <Button type="submit"  label="Submit" />
+                    <Button type="submit"  >
+                             {{buttonTitle}}
+                   </Button>
                   </Form>
               </div>
                 <div v-if="isEdit"
@@ -162,4 +197,5 @@ const pageOptions = computed (()=>  {
                 >
                   delete
                 </div>
+
 </template>

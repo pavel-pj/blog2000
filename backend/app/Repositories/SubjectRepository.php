@@ -16,7 +16,7 @@ class SubjectRepository
         return Subject::where('user_id', $user_id)->orderBy('created_at', 'ASC')->get() ;
     }
 
-    public function show(string $id): Collection
+    public function show(string $id): Subject
     {
 
         $item = Subject::where('id', $id)->exists();
@@ -24,6 +24,6 @@ class SubjectRepository
             throw new \Exception("non-existent instance");
         }
 
-        return Subject::where('id', $id)->get();
+        return Subject::find($id);
     }
 }
