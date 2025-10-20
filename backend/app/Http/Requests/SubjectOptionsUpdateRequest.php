@@ -8,6 +8,8 @@ use Illuminate\Contracts\Validation\Validator;
 use Illuminate\Http\Exceptions\HttpResponseException;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Validation\Rule;
+use App\Models\SubjectOptions;
+use App\Enums\RepetitionType;
 
 class SubjectOptionsUpdateRequest extends FormRequest
 {
@@ -33,26 +35,35 @@ class SubjectOptionsUpdateRequest extends FormRequest
      *
      * @return array<string, \Illuminate\Contracts\Validation\ValidationRule|array<mixed>|string>
      */
-    public function rules(): array
+    public function rules() 
     {
-        $subjectId = $this->route('subject') ?? $this->route('id');
-        $subject = Subject::find($subjectId);
+       $optionId = $this->route('option') ?? $this->route('id');
+       $userId = Auth::id();
 
         return [
-            'name' => [
-                'string',
-                'nullable','min:3','max:255',
-                Rule::unique('subjects', 'name')
-                    ->ignore($subjectId)
-                    ->when(
-                        $subject && $this->input('name') === $subject->name,
-                        function ($rule) {
-                            return $rule->where('id', $this->route('subject') ?? $this->route('id'));
-                        }
-                    )
-            ],
-            'desription' => 'string|nullable|max:500',
-
-        ];
+            'total_rows' => 'nullable|integer|between:30,150',
+            'new_words'  => 'nullable|integer|between:5,20',
+            'important_words' => 'nullable|integer|between:5,20', 
+            'repetition_type' => ['nullable','string', Rule::in(RepetitionType::cases()) ],
+            'repetition_theme' => 'nullable|string|min:3| max:255',
+            'row_length'=> 'nullable|integer|between:10,25',
+         ];
     }
+
+    public function withValidator($validator)
+{
+    $validator->after(function ($validator) {
+        $optionId = $this->route('option') ?? $this->route('id');
+        $option = SubjectOptions::with('subject')->find($optionId);
+
+        if (!$option) {
+            $validator->errors()->add('option', 'Option not found.');
+            return;
+        }
+
+        if ($option->subject->user_id !== Auth::id()) {
+            $validator->errors()->add('option', 'This option does not belong to you.');
+        }
+    });
+}
 }

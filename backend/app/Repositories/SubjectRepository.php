@@ -24,6 +24,6 @@ class SubjectRepository
             throw new \Exception("non-existent instance");
         }
 
-        return Subject::find($id);
+        return Subject::with('options')->find($id);
     }
 }

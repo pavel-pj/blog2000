@@ -142,6 +142,18 @@ export function updateTaskURL(id:string, params?: Record<string, string|number|b
   });
 }
 
+//Subject Options
+
+export function showSubjectOptionsURL(subject_id:string) {
+  return `${baseUrl}/options/${subject_id}`;
+}
+
+export function updateSubjectOptionsURL(id:string, params?: Record<string, string|number|boolean>) {
+  return addQueryParams(`${baseUrl}/options/${id}`, {
+    ...params,
+  });
+}
+
  
 
 //EXCEL 

@@ -55,7 +55,7 @@ class Subject extends Model
 
     public function options(): HasOne
     {
-        return $this->hasOne(SubjectOptions::class);
+        return $this->hasOne(SubjectOptions::class,'subject_id');
     }
  
 }

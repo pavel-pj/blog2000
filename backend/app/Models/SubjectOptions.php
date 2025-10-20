@@ -32,9 +32,9 @@ class SubjectOptions extends Model
 
     ];
 
-    public function subject(): HasOne
+    public function subject(): BelongsTo
     {
-        return $this->hasOne(Subject::class);
+        return $this->belongsTo(Subject::class,'subject_id');
     }
 
 }

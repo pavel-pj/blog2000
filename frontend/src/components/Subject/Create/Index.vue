@@ -15,6 +15,7 @@ import BreadCrumbs from '@/components/common/navigate/BreadCrumbs.vue';
 import { useToast } from 'primevue/usetoast';
 import Repetition from '@/components/Subject/Create/Repetition.vue';
 import EditForm from '@/components/Subject/Create/EditForm.vue';
+import Options from '@/components/Subject/Create/Options.vue';
 
 const toast = useToast();
 
@@ -91,10 +92,8 @@ const itemsBreadCrumbs =computed(()=>{
 
 <template>
 
-
 <BreadCrumbs :items="itemsBreadCrumbs" />
 <PageSpiner :isSpiner="isPageSpiner" />
-
 
 <EditForm v-if="!isPageSpiner && !isEdit"
     :isEdit = "isEdit"
@@ -126,10 +125,11 @@ const itemsBreadCrumbs =computed(()=>{
             </Download>
         </TabPanel>
         <TabPanel value="2">
-            <p class="m-0">
-                At vero eos et accusamus et iusto odio dignissimos ducimus qui blanditiis praesentium voluptatum deleniti atque corrupti quos dolores et quas molestias excepturi sint occaecati cupiditate non provident, similique sunt in culpa
-                qui officia deserunt mollitia animi, id est laborum et dolorum fuga. Et harum quidem rerum facilis est et expedita distinctio. Nam libero tempore, cum soluta nobis est eligendi optio cumque nihil impedit quo minus.
-            </p>
+            <Options
+            :itemData="itemData"
+            @setSpiner="setSpiner"
+            @fetchItemSubject="fetchItemSubject"
+            ></Options>
         </TabPanel>
            <TabPanel value="3">
             <EditForm

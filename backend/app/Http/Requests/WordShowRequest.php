@@ -44,7 +44,7 @@ class WordShowRequest extends FormRequest
         ];
     }
 
-        public function withValidator($validator)
+     public function withValidator($validator)
     {
         $validator->after(function ($validator) {
             $wordId = $this->route('word'); // Получаем id из route
