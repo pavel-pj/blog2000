@@ -11,8 +11,8 @@ enum TaskStatus: string
     public function label(): string
     {
         return match($this) {
-            self::NEW => 'NEW',
-            self::DONE => 'DONE',
+            self::NEW => 'new',
+            self::DONE => 'done',
              
         };
     }

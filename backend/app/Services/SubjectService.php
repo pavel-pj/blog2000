@@ -3,8 +3,12 @@
 namespace App\Services;
 
 use App\Models\Subject;
+use App\Models\SubjectOptions;
 use App\Repositories\SubjectRepository;
 use Illuminate\Database\Eloquent\Collection as  EloquentCollection;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Database\Eloquent\Builder;
+use Exception;
 
 class SubjectService
 {
@@ -18,8 +22,9 @@ class SubjectService
     }
 
 
-    public function store(array $validated): Subject
+    public function store(array $validated)//: Builder
     {
+        /*
         try {
             $validated['user_id'] = auth()->user()->id;
             $item = Subject::create($validated);
@@ -27,6 +32,31 @@ class SubjectService
         } catch (\Exception $e) {
             throw new \Exception("It is not possible to create new item Subject");
         }
+            */
+        try {
+            DB::beginTransaction();
+
+            $validated['user_id'] = auth()->user()->id;
+            $subject = Subject::create($validated);
+
+            if (!$subject) {
+                throw new \Exception("It is not possible to create new item Subject");
+            }
+
+            $subjectOption = SubjectOptions::create(['subject_id' => $subject->id]);
+
+            DB::commit();
+
+            $subject =  Subject::find($subject->id);//->with('options')->get();
+            return $subject->load('options');
+            
+
+        } catch (Exception $e) {
+            DB::rollBack(); 
+        
+            throw new \Exception($e->getMessage());
+        }
+
     }
 
 

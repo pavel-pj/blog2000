@@ -15,6 +15,7 @@ use App\Http\Controllers\API\WordImportController;
 use App\Http\Controllers\API\RepetitionImportController;
 use App\Http\Controllers\API\RepetitionController;
 use App\Http\Controllers\API\TaskController;
+use App\Http\Controllers\API\SubjectOptionsController;
  
  
 
@@ -47,6 +48,7 @@ Route::middleware(['auth:sanctum' ])->group(function () {
     Route::patch('/repetition/update-word-status',  [WordController::class,'updateStatus'] );
 
     Route::resource('/tasks',  TaskController::class  )->only(['update']); 
+    Route::resource('/options',  SubjectOptionsController::class  )->only(['update']); 
 
 
     Route::get('/dictionaries', [ DictionaryController::class, 'index']);

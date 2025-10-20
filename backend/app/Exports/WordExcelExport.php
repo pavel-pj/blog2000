@@ -81,6 +81,7 @@ class WordExcelExport implements FromCollection, WithHeadings, WithMapping, With
             $repeatedWord = $row['REPEATED'];
             
             $newCombinedText = '';
+      
             if ($newWord) {
                 $newCombinedText .= "'{$newWord->name}'";
                 if ($newWord->translation) {

@@ -6,10 +6,12 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 use App\Models\Topic;
 use App\Models\Repetition;
 use App\Models\Word;
 use App\Models\User;
+use App\Models\SubjectOptions;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
  
 
@@ -49,6 +51,11 @@ class Subject extends Model
     public function user(): BelongsTo
     {
         return $this->belongsTo(user::class);
+    }
+
+    public function options(): HasOne
+    {
+        return $this->hasOne(SubjectOptions::class);
     }
  
 }

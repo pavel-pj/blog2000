@@ -2,21 +2,20 @@
 
 namespace App\Enums;
 
-enum WordStatus: string
+enum RepetitionType: string
 {
     case NEW = 'NEW';
-    case REPEATED = 'REPEATED';
     case IMPORTANT = 'IMPORTANT';
-    
-
+    case REPEATED = 'REPEATED';
+ 
     // Optional: Helper methods
     public function label(): string
     {
         return match($this) {
             self::NEW => 'new',
-            self::REPEATED => 'repeated',
             self::IMPORTANT => 'important',
-            
+            self::REPEATED => 'repeated',
+             
         };
     }
 }
