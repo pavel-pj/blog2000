@@ -166,6 +166,12 @@ export function ExportWordsToRepeateURL(subject_id: string) {
 export function ImportWordsToRepeateURL(subject_id: string) {
   return `${baseUrl}/${subject_id}/import/repetition-simple`;
 }
+
+//Import words with task to load for repeat
+export function ImportNewWordsURL(subject_id: string) {
+  return `${baseUrl}/${subject_id}/import/words`;
+}
+ 
  
  
 

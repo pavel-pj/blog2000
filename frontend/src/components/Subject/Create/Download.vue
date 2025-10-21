@@ -6,7 +6,8 @@ import {useRouter,useRoute} from 'vue-router';
 import {
 
   ExportWordsToRepeateURL,
-  ImportWordsToRepeateURL
+  ImportWordsToRepeateURL,
+  ImportNewWordsURL
 } from '@/config/request-urls';
 
 const selectedFile = ref(null);
@@ -31,7 +32,7 @@ const { sendRequest } = useHttpRequest({
   showErrorToast: true
 });
 
-const importWords =async ()=>{
+const importRepetition =async ()=>{
 
   if (!selectedFile.value) {
     toast.add({
@@ -51,6 +52,50 @@ const importWords =async ()=>{
 
     const response = await sendRequest({
       url: ImportWordsToRepeateURL(route.params.subject_id as string),
+      method: 'POST',
+      data: formData
+      // Remove Content-Type header - let browser set it automatically
+    });
+
+    if (response && response.isOk) {
+      toast.add({
+        severity: 'success',
+        summary: 'Success',
+        detail: 'File imported successfully',
+        life: 3000
+      });
+
+      // Clear the selected file
+      selectedFile.value = null;
+      fileupload.value.clear();
+    }
+  } catch (error) {
+    console.error('Import failed:', error);
+  }
+  emit('setSpiner', false);
+
+};
+
+const importWords =async ()=>{
+
+  if (!selectedFile.value) {
+    toast.add({
+      severity: 'warn',
+      summary: 'No File',
+      detail: 'Please select an Excel file first',
+      life: 3000
+    });
+    return;
+  }
+
+  try {
+    emit('setSpiner', true);
+
+    const formData = new FormData();
+    formData.append('excel_file', selectedFile.value);
+
+    const response = await sendRequest({
+      url: ImportNewWordsURL(route.params.subject_id as string),
       method: 'POST',
       data: formData
       // Remove Content-Type header - let browser set it automatically
@@ -122,21 +167,45 @@ const exporttWords =async ()=>{
 };
 </script>
 <template>
+
+<div class="flex flex-col gap-4">
+  <div class="border-1 border-stone-300 rounded-2xl p-6 ">
+    <div class="py-2" >Export words for repetition</div>
     <Button @click="exporttWords" label="Primary" rounded style="display:block">Export</Button>
 
-              <Toast />
-              <div class="card flex flex-wrap gap-6 items-center justify-start my-6">
-                  <FileUpload
-                  ref="fileupload"
-                  mode="basic"
-                  name="demo[]"
-                  url="/api/upload"
-                  accept=".xlsx,.xls,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet,application/vnd.ms-excel"
-                  :maxFileSize="1000000"
-                   @select="onFileSelect"
-                  :auto="false"
-                   chooseLabel="Select Excel File"
-                   />
-                  <Button label="Upload" @click="importWords" severity="secondary" />
-              </div>
+    <Toast />
+    <div class="py-2 mt-2">Import task</div>
+    <div class="card flex flex-wrap gap-6 items-center justify-start ">
+        <FileUpload
+        ref="fileupload"
+        mode="basic"
+        name="demo[]"
+        url="/api/upload"
+        accept=".xlsx,.xls,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet,application/vnd.ms-excel"
+        :maxFileSize="1000000"
+          @select="onFileSelect"
+        :auto="false"
+          chooseLabel="Select Excel File"
+          />
+        <Button label="Upload" @click="importRepetition" severity="secondary" />
+    </div>
+  </div>
+  <div class="border-1 border-stone-300 rounded-2xl p-6 ">
+      <div  class="pb-2">Import words</div>
+      <div class="card flex flex-wrap gap-6 items-center justify-start ">
+        <FileUpload
+        ref="fileupload"
+        mode="basic"
+        name="demo[]"
+        url="/api/upload"
+        accept=".xlsx,.xls,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet,application/vnd.ms-excel"
+        :maxFileSize="1000000"
+          @select="onFileSelect"
+        :auto="false"
+          chooseLabel="Select Excel File"
+          />
+        <Button label="Upload" @click="importWords" severity="secondary" />
+    </div>
+  </div>
+ </div>
 </template>

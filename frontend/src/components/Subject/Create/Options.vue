@@ -72,7 +72,7 @@ const sendData = async(data:any) => {
     total_rows : total_rows.value,
     new_words: new_words.value,
     important_words: important_words.value,
-    repetition_theme : repetition_theme.value ,
+    repetition_theme : data.repetition_theme,
     repetition_type: repetition_type.value.code,
     row_length:row_length.value
 
@@ -149,7 +149,8 @@ const sendData = async(data:any) => {
    <div>
       <div class="text-stone-500 font-bold py-2">Theme of task</div>
         <Field name="repetition_theme" v-slot="{ field, errors }">
-          <Textarea  v-model="field.value"
+          <Textarea
+
             v-bind="field"
             type="text"
             :class="{ 'p-invalid': errors.length }" rows="3" cols="50" />

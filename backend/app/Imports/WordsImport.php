@@ -33,15 +33,17 @@ class WordsImport implements ToModel,   WithValidation, SkipsOnFailure
         return new Word([
             'name' => $row[0],                      // Первая колонка - слово (обязательно)
             'translation' => $row[1] ?? null,       // Вторая колонка - перевод (может быть пустым)
-            'subject_id' => $this->subject_id
+            'subject_id' => $this->subject_id,
+            'status' => $row[2], 
         ]);
     }
 
     public function rules(): array
     {
         return [
-            '0' => 'required|string|max:255',       // Только первая колонка обязательна
-            // Вторая колонка не валидируется - может быть пустой
+            '0' => 'required|string|max:255',       // Первая колонка обязательна
+                                                    // Вторая колонка не валидируется - может быть пустой                    
+            '2' => 'required|string|max:255',              
         ];
     }
 

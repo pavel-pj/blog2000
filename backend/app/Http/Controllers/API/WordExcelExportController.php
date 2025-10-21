@@ -4,9 +4,12 @@ namespace App\Http\Controllers\API;
 
 use App\Http\Controllers\Controller;
 use App\Exports\WordExcelExport;
+use App\Exports\RepetitionNewExport;
 use Maatwebsite\Excel\Facades\Excel;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
+use App\Models\SubjectOptions;
+use App\Enums\RepetitionType;
 
 
 class WordExcelExportController extends Controller
@@ -18,10 +21,17 @@ class WordExcelExportController extends Controller
           
             $filename = 'words_export_' . date('Y-m-d_H-i-s') . '.xlsx';
             $filePath = 'private/exports/' . $filename;  
-            // Store file
-            //Excel::store(new WordExcelExport($subject_id), 'exports/' . $filename);
-             // Return file download response instead of JSON
-            return Excel::download(new WordExcelExport($subject_id), $filename);
+             
+
+            $repetition_type =  SubjectOptions::where('subject_id',$subject_id)->value('repetition_type');
+
+            return match($repetition_type){
+                RepetitionType::NEW => Excel::download(new RepetitionNewExport($subject_id), $filename),
+                default =>  Excel::download(new RepetitionNewExport($subject_id), $filename)   
+            };
+            
+            
+          
             /*
             return response()->json([
                 'success' => true,
