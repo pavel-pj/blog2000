@@ -173,19 +173,19 @@ class RepetitionNewExport implements  FromCollection, WithHeadings, WithMapping,
         
 
         return [
-            'new_id',
+            'word1_id',
             'new_name',
             'new_translation', 
             'new_status',
             'new_date',
 
-            'new_id2',
+            'word2_id',
             'new_name2',
             'new_translation2', 
             'new_status2',
             'new_date2',
 
-            'repeated_id',
+            'word3_id',
             'repeated_name',
             'repeated_translation',
             'repeated_status',

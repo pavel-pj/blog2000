@@ -60,20 +60,28 @@ class RepetitionSimpleImport implements ToModel,   WithValidation, SkipsOnFailur
             
             ]);
  
-            
-            TaskWord::create([
-                'word_id' => $row['new_id'],
-                'task_id' => $task->id
-            ]);
-
-            if (($row['repeated_id'])){
+            if (($row['word1_id'])){
                 TaskWord::create([
-                    'word_id' => $row['repeated_id'],
+                    'word_id' => $row['word1_id'],
+                    'task_id' => $task->id
+                ]);
+            }  
+            
+             if (($row['word2_id'])){
+                TaskWord::create([
+                    'word_id' => $row['word2_id'],
+                    'task_id' => $task->id
+                ]);
+            }  
+
+            if (($row['word3_id'])){
+                TaskWord::create([
+                    'word_id' => $row['word3_id'],
                     'task_id' => $task->id
                 ]); 
             }
 
-        });
+       });
 
 
     }
@@ -81,8 +89,9 @@ class RepetitionSimpleImport implements ToModel,   WithValidation, SkipsOnFailur
     public function rules(): array
     {
         return [
-            'new_id' => 'required|string|exists:words,id',       // ID word NEW
-            'repeated_id' => 'nullable|string|exists:words,id',       // ID word REPEATED
+            'word1_id' => 'required|string|exists:words,id',       // ID word NEW
+            'word3_id' => 'nullable|string|exists:words,id',
+            'word2_id' => 'nullable|string|exists:words,id',       // ID word REPEATED
             'task' => 'required|string|max:500',              // task
             'answer' => 'required|string|max:500',              // anser
             
