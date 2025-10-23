@@ -38,7 +38,8 @@ const {
   fetchData ,
   getNewTask,
   deleteWordFromTask,
-  deleteTask
+  deleteTask,
+  isTaskEmpty
 } = useRepetitionStore();
 
 onMounted(async () => {
@@ -123,35 +124,23 @@ const toRepeate = async ({
     task_word_status: task_word_status
   };
 
+
+  deleteWordFromTask( params?.task_word_id );
+
+  //if empty task - delete task from storage
+  if (isTaskEmpty(card.value?.id)){
+    deleteTask(card.value?.id);
+  }
+
   const res = await updateWordRequest({
     url: updateWordStatusTaskWordStatusURL(),
     method: 'PATCH',
     data: params
   });
-
   if (res?.isOk) {
-
     const responseData = res.data as unknown as UpdateResponse;
-    //delete this Word from task
-    deleteWordFromTask(responseData.task_word.task_id, responseData.task_word.word_id);
-    //console.log('Updated word:', responseData.word);
-    //console.log('Updated task word:', responseData.task_word);
-
-    // if there is no any words of task - task is DONE
-    // task's status need to be changed to DONE in database and task deleted from store
-    console.log('Получили ответ');
-    //console.log(responseData.task_word.task_id);
-    if (responseData.task_status === 'DONE') {
-      // console.log('ВНУТРИ сравниения!');
-      deleteTask(responseData.task_word.task_id);
-    }
-
-    //if (isTaskDone) {
-    //
-    //  }
-
-
   }
+
 };
 
 

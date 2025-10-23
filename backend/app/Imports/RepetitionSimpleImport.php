@@ -45,7 +45,7 @@ class RepetitionSimpleImport implements ToModel,   WithValidation, SkipsOnFailur
 
 
         // Пропускаем пустые строки (где нет данных)
-        if (empty($row['new_id'])) {
+        if (empty($row['word1_id'])) {
             return null;
         }
   

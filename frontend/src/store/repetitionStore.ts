@@ -44,6 +44,7 @@ export const useRepetitionStore = defineStore('repetitionStore', () => {
       
       if (response?.isOk && response.data) {
         data.value = response.data// This should now work
+        console.log(tasks.value)
         tasks.value = data.value.tasks
         //subject.value = response.data.subject
       }
@@ -56,37 +57,49 @@ export const useRepetitionStore = defineStore('repetitionStore', () => {
   }
 
 const getNewTask = (): TaskItem | undefined => {  
+  //console.log("IN deleteWordFromTask")
+  //debugger;
   if (!tasks.value) {
+   // console.log("IN deleteWordFromTask")
     return undefined;  
   }
   // get first task with status NEW
-  return tasks.value.find(item => item.status === 'NEW')
+  const newTask = tasks.value.find(item => item.status === 'NEW')
+  //console.log("IN deleteWordFromTask")
+  return newTask;
 }
 
-  const deleteWordFromTask = (task_id:string,word_id:string)=>{
-    if (!tasks.value ){
-        return ;
-    }
- 
-    tasks.value = tasks.value.map(task => {
-    if (task.id === task_id) {
-        return {
-        ...task,
-        words: task.words.filter(word => word.id !== word_id)
-        };
-    }
-    return task;
-    });
+ const deleteWordFromTask = (word_task_id: string | undefined) => {
+  if (!word_task_id || !tasks.value) {
+    return;
   }
 
+  tasks.value = tasks.value.map(task => {
+    return {
+      ...task,
+      words: task.words.filter(word => word.pivot?.id !== word_task_id)
+    }
+  });
+}
   //if there is no words to check in task - task have to be marked as DONE as well
-  const deleteTask = (task_id:string) => {
-     if (!tasks.value ){
+  const deleteTask = (task_id:string|undefined) => {
+   // console.log("IN deleteWordFromTask")
+      if (!tasks.value ){
+          return ;
+      }
+      tasks.value =  tasks.value.filter(task=>task.id !== task_id )   
+    }
+
+    //Check - if there is no words in this task 
+    const isTaskEmpty = (task_id:string|undefined) => {
+
+       if (!tasks.value ){
         return ;
     }
-    tasks.value =  tasks.value.filter(task=> task.id !== task_id) ;
-   
-  }
+        const  result = tasks.value.filter(task=> 
+        task.id == task_id && task.words.length >0 )   ;
+        return (result.length > 0)  ? false : true;   
+    }
 
 
 
@@ -102,7 +115,8 @@ const getNewTask = (): TaskItem | undefined => {
     fetchData,
     getNewTask,
     deleteWordFromTask,
-    deleteTask
+    deleteTask,
+    isTaskEmpty
  
     
   }

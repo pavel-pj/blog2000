@@ -6,6 +6,7 @@ use App\Models\Repetition;
 use App\Models\Subject;
 use Illuminate\Database\Eloquent\Collection as EloquentCollection;
 use Illuminate\Support\Collection;
+use App\Enums\TaskWordStatus;
 
 class RepetitionRepository
 {
@@ -40,7 +41,7 @@ class RepetitionRepository
                             'words.translation',
                             'words.status',
                             'words.repeated_at')
-                            //->wherePivot('status','NEW')
+                            //->wherePivot('status','<>', TaskWordStatus::DONE)
                             ->withPivot('status','id');
                     }])->orderBy('position', 'ASC');
             }
