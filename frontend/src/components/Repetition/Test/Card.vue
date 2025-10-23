@@ -130,6 +130,7 @@ const toRepeate = async ({
   //if empty task - delete task from storage
   if (isTaskEmpty(card.value?.id)){
     deleteTask(card.value?.id);
+    isNext.value = false;
   }
 
   const res = await updateWordRequest({

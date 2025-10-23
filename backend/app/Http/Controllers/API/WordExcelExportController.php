@@ -5,6 +5,7 @@ namespace App\Http\Controllers\API;
 use App\Http\Controllers\Controller;
 use App\Exports\WordExcelExport;
 use App\Exports\RepetitionNewExport;
+use App\Exports\RepetitionRepeatedExport;
 use Maatwebsite\Excel\Facades\Excel;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
@@ -27,18 +28,10 @@ class WordExcelExportController extends Controller
 
             return match($repetition_type){
                 RepetitionType::NEW => Excel::download(new RepetitionNewExport($subject_id), $filename),
-                default =>  Excel::download(new RepetitionNewExport($subject_id), $filename)   
+                RepetitionType::REPEATED => Excel::download(new RepetitionRepeatedExport($subject_id), $filename),
+                default =>  Excel::download(new RepetitionRepeatedExport($subject_id), $filename)   
             };
-            
-            
-          
-            /*
-            return response()->json([
-                'success' => true,
-                'message' => 'Users exported to Excel successfully!',
-                'file_path' => 'exports/' . $filename,
-                'download_url' => url("/api/excel/download/{$filename}")
-            ]);*/
+    
             
         } catch (\Exception $e) {
             return response()->json([

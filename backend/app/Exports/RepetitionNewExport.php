@@ -134,7 +134,7 @@ class RepetitionNewExport implements  FromCollection, WithHeadings, WithMapping,
             $currentRowText = "{$rowNumber}. In the {$rowNumber} sentence you must use words: {$newCombinedText}";
             
           
-            $currentRowText = "{$rowNumber}. In the {$rowNumber} sentence you must use words: {$newCombinedText2}";
+            $currentRowText .= "{$rowNumber}. In the {$rowNumber} sentence you must use words: {$newCombinedText2}";
  
 
             if ($repeatedCombinedText) {

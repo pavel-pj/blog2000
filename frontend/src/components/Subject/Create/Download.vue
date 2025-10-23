@@ -120,7 +120,7 @@ const importWords =async ()=>{
 
 };
 
-const exporttWords =async ()=>{
+const exportWords =async ()=>{
 
   try {
     emit('setSpiner', true);
@@ -156,7 +156,6 @@ const exporttWords =async ()=>{
       // Clean up the URL
       window.URL.revokeObjectURL(url);
 
-      console.log('File downloaded successfully!');
     }
   } catch (error) {
     console.error('Export failed:', error);
@@ -170,8 +169,14 @@ const exporttWords =async ()=>{
 
 <div class="flex flex-col gap-4">
   <div class="border-1 border-stone-300 rounded-2xl p-6 ">
-    <div class="py-2" >Export words for repetition</div>
-    <Button @click="exporttWords" label="Primary" rounded style="display:block">Export</Button>
+
+    <div class="flex flex-row gap-6 justify-start">
+      <div >
+        <div class="py-2 font-bold mx-auto text-center" >new</div>
+        <Button @click="exportWords" label="Primary" rounded style="display:block">Export</Button>
+      </div>
+
+    </div>
 
     <Toast />
     <div class="py-2 mt-2">Import task</div>

@@ -41,7 +41,7 @@ class RepetitionRepository
                             'words.translation',
                             'words.status',
                             'words.repeated_at')
-                            //->wherePivot('status','<>', TaskWordStatus::DONE)
+                            ->wherePivot('status','<>', TaskWordStatus::DONE)
                             ->withPivot('status','id');
                     }])->orderBy('position', 'ASC');
             }
