@@ -127,9 +127,16 @@ const onRowSelect =(event)=>{
 
 
 const filters = ref({
-  name: { value: null, matchMode: FilterMatchMode.CONTAINS }
+  name: { value: null, matchMode: FilterMatchMode.CONTAINS },
+  status: { value: null, matchMode: FilterMatchMode.EQUALS }
 });
 
+const statusOptions = ref([
+  { label: 'new', value: 'NEW' },
+  { label: 'important', value: 'IMPORTANT' },
+  { label: 'repeated', value: 'REPEATED' }
+
+]);
 
 const itemsBreadCrumbs =computed(()=>{
 
@@ -161,7 +168,7 @@ const itemsBreadCrumbs =computed(()=>{
         filterDisplay="row"
         stripedRows
         paginator
-        :rows="5"
+        :rows="10"
         :rowsPerPageOptions="[5, 10, 20, 50]"
         selectionMode="single"
         dataKey="id"
@@ -170,17 +177,51 @@ const itemsBreadCrumbs =computed(()=>{
         tableStyle=" "
         >
 
-          <Column field="name" header="Name">
+          <Column field="name" header="Name" sortable>
                 <template #body="{ data }">
                     {{ data.name }}
                 </template>
                  <template #filter="{ filterModel, filterCallback }">
                     <InputText v-model="filterModel.value" type="text" @input="filterCallback()" placeholder="Search by name" />
                 </template>
+          </Column>
 
+
+          <Column field="status" header="Status" sortable >
+                <template #body="{ data }" >
+                    {{ data.status.toLowerCase() }}
+                </template>
+                        <template #filter="{ filterModel, filterCallback }">
+                <Dropdown
+                  v-model="filterModel.value"
+                  :options="statusOptions"
+                  optionLabel="label"
+                  optionValue="value"
+                  placeholder="Select Status"
+                  @change="filterCallback()"
+                  showClear
+              />
+            </template>
 
           </Column>
-           <Column field="id" header="Id"  ></Column>
+
+          <Column field="Created" header="Created" sortable dataType="date">
+                <template #body="{ data }">
+                    {{ data.created_at }}
+                </template>
+
+          </Column>
+          <Column field="Repeated" header="Repeated" sortable dataType="date">
+                <template #body="{ data }">
+                    {{ data.repeated_at }}
+                </template>
+
+          </Column>
+
+
+
+
+
            <Column class="w-16 h-16 !text-end">
                 <template #body="{ data }"  >
                     <Button icon="pi pi-times" @click="openDelete(data)" severity="danger" class="p-button-sm w-2rem h-2rem"></Button>
@@ -191,7 +232,10 @@ const itemsBreadCrumbs =computed(()=>{
         <Toast />
     </div>
 
+
   <modalSpiner :isSpiner="isSpiner" ></modalSpiner>
 
 </template>
+<style>
+</style>
 

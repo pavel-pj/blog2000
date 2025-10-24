@@ -43,7 +43,7 @@ const {
 } = useRepetitionStore();
 
 onMounted(async () => {
-  if(!repetition.value){
+  if(!repetition.value || route.params.repetition_id !== repetition.value?.id){
     fetchData(route.params.repetition_id as string);
   }
 });
@@ -59,18 +59,7 @@ watch (
   { deep: true, immediate: true }
 );
 
-watch (
-  ()=>route.params,
-  async (newValue) => {
-    console.log('REPETITION');
-    /*if (!repetition.value?.id) {
-      return;
-    }
-    if (newValue  !== repetition.value?.id){
-      await fetchData(route.params.repetition_id as string);
-    }*/
-  }
-);
+
 
 
 

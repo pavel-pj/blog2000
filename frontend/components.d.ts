@@ -18,6 +18,7 @@ declare module 'vue' {
     ConfirmDialog: typeof import('primevue/confirmdialog')['default']
     DataTable: typeof import('primevue/datatable')['default']
     Download: typeof import('./src/components/Subject/Create/Download.vue')['default']
+    Dropdown: typeof import('primevue/dropdown')['default']
     EditForm: typeof import('./src/components/Subject/Create/EditForm.vue')['default']
     Editor: typeof import('./src/components/Tiptap/Editor.vue')['default']
     FileUpload: typeof import('primevue/fileupload')['default']
