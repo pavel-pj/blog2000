@@ -18,7 +18,9 @@ const route = useRoute();
 
 const toast = useToast();
 
-const emit = defineEmits(['setSpiner']);
+
+
+const emit = defineEmits(['setSpiner','setImportLoader' ]);
 
 const upload = () => {
   fileupload.value.upload();
@@ -64,10 +66,13 @@ const importRepetition =async ()=>{
         detail: 'File imported successfully',
         life: 3000
       });
-
+      console.log('BEFORE emiter');
+      emit('setImportLoader', true);
       // Clear the selected file
       selectedFile.value = null;
       fileupload.value.clear();
+
+
     }
   } catch (error) {
     console.error('Import failed:', error);
@@ -112,9 +117,13 @@ const importWords =async ()=>{
       // Clear the selected file
       selectedFile.value = null;
       fileupload.value.clear();
+
+
+
+
     }
   } catch (error) {
-    console.error('Import failed:', error);
+    //console.error('Import failed:', error);
   }
   emit('setSpiner', false);
 
@@ -172,7 +181,7 @@ const exportWords =async ()=>{
 
     <div class="flex flex-row gap-6 justify-start">
       <div >
-        <div class="py-2 font-bold mx-auto text-center" >new</div>
+        <div class="py-2 font-bold mx-auto text-center" >template</div>
         <Button @click="exportWords" label="Primary" rounded style="display:block">Export</Button>
       </div>
 

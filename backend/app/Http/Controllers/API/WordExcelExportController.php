@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Exports\WordExcelExport;
 use App\Exports\RepetitionNewExport;
 use App\Exports\RepetitionRepeatedExport;
+use App\Exports\RepetitionImportantExport;
 use Maatwebsite\Excel\Facades\Excel;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
@@ -25,9 +26,11 @@ class WordExcelExportController extends Controller
              
 
             $repetition_type =  SubjectOptions::where('subject_id',$subject_id)->value('repetition_type');
+            $repetition_enum = RepetitionType::from($repetition_type);
 
-            return match($repetition_type){
+            return match($repetition_enum){
                 RepetitionType::NEW => Excel::download(new RepetitionNewExport($subject_id), $filename),
+                RepetitionType::IMPORTANT => Excel::download(new RepetitionImportantExport($subject_id), $filename),
                 RepetitionType::REPEATED => Excel::download(new RepetitionRepeatedExport($subject_id), $filename),
                 default =>  Excel::download(new RepetitionRepeatedExport($subject_id), $filename)   
             };

@@ -113,7 +113,7 @@ class RepetitionRepeatedExport implements  FromCollection, WithHeadings, WithMap
             
             $newCombinedText = '';
             if ($newWord) {
-                $newCombinedText .= "'{$newWord->name}'";
+                $newCombinedText .= " '{$newWord->name}' ";
                 if ($newWord->translation) {
                     $newCombinedText .= " with meaning '{$newWord->translation}'";
                 }
@@ -121,7 +121,7 @@ class RepetitionRepeatedExport implements  FromCollection, WithHeadings, WithMap
 
             $repeatedCombinedText = '';
             if ($repeatedWord) {
-                $repeatedCombinedText .= "'{$repeatedWord->name}'";
+                $repeatedCombinedText .= " '{$repeatedWord->name}' ";
                 if ($repeatedWord->translation) {
                     $repeatedCombinedText .= " with meaning '{$repeatedWord->translation}'";
                 }
@@ -129,23 +129,23 @@ class RepetitionRepeatedExport implements  FromCollection, WithHeadings, WithMap
  
            $repeatedCombinedText2 = '';
             if ($repeatedWord2) {
-                $repeatedCombinedText .= "'{$repeatedWord2->name}'";
+                $repeatedCombinedText2 .= " '{$repeatedWord2->name}' ";
                 if ($repeatedWord2->translation) {
                     $repeatedCombinedText2 .= " with meaning '{$repeatedWord2->translation}'";
                 }
             }
 
             $rowNumber = $index + 1;
-            $currentRowText = "{$rowNumber}. In the {$rowNumber} sentence you must use words: {$newCombinedText}";
+            $currentRowText = "{$rowNumber}. In the {$rowNumber} sentence you must use words: {$newCombinedText} ; ";
 
             if ($repeatedCombinedText) {
-                $currentRowText .= " , {$repeatedCombinedText}";
+                $currentRowText .= " {$repeatedCombinedText} ; ";
             }
             if ($repeatedCombinedText2) {
-                $currentRowText .= " , {$repeatedCombinedText2}";
+                $currentRowText .= " {$repeatedCombinedText2} ";
             }
             
-            $allText .= $currentRowText . " ; ";
+            $allText .= $currentRowText . " . ";
         }
         
         return $allText;

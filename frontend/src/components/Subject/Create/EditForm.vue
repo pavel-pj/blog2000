@@ -42,9 +42,6 @@ const {
 });
 
 
-
-
-
 const sendData = async(data:any) => {
 
   //isSpiner.value = true;
@@ -124,6 +121,7 @@ const deleteItem = async () =>{
     router.push({name:'subjects-index'});
 
     emit('setSpiner', false);
+
   } else {
     emit('setSpiner', false);
   }

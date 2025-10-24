@@ -16,7 +16,12 @@ import useConfirm from '@/composables/modals/Confirmer';
 import { storeToRefs } from 'pinia';
 import { FilterMatchMode } from '@primevue/core/api';
 
+type Props = {
+   isImportLoaded:boolean,
+};
 
+const props = defineProps<Props>();
+const emit = defineEmits(['setImportLoader' ]);
 
 
 const router = useRouter();
@@ -62,11 +67,22 @@ const isPageSpiner = computed (()=>{
 
 
 onMounted(async () => {
-
-  await repetitionsRequest({ url: repetitionIndexURL(route.params.subject_id as string) });
-
-
+  await fectchRepetition();
 });
+
+const fectchRepetition = async () => {
+  await repetitionsRequest({ url: repetitionIndexURL(route.params.subject_id as string) });
+};
+
+watch (()=>props.isImportLoaded,
+  async (newValue)=>{
+    if (newValue === true) {
+      await fectchRepetition();
+      emit('setImportLoader', false);
+    }
+  });
+
+
 
 
 const onRowSelect =(event)=>{

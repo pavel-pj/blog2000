@@ -31,6 +31,14 @@ const props = defineProps<Props>();
 
 const itemId =  route?.params?.subject_id as string;
 const isSpiner = ref<boolean>(false);
+const isImportLoaded= ref<boolean>(false);
+
+
+const setImportLoader = (value: boolean ) =>{
+  console.log('setImportLoader INDEZ');
+  isImportLoaded.value = value;
+};
+
 
 const setSpiner =(value : boolean) => {
   isSpiner.value = value;
@@ -112,7 +120,10 @@ const itemsBreadCrumbs =computed(()=>{
     </TabList>
     <TabPanels>
       <TabPanel value="0">
-        <Repetition>
+        <Repetition
+          :isImportLoaded="isImportLoaded"
+          @setImportLoader="setImportLoader"
+        >
 
         </Repetition>
 
@@ -121,6 +132,7 @@ const itemsBreadCrumbs =computed(()=>{
         <TabPanel value="1">
             <Download
                @setSpiner="setSpiner"
+               @setImportLoader="setImportLoader"
             >
             </Download>
         </TabPanel>

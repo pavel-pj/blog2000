@@ -16,12 +16,12 @@ use App\Models\SubjectOptions;
 class RepetitionImportantExport implements  FromCollection, WithHeadings, WithMapping, WithStyles,WithEvents
 {
      //user options 
-    private int $totalRows = 30;
-    private int $newWords = 5;
-    private int $importantWords = 5;
-    private string $repetnType = 'NEW';
-    private string $topic = "Wild animals";
-    private int $sentenseLength = 18; 
+    private int $totalRows ;
+    private int $newWords ;
+    private int $importantWords ;
+    private string $repetitionType;
+    private string $topic ;
+    private int $sentenseLength ; 
 
     //Program
     private string $allCombinedText;
@@ -29,11 +29,12 @@ class RepetitionImportantExport implements  FromCollection, WithHeadings, WithMa
 
     public function __construct(private string $subject_id)
     {
-        $options =  SubjectOptions::findOrFail($subject_id);
+        $options =  SubjectOptions::where('subject_id',$subject_id)->first();
         $this->totalRows = $options->total_rows;
         $this->newWords = $options->new_words;
         $this->importantWords = $options->important_words;
-        $this->repetnType = $options->repetition_type;
+        $this->repetitionType = $options->repetition_type;
+        $this->topic = $options->repetition_theme;
         $this->sentenseLength = $options->row_length;
         
     }
@@ -49,18 +50,20 @@ class RepetitionImportantExport implements  FromCollection, WithHeadings, WithMa
             ->where('status', WordStatus::NEW)
             ->select('id', 'name', 'translation', 'status','created_at')->orderBy('created_at','ASC')->limit($this->newWords)
             ->get();
-        
+
         $importantWords =  Word::where('subject_id', $this->subject_id)
             ->where('status', WordStatus::IMPORTANT)
-            ->select('id', 'name', 'translation', 'status','created_at')->orderBy('created_at','ASC')->limit($this->importantWords)
-            ->get();    
-            
- 
+            ->select('id', 'name', 'translation', 'status','created_at')
+            ->orderBy('repeated_at','ASC')->limit( $this->importantWords)
+            ->get();
+
+
         $repeatedWords = Word::where('subject_id', $this->subject_id)
             ->where('status', WordStatus::REPEATED)
             ->orderBy('repeated_at','ASC')
             ->select('id', 'name', 'translation', 'status','repeated_at')
-            ->get(); 
+            ->get();     
+ 
             
         // Combine both collections
         $combined = collect();
@@ -70,12 +73,12 @@ class RepetitionImportantExport implements  FromCollection, WithHeadings, WithMa
         for ($i = 0; $i < $this->totalRows; $i++) {
 
             $newWordIndex = $i % $this->newWords; // Циклический индекс (0,1,2,3,4,0,1,2...)
-            $mportantWordIndex = $i % $this->importantWords; // Циклический индекс (0,1,2,3,4,0,1,2...)
+            $importantIndex = $i % $this->importantWords; // Циклический индекс (0,1,2,3,4,0,1,2...)
             //$repeatedWords = $repeatedWords->get($i);   // REPEATED слова идут по порядку
 
             $combined->push([
                 'NEW' => $newWords->get($newWordIndex),
-                'IMPORTANT' => $importantWords->get($mportantWordIndex),
+                'IMPORTANT' => $importantWords->get($importantIndex ),
                 'REPEATED' => $repeatedWords->get($i)
             ]);
         }
@@ -106,10 +109,10 @@ class RepetitionImportantExport implements  FromCollection, WithHeadings, WithMa
             }
 
             $importantCombinedText = '';
-            if ($newWord) {
+            if ($importantWord) {
                 $importantCombinedText .= "'{$importantWord->name}'";
                 if ($importantWord->translation) {
-                    $importantCombinedText .= " with meaning '{$importantWord->translation}'";
+                    $importantCombinedText .= " with meaning '{ $importantWord->translation}'";
                 }
             }
  
@@ -122,17 +125,17 @@ class RepetitionImportantExport implements  FromCollection, WithHeadings, WithMa
             }
 
             $rowNumber = $index + 1;
-            $currentRowText = "{$rowNumber}. In the {$rowNumber} sentence you must use words: {$newCombinedText}";
+            $currentRowText = "{$rowNumber}. In the {$rowNumber} sentence you must use words: {$newCombinedText}; ";
             
-            if ($repeatedCombinedText) {
-                $currentRowText .= " , {$repeatedCombinedText}";
-            }
+            if ($importantCombinedText) {
+             $currentRowText .= "{$rowNumber}. In the {$rowNumber} sentence you must use words: {$importantCombinedText}; ";
+            }    
 
             if ($repeatedCombinedText) {
-                $currentRowText .= " , {$repeatedCombinedText}";
+                $currentRowText .= " {$repeatedCombinedText}; ";
             }
             
-            $allText .= $currentRowText . " ; ";
+            $allText .= $currentRowText . " . ";
         }
         
         return $allText;
@@ -164,16 +167,24 @@ class RepetitionImportantExport implements  FromCollection, WithHeadings, WithMa
         
 
         return [
-            'new_id',
+            'word1_id',
             'new_name',
             'new_translation', 
             'new_status',
             'new_date',
-            'repeated_id',
+
+            'word2_id',
+            'important_name',
+            'important_translation', 
+            'important_status',
+            'importantdate',
+
+            'word3_id',
             'repeated_name',
             'repeated_translation',
             'repeated_status',
             'repeated_date',
+
             'task',
             'answer'
 
@@ -184,6 +195,7 @@ class RepetitionImportantExport implements  FromCollection, WithHeadings, WithMa
     public function map($row ): array
     {
         $newWord = $row['NEW'];
+        $importantWord = $row['IMPORTANT'];
         $repeatedWord = $row['REPEATED'];
        
         
@@ -193,13 +205,19 @@ class RepetitionImportantExport implements  FromCollection, WithHeadings, WithMa
             $newWord ? $newWord->id : '',
             $newWord ? $newWord->name : '',
             $newWord ? $newWord->translation : '',
-           
             $newWord ? $newWord->status : '',
             $newWord ? $newWord->created_at : '',
+
+            $importantWord ? $importantWord->id : '',
+            $importantWord ? $importantWord->name : '',
+            $importantWord ? $importantWord->translation : '',
+            $importantWord ? $importantWord->status : '',
+            $importantWord ? $importantWord->repeated_at : '',
+
+
             $repeatedWord ? $repeatedWord->id : '',
             $repeatedWord ? $repeatedWord->name : '',
             $repeatedWord ? $repeatedWord->translation : '',
-          
             $repeatedWord ? $repeatedWord->status : '',
             $repeatedWord ? $repeatedWord->repeated_at : '',
             //$this->allCombinedText ,

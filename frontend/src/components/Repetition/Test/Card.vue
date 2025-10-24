@@ -53,10 +53,23 @@ const card = ref<TaskItem>();
 watch (
   ()=>tasks.value,
   (newValue)=>{
-    console.log('ИЗМЕНИЛСЯ tasks');
+
     card.value = getNewTask();
   },
   { deep: true, immediate: true }
+);
+
+watch (
+  ()=>route.params,
+  async (newValue) => {
+    console.log('REPETITION');
+    /*if (!repetition.value?.id) {
+      return;
+    }
+    if (newValue  !== repetition.value?.id){
+      await fetchData(route.params.repetition_id as string);
+    }*/
+  }
 );
 
 
@@ -147,13 +160,25 @@ const toRepeate = async ({
 
 
 const showNext =()=>{
-  isNext.value = true;
+
+  if (isNext.value === false) {
+    isNext.value = true;
+  } else {
+    console.log('1 isNext: ' +  isNext.value);
+    isNext.value = false;
+    deleteTask(card.value?.id);
+    console.log('2 isNext: ' +  isNext.value);
+
+  }
+  //Обновляем карточку
 };
 
 const skipTask  = async (task_id : string) =>
 {
   //if there is undone words - just delete from store ( but not from database)
   tasks.value = tasks.value?.filter(task => task.id !== task_id);
+  isNext.value = false;
+  deleteTask(card.value?.id);
 
 };
 
